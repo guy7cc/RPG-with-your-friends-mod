@@ -1,0 +1,22 @@
+{
+  "gui.rpgw.partyMenu": "Party Menu",
+  "gui.rpgw.partyMenu.currentParty": "Current Party",
+  "gui.rpgw.partyMenu.noCurrentParty": "None",
+  "gui.rpgw.partyMenu.joinRequest": "Join Request",
+  "gui.rpgw.partyMenu.joinRequestCheck": "Received join request from %s.",
+  "gui.rpgw.partyMenu.joinRequestAccept": "ACCEPT",
+  "gui.rpgw.partyMenu.joinRequestDeny": "DENY",
+  "gui.rpgw.partyMenu.joinRequestFail": "Failed to send a join request.",
+  "gui.rpgw.createPartyMenu": "Party Name",
+  "gui.rpgw.createPartyMenu.create": "Create",
+  "gui.rpgw.createPartyMenu.cancel": "Cancel",
+  "gui.rpgw.createPartyMenu.cannotCreate": "You have to leave the current party in order to create a new party.",
+  "gui.rpgw.partyMenu.changeLeader": "Change Leader",
+  "gui.rpgw.partyMenu.cannotChangeLeader": "You are not a leader.",
+  "gui.rpgw.partyMenu.leave": "Leave",
+  "gui.rpgw.partyMenu.cannotLeave": "You cannot leave the party now.",
+
+  "commands.rpgw.jreqAccepted": "The join request has been accepted.",
+  "commands.rpgw.jreqDenied": "The join request has been denied.",
+  "commands.rpgw.jreqFail": "Failed to process the join request."
+}
