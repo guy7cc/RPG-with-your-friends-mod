@@ -1,0 +1,22 @@
+{
+  "gui.rpgw.partyMenu": "パーティメニュー",
+  "gui.rpgw.partyMenu.currentParty": "所属パーティ",
+  "gui.rpgw.partyMenu.noCurrentParty": "なし",
+  "gui.rpgw.partyMenu.joinRequest": "参加リクエスト",
+  "gui.rpgw.partyMenu.joinRequestCheck": "%sから参加リクエストを受けています。",
+  "gui.rpgw.partyMenu.joinRequestAccept": "許可",
+  "gui.rpgw.partyMenu.joinRequestDeny": "拒否",
+  "gui.rpgw.partyMenu.joinRequestFail": "参加リクエストの送信に失敗しました。",
+  "gui.rpgw.createPartyMenu": "パーティ名",
+  "gui.rpgw.createPartyMenu.create": "作成",
+  "gui.rpgw.createPartyMenu.cancel": "キャンセル",
+  "gui.rpgw.createPartyMenu.cannotCreate": "新しいパーティを作るためには、今のパーティを抜ける必要があります。",
+  "gui.rpgw.partyMenu.changeLeader": "リーダー変更",
+  "gui.rpgw.partyMenu.cannotChangeLeader": "あなたはリーダーではありません。",
+  "gui.rpgw.partyMenu.leave": "脱退",
+  "gui.rpgw.partyMenu.cannotLeave": "今はパーティを抜けることができません。",
+
+  "commands.rpgw.jreqAccepted": "参加リクエストは受理されました。",
+  "commands.rpgw.jreqDenied": "参加リクエストは却下されました。",
+  "commands.rpgw.jreqFail": "参加リクエストの処理に失敗しました。"
+}
