@@ -98,6 +98,7 @@ public class ServerboundManagePartyPacket {
                     RpgwMessageManager.INSTANCE.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundManagePartyPacket(PartyList.getInstance()));
                     break;
             }
+            ctx.get().setPacketHandled(true);
         });
     }
 
