@@ -1,6 +1,7 @@
 package io.github.guy7cc.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.rpg.Party;
@@ -21,29 +22,28 @@ public class JoinRequestCommand {
         dispatcher.register(Commands.literal("jreq")
                 .then(Commands.literal("accept")
                         .then(Commands.argument("uuid", UuidArgument.uuid())
-                                .then(Commands.argument("id", RangeArgument.intRange())
+                                .then(Commands.argument("id", IntegerArgumentType.integer())
                                         .executes(ctx ->
-                                                accept(ctx.getSource(), UuidArgument.getUuid(ctx, "uuid"), RangeArgument.Ints.getRange(ctx, "id"))
+                                                accept(ctx.getSource(), UuidArgument.getUuid(ctx, "uuid"), IntegerArgumentType.getInteger(ctx, "id"))
                                         )
                                 )
                         )
                 )
                 .then(Commands.literal("deny")
                         .then(Commands.argument("uuid", UuidArgument.uuid())
-                                .then(Commands.argument("id", RangeArgument.intRange())
+                                .then(Commands.argument("id", IntegerArgumentType.integer())
                                         .executes(ctx ->
-                                                deny(ctx.getSource(), UuidArgument.getUuid(ctx, "uuid"), RangeArgument.Ints.getRange(ctx, "id"))
+                                                deny(ctx.getSource(), UuidArgument.getUuid(ctx, "uuid"), IntegerArgumentType.getInteger(ctx, "id"))
                                         )
                                 )
                         )
                 )
         );
     }
-    private static int accept(CommandSourceStack source, UUID uuid, MinMaxBounds.Ints ints) throws CommandSyntaxException {
+    private static int accept(CommandSourceStack source, UUID uuid, int id) throws CommandSyntaxException {
         PartyList partyList = PartyList.getInstance();
         ServerPlayer leader = source.getPlayerOrException();
         ServerPlayer member = partyList.getServer().getPlayerList().getPlayer(uuid);
-        int id = ints.getMin();
         Party partyById = partyList.byId(id);
         Party partyByLeader = partyList.byLeader(leader.getUUID());
         if(partyById != null && partyByLeader != null && member != null && partyById == partyByLeader && !partyList.isInParty(uuid)){
@@ -61,11 +61,10 @@ public class JoinRequestCommand {
         }
         return 0;
     }
-    private static int deny(CommandSourceStack source, UUID uuid, MinMaxBounds.Ints ints) throws CommandSyntaxException{
+    private static int deny(CommandSourceStack source, UUID uuid, int id) throws CommandSyntaxException{
         PartyList partyList = PartyList.getInstance();
         ServerPlayer leader = source.getPlayerOrException();
         ServerPlayer member = partyList.getServer().getPlayerList().getPlayer(uuid);
-        int id = ints.getMin();
         Party partyById = partyList.byId(id);
         Party partyByLeader = partyList.byLeader(leader.getUUID());
         if(partyById != null && partyByLeader != null && member != null && partyById == partyByLeader && !partyList.isInParty(uuid)){

@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientForgeEvents {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event){
-        RpgwIngameOverlay.tick();
+        if(event.phase == TickEvent.Phase.START) RpgwIngameOverlay.tick();
     }
 
     public static final ResourceLocation PARTY_MENU_BUTTON_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/party_menu_button.png");

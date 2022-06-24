@@ -26,5 +26,6 @@ public class RpgwMessageManager {
 
         net.registerMessage(id(), ServerboundManagePartyPacket.class, ServerboundManagePartyPacket::toBytes, ServerboundManagePartyPacket::new, ServerboundManagePartyPacket::handle);
         net.registerMessage(id(), ClientboundManagePartyPacket.class, ClientboundManagePartyPacket::toBytes, ClientboundManagePartyPacket::new, ClientboundManagePartyPacket::handle);
+        net.registerMessage(id(), ClientboundSyncPlayerMpPacket.class, ClientboundSyncPlayerMpPacket::toBytes, ClientboundSyncPlayerMpPacket::new, ClientboundSyncPlayerMpPacket::handle);
     }
 }

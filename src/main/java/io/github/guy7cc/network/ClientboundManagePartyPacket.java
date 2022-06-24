@@ -32,6 +32,7 @@ public class ClientboundManagePartyPacket {
                 if(Minecraft.getInstance().screen instanceof PartyMenuScreen partyMenuScreen){
                     partyMenuScreen.refresh(partyListTag);
                 }
+                ctx.get().setPacketHandled(true);
             });
         });
     }
