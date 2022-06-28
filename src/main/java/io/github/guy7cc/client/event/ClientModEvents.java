@@ -14,6 +14,7 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void onFMLClientSetUp(FMLClientSetupEvent event){
         OverlayRegistry.enableOverlay(ForgeIngameGui.PLAYER_HEALTH_ELEMENT, false);
+        OverlayRegistry.enableOverlay(ForgeIngameGui.ARMOR_LEVEL_ELEMENT, false);
         RpgwIngameOverlay.registerOverlay();
     }
 }

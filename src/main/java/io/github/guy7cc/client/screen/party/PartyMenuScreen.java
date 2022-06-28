@@ -64,7 +64,7 @@ public class PartyMenuScreen extends Screen {
         this.joinRequestButton = new Button(this.leftPos + 10, this.topPos + 106, 80, 20, new TranslatableComponent("gui.rpgw.partyMenu.joinRequest"), button -> {
             PartySelectionList.PartyEntry entry = partySelectionList.getSelected();
             if(entry != null && !entry.getParty().isMember(this.minecraft.player.getUUID())){
-                RpgwMessageManager.INSTANCE.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.JOIN_REQUEST, "", this.minecraft.player.getUUID(), entry.getParty().getId()));
+                RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.JOIN_REQUEST, "", this.minecraft.player.getUUID(), entry.getParty().getId()));
             }
             else{
                 this.minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.joinRequestFail"), false);
@@ -74,13 +74,13 @@ public class PartyMenuScreen extends Screen {
             this.minecraft.getInstance().setScreen(new CreatePartyScreen());
         });
         this.changeLeaderButton = new Button(this.leftPos + 10, this.topPos + 150, 80, 20, new TranslatableComponent("gui.rpgw.partyMenu.changeLeader"), button -> {
-            RpgwMessageManager.INSTANCE.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.CHANGE_LEADER, "", this.minecraft.player.getUUID(), 0));
+            RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.CHANGE_LEADER, "", this.minecraft.player.getUUID(), 0));
         });
         this.leavePartyButton = new Button(this.leftPos + 10, this.topPos + 172, 80, 20, new TranslatableComponent("gui.rpgw.partyMenu.leave"), button -> {
-            RpgwMessageManager.INSTANCE.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.LEAVE, "", this.minecraft.player.getUUID(), 0));
+            RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.LEAVE, "", this.minecraft.player.getUUID(), 0));
         });
         this.refreshButton = new ImageButton(this.leftPos + 40, this.topPos + 194, 20, 20, 0, 0, 20, REFRESH_BUTTON_LOCATION, 32, 64, button -> {
-            RpgwMessageManager.INSTANCE.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.REQUEST_INFO, "", Util.NIL_UUID, 0));
+            RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.REQUEST_INFO, "", Util.NIL_UUID, 0));
         });
         addWidget(this.partySelectionList);
         addRenderableWidget(this.joinRequestButton);
@@ -88,7 +88,7 @@ public class PartyMenuScreen extends Screen {
         addRenderableWidget(this.changeLeaderButton);
         addRenderableWidget(this.leavePartyButton);
         addRenderableWidget(this.refreshButton);
-        RpgwMessageManager.INSTANCE.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.REQUEST_INFO, "", Util.NIL_UUID, 0));
+        RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.REQUEST_INFO, "", Util.NIL_UUID, 0));
         refresh();
     }
 

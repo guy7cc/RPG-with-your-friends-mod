@@ -20,12 +20,14 @@ public class PlayerMpManager {
         float mp = player.getCapability(PlayerMpCapabilityProvider.PLAYER_MP_CAPABILITY)
                 .map(PlayerMp::getMp)
                 .orElse(0f);
-        RpgwMessageManager.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(mp, ClientboundSyncPlayerMpPacket.Type.VALUE));
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(mp, ClientboundSyncPlayerMpPacket.Type.VALUE));
     }
 
     public static void syncMaxMpToClient(ServerPlayer player){
-        float maxMp = 20f;
-        RpgwMessageManager.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(maxMp, ClientboundSyncPlayerMpPacket.Type.MAX));
+        float max = player.getCapability(PlayerMpCapabilityProvider.PLAYER_MP_CAPABILITY)
+                .map(PlayerMp::getMaxMp)
+                .orElse(0f);
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(max, ClientboundSyncPlayerMpPacket.Type.MAX));
     }
 
     public static void serverTick(ServerLevel level){
