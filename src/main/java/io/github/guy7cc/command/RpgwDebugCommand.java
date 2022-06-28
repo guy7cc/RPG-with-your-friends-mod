@@ -28,7 +28,6 @@ public class RpgwDebugCommand {
         PlayerMp playerMp = PlayerMpManager.getPlayerMp(player);
         if(playerMp != null){
             playerMp.setMp(mp);
-            PlayerMpManager.syncMpToClient(player);
         }
         return 1;
     }

@@ -3,10 +3,11 @@ package io.github.guy7cc.network;
 import io.github.guy7cc.RpgwMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class RpgwMessageManager {
-    public static SimpleChannel INSTANCE;
+    private static SimpleChannel INSTANCE;
 
     private static int packetId = 0;
 
@@ -27,5 +28,13 @@ public class RpgwMessageManager {
         net.registerMessage(id(), ServerboundManagePartyPacket.class, ServerboundManagePartyPacket::toBytes, ServerboundManagePartyPacket::new, ServerboundManagePartyPacket::handle);
         net.registerMessage(id(), ClientboundManagePartyPacket.class, ClientboundManagePartyPacket::toBytes, ClientboundManagePartyPacket::new, ClientboundManagePartyPacket::handle);
         net.registerMessage(id(), ClientboundSyncPlayerMpPacket.class, ClientboundSyncPlayerMpPacket::toBytes, ClientboundSyncPlayerMpPacket::new, ClientboundSyncPlayerMpPacket::handle);
+    }
+
+    public static <MSG> void send(PacketDistributor.PacketTarget target, MSG message){
+        INSTANCE.send(target, message);
+    }
+
+    public static <MSG> void sendToServer(MSG message){
+        INSTANCE.sendToServer(message);
     }
 }

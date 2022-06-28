@@ -42,7 +42,7 @@ public class CreatePartyScreen extends Screen {
 
         this.nameEdit = new EditBox(this.font, this.leftPos + 18, this.topPos + 18, 164, 20, new TextComponent(""));
         this.createButton = new Button(this.leftPos + 30, this.topPos + 40, 60, 20, new TranslatableComponent("gui.rpgw.createPartyMenu.create"), button -> {
-            RpgwMessageManager.INSTANCE.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.CREATE, nameEdit.getValue().isEmpty() ? "No Name" : nameEdit.getValue(), Minecraft.getInstance().player.getUUID(), 0));
+            RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.CREATE, nameEdit.getValue().isEmpty() ? "No Name" : nameEdit.getValue(), Minecraft.getInstance().player.getUUID(), 0));
             Minecraft.getInstance().setScreen(new PartyMenuScreen());
         });
         this.cancelButton = new Button(this.leftPos + 110, this.topPos + 40, 60, 20, new TranslatableComponent("gui.rpgw.createPartyMenu.cancel"), button -> {

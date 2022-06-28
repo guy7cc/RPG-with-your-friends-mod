@@ -4,28 +4,21 @@ import io.github.guy7cc.RpgwMod;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PlayerMpCapabilityProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
-    public static final ResourceLocation PLAYER_MP_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "player_mp");
-    public static final Capability<PlayerMp> PLAYER_MP_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+public class PlayerMiscCapabilityProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
+    public static final ResourceLocation PLAYER_MISC_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "keep_inventory");
+    public static final Capability<PlayerMiscCap> PLAYER_MISC_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    private PlayerMp handler = null;
-    private final LazyOptional<PlayerMp> holder = LazyOptional.of(this::getHandler);
+    private PlayerMiscCap handler = null;
+    private final LazyOptional<PlayerMiscCap> holder = LazyOptional.of(this::getHandler);
 
-    public ServerPlayer player;
-
-    public PlayerMpCapabilityProvider(ServerPlayer player){
-        this.player = player;
-    }
-
-    private PlayerMp getHandler(){
+    private PlayerMiscCap getHandler(){
         if(handler == null){
-            handler = new PlayerMp(this.player, 20);
+            handler = new PlayerMiscCap();
         }
         return handler;
     }
@@ -33,7 +26,7 @@ public class PlayerMpCapabilityProvider implements ICapabilityProvider, ICapabil
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap){
-        if(cap == PLAYER_MP_CAPABILITY) {
+        if(cap == PLAYER_MISC_CAPABILITY) {
             return holder.cast();
         }
         return LazyOptional.empty();
