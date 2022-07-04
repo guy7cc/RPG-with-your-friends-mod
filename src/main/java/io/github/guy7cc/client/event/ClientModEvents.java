@@ -1,7 +1,7 @@
 package io.github.guy7cc.client.event;
 
 import io.github.guy7cc.RpgwMod;
-import io.github.guy7cc.client.RpgwIngameOverlay;
+import io.github.guy7cc.client.overlay.RpgwIngameOverlay;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.OverlayRegistry;

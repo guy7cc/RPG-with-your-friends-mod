@@ -73,7 +73,7 @@ public class PartySelectionList extends ObjectSelectionList<PartySelectionList.P
             Minecraft minecraft = this.screen.getMinecraft();
             ClientPacketListener connection = minecraft.getConnection();
             List<PlayerInfo> list = party.getMemberList().stream().map(uuid -> connection.getPlayerInfo(uuid)).toList();
-            boolean flag = minecraft.isLocalServer() || minecraft.getConnection().getConnection().isEncrypted();
+            boolean flag = minecraft.isLocalServer() || connection.getConnection().isEncrypted();
             if(flag){
                 int pos = pLeft - 1;
                 for(PlayerInfo info : list){
@@ -82,7 +82,6 @@ public class PartySelectionList extends ObjectSelectionList<PartySelectionList.P
                     RenderSystem.setShaderTexture(0, info.getSkinLocation());
                     GuiComponent.blit(pPoseStack, pos, pTop + 16, 8, 8, 8.0F, 8, 8, 8, 64, 64);
                     GuiComponent.blit(pPoseStack, pos, pTop + 16, 8, 8, 40.0F, 8, 8, 8, 64, 64);
-
                 }
             }
             else{
@@ -92,7 +91,6 @@ public class PartySelectionList extends ObjectSelectionList<PartySelectionList.P
                     minecraft.font.draw(pPoseStack, info.getProfile().getName(), pos, pTop + 16, 16777215);
                     pos += minecraft.font.width(info.getProfile().getName()) + 3;
                 }
-
             }
         }
 

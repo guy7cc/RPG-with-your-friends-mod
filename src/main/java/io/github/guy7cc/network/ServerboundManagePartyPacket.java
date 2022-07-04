@@ -73,7 +73,7 @@ public class ServerboundManagePartyPacket {
                 case CREATE:
                     if(PartyList.getInstance().canCreateParty(sender.getUUID())){
                         PartyList.getInstance().createParty(this.name, this.uuid);
-                        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundManagePartyPacket(PartyList.getInstance()));
+                        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundSyncPartyListPacket(PartyList.getInstance()));
                     } else {
                         sender.displayClientMessage(new TranslatableComponent("gui.rpgw.createPartyMenu.cannotCreate"), false);
                     }
@@ -81,7 +81,7 @@ public class ServerboundManagePartyPacket {
                 case CHANGE_LEADER:
                     if(PartyList.getInstance().canChangeLeader(this.uuid)){
                         PartyList.getInstance().changeLeader(this.uuid);
-                        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundManagePartyPacket(PartyList.getInstance()));
+                        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundSyncPartyListPacket(PartyList.getInstance()));
                     } else {
                         sender.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.cannotChangeLeader"), false);
                     }
@@ -89,13 +89,13 @@ public class ServerboundManagePartyPacket {
                 case LEAVE:
                     if(PartyList.getInstance().canLeaveParty(sender.getUUID())){
                         PartyList.getInstance().leaveParty(this.uuid);
-                        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundManagePartyPacket(PartyList.getInstance()));
+                        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundSyncPartyListPacket(PartyList.getInstance()));
                     } else {
                         sender.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.cannotLeave"), false);
                     }
                     break;
                 case REQUEST_INFO:
-                    RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundManagePartyPacket(PartyList.getInstance()));
+                    RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundSyncPartyListPacket(PartyList.getInstance()));
                     break;
             }
             ctx.get().setPacketHandled(true);

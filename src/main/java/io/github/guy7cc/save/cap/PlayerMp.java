@@ -2,12 +2,16 @@ package io.github.guy7cc.save.cap;
 
 import io.github.guy7cc.network.ClientboundSyncPlayerMpPacket;
 import io.github.guy7cc.network.RpgwMessageManager;
-import io.github.guy7cc.syncdata.PlayerMpManager;
+import io.github.guy7cc.rpg.Party;
+import io.github.guy7cc.rpg.PartyList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
+
+import java.util.UUID;
 
 public class PlayerMp implements INBTSerializable<CompoundTag> {
     protected float mp;
@@ -22,7 +26,8 @@ public class PlayerMp implements INBTSerializable<CompoundTag> {
 
     public void setMp(float mp) {
         this.mp = Math.max(0, Math.min(max, mp));
-        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(mp, ClientboundSyncPlayerMpPacket.Type.VALUE));
+        syncMpToClient();
+        syncMpToParty();
     }
 
     public void addMp(float mp) { setMp(this.mp + mp); }
@@ -32,10 +37,44 @@ public class PlayerMp implements INBTSerializable<CompoundTag> {
     public void setMaxMp(float maxMp) {
         this.max = Math.max(maxMp, 0f);
         this.mp = Math.min(maxMp, this.mp);
-        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(maxMp, ClientboundSyncPlayerMpPacket.Type.MAX));
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(maxMp, ClientboundSyncPlayerMpPacket.Type.MAX, player.getUUID()));
     }
 
     public float getMaxMp() { return this.max; }
+
+    public void syncMpToClient(){
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(mp, ClientboundSyncPlayerMpPacket.Type.VALUE, player.getUUID()));
+    }
+
+    public void syncMpToParty(){
+        Party party = PartyList.getInstance().getParty(player.getUUID());
+        if(party != null){
+            MinecraftServer server = player.getServer();
+            for(UUID uuid : party.getMemberList()){
+                ServerPlayer member = server.getPlayerList().getPlayer(uuid);
+                if(member != null && !uuid.equals(player.getUUID())){
+                    RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> member), new ClientboundSyncPlayerMpPacket(mp, ClientboundSyncPlayerMpPacket.Type.VALUE, player.getUUID()));
+                }
+            }
+        }
+    }
+
+    public void syncMaxMpToClient(){
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMpPacket(max, ClientboundSyncPlayerMpPacket.Type.MAX, player.getUUID()));
+    }
+
+    public void syncMaxMpToParty(){
+        Party party = PartyList.getInstance().getParty(player.getUUID());
+        if(party != null){
+            MinecraftServer server = player.getServer();
+            for(UUID uuid : party.getMemberList()){
+                ServerPlayer member = server.getPlayerList().getPlayer(uuid);
+                if(member != null && !uuid.equals(player.getUUID())){
+                    RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> member), new ClientboundSyncPlayerMpPacket(max, ClientboundSyncPlayerMpPacket.Type.MAX, player.getUUID()));
+                }
+            }
+        }
+    }
 
     @Override
     public CompoundTag serializeNBT() {

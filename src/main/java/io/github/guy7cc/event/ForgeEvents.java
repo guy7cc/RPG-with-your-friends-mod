@@ -5,25 +5,21 @@ import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.command.JoinRequestCommand;
 import io.github.guy7cc.command.RpgwDebugCommand;
 import io.github.guy7cc.rpg.PartyList;
-import io.github.guy7cc.save.cap.PlayerMiscCap;
 import io.github.guy7cc.save.cap.PlayerMiscCapabilityProvider;
 import io.github.guy7cc.save.cap.PlayerMpCapabilityProvider;
 import io.github.guy7cc.syncdata.DataSyncManager;
 import io.github.guy7cc.syncdata.PlayerMpManager;
-import io.github.guy7cc.util.KeepInventoryManager;
+import io.github.guy7cc.save.cap.KeepInventoryManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -79,6 +75,9 @@ public class ForgeEvents {
 
         //party list
         PartyList.getInstance().forceLeaveParty(player.getUUID());
+
+        //sync data
+        DataSyncManager.manageLogOut(player);
 
         //keepInventory
         KeepInventoryManager.removePlayerIfPresent(player);

@@ -7,4 +7,7 @@ public class DataSyncManager {
         PlayerMpManager.syncMpToClient(player);
         PlayerMpManager.syncMaxMpToClient(player);
     }
+    public static void manageLogOut(ServerPlayer player){
+        PartyManager.clientParty = null;
+    }
 }
