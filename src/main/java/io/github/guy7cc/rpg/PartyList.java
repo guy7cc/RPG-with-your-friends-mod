@@ -14,13 +14,19 @@ public class PartyList {
     private List<Party> partyList = new ArrayList<>();
     private static int id = 0;
 
+    public final boolean isClientSide;
+
     //server-side constructor
     private PartyList(MinecraftServer server){
         this.server = server;
+        this.isClientSide = false;
     }
 
     //client-side constructor
-    private PartyList(List<Party> partyList){ this.partyList = partyList; }
+    private PartyList(List<Party> partyList) {
+        this.partyList = partyList;
+        this.isClientSide = true;
+    }
 
     public static void init(MinecraftServer server){
         if(!initedOnce){

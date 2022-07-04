@@ -15,6 +15,7 @@
   "gui.rpgw.partyMenu.cannotChangeLeader": "あなたはリーダーではありません。",
   "gui.rpgw.partyMenu.leave": "脱退",
   "gui.rpgw.partyMenu.cannotLeave": "今はパーティを抜けることができません。",
+  "gui.rpgw.partyMenu.someoneLeave": "%sがパーティを脱退しました。",
 
   "commands.rpgw.jreqAccepted": "参加リクエストは受理されました。",
   "commands.rpgw.jreqDenied": "参加リクエストは却下されました。",

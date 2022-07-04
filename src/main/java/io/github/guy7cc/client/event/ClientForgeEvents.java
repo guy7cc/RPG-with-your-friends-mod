@@ -1,7 +1,7 @@
 package io.github.guy7cc.client.event;
 
 import io.github.guy7cc.RpgwMod;
-import io.github.guy7cc.client.RpgwIngameOverlay;
+import io.github.guy7cc.client.overlay.RpgwIngameOverlay;
 import io.github.guy7cc.client.screen.party.PartyMenuScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;

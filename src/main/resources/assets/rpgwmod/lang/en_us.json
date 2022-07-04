@@ -15,6 +15,7 @@
   "gui.rpgw.partyMenu.cannotChangeLeader": "You are not a leader.",
   "gui.rpgw.partyMenu.leave": "Leave",
   "gui.rpgw.partyMenu.cannotLeave": "You cannot leave the party now.",
+  "gui.rpgw.partyMenu.someoneLeave": "%s left the party.",
 
   "commands.rpgw.jreqAccepted": "The join request has been accepted.",
   "commands.rpgw.jreqDenied": "The join request has been denied.",

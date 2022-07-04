@@ -11,10 +11,10 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ClientboundManagePartyPacket {
+public class ClientboundSyncPartyListPacket {
     public CompoundTag partyListTag;
 
-    public ClientboundManagePartyPacket(PartyList list){
+    public ClientboundSyncPartyListPacket(PartyList list){
         partyListTag = list.serializeNBT();
     }
 
@@ -22,7 +22,7 @@ public class ClientboundManagePartyPacket {
         buf.writeNbt(partyListTag);
     }
 
-    public ClientboundManagePartyPacket(FriendlyByteBuf buf){
+    public ClientboundSyncPartyListPacket(FriendlyByteBuf buf){
         this.partyListTag = buf.readNbt();
     }
 

@@ -1,11 +1,16 @@
 package io.github.guy7cc.rpg;
 
+import io.github.guy7cc.network.ClientboundSyncPartyPacket;
+import io.github.guy7cc.network.RpgwMessageManager;
+import io.github.guy7cc.syncdata.PlayerMpManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
 
@@ -15,8 +20,9 @@ public class Party {
     private int id;
     private List<UUID> memberList = new ArrayList<>();
     private Set<UUID> bindList = new HashSet<>();
-    //if the party was created on server, this value is not null
     private MinecraftServer server;
+
+    public final boolean isClientSide;
 
     //server-side constructor
     public Party(String name, ServerPlayer leader, int id) {
@@ -24,6 +30,8 @@ public class Party {
         this.id = id;
         this.memberList.add(leader.getUUID());
         this.server = leader.getServer();
+        this.isClientSide = false;
+        onChange();
     }
 
     //client-side constructor
@@ -32,6 +40,7 @@ public class Party {
         this.id = id;
         this.memberList.addAll(memberList);
         this.bindList.addAll(bindList);
+        this.isClientSide = true;
     }
 
     public String getName() {
@@ -51,21 +60,54 @@ public class Party {
     }
 
     public void addMember(UUID member) {
-        if (!memberList.contains(member)) memberList.add(member);
+        if (!memberList.contains(member)) {
+            memberList.add(member);
+            onChange();
+        }
     }
 
     public boolean removeMember(UUID member) {
         if (bindList.contains(member)) {
             return false;
         } else {
-            broadcastMessage(null);
+            if(!isClientSide){
+                ServerPlayer player = server.getPlayerList().getPlayer(member);
+                broadcastMessage(new TranslatableComponent(  "gui.rpgw.partyMenu.someoneLeave", player.getName()));
+            }
+            onRemoved(member);
             memberList.remove(member);
+            onChange();
             return true;
         }
     }
+
     public void forceRemoveMember(UUID member){
-        broadcastMessage(null);
+        if(!isClientSide){
+            ServerPlayer player = server.getPlayerList().getPlayer(member);
+            broadcastMessage(new TranslatableComponent(  "gui.rpgw.partyMenu.someoneLeave", player.getName()));
+        }
+        onRemoved(member);
         memberList.remove(member);
+        onChange();
+    }
+
+    public void onChange(){
+        if(isClientSide) return;
+        for(UUID uuid : memberList){
+            ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+            if(player != null){
+                syncPartyToMember(player);
+                PlayerMpManager.syncMpToParty(player);
+            }
+        }
+    }
+
+    public void onRemoved(UUID uuid){
+        if(isClientSide) return;
+        ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+        if(player != null) {
+            RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPartyPacket((Party) null));
+        }
     }
 
     public void bindAll() {
@@ -90,12 +132,16 @@ public class Party {
     }
 
     public void broadcastMessage(Component component) {
-        if(this.server == null) return;
+        if(isClientSide) return;
         PlayerList playerList = this.server.getPlayerList();
         for (UUID memberUUID : memberList) {
             ServerPlayer player = playerList.getPlayer(memberUUID);
             if (player != null) player.displayClientMessage(component, false);
         }
+    }
+
+    public void syncPartyToMember(ServerPlayer player){
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPartyPacket(this));
     }
 
     public CompoundTag serializeNBT() {

@@ -1,4 +1,4 @@
-package io.github.guy7cc.util;
+package io.github.guy7cc.save.cap;
 
 import io.github.guy7cc.save.cap.PlayerMiscCap;
 import io.github.guy7cc.save.cap.PlayerMiscCapabilityProvider;
