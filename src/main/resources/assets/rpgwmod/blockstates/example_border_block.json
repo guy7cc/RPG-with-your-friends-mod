@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "rpgwmod:block/example_border_block" }
+  }
+}

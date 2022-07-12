@@ -4,19 +4,23 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.command.JoinRequestCommand;
 import io.github.guy7cc.command.RpgwDebugCommand;
+import io.github.guy7cc.rpg.Border;
 import io.github.guy7cc.rpg.PartyList;
 import io.github.guy7cc.save.cap.PlayerMiscCapabilityProvider;
 import io.github.guy7cc.save.cap.PlayerMpCapabilityProvider;
-import io.github.guy7cc.syncdata.DataSyncManager;
+import io.github.guy7cc.syncdata.BorderManager;
 import io.github.guy7cc.syncdata.PlayerMpManager;
 import io.github.guy7cc.save.cap.KeepInventoryManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -36,6 +40,13 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
+    public static void onEntityTravelToDimension(EntityTravelToDimensionEvent event){
+        if(event.getEntity() instanceof ServerPlayer player){
+            BorderManager.clearList(player);
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event){
         event.getOriginal().reviveCaps();
         event.getOriginal().getCapability(PlayerMiscCapabilityProvider.PLAYER_MISC_CAPABILITY).ifPresent(oldCap -> {
@@ -44,6 +55,35 @@ public class ForgeEvents {
             });
         });
         event.getOriginal().invalidateCaps();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event){
+        if(event.phase == TickEvent.Phase.END){
+            Player player = event.player;
+            if(player.level.isClientSide) {
+                Border border = BorderManager.clientBorder;
+                if(border != null){
+                    player.setPos(
+                            Math.max(border.minX + 0.3D, Math.min(border.maxX - 0.3D, player.getX())),
+                            player.getY(),
+                            Math.max(border.minZ + 0.3D, Math.min(border.maxZ - 0.3D, player.getZ())));
+                }
+            } else {
+                ServerPlayer serverPlayer = (ServerPlayer) player;
+                Border border = BorderManager.getCurrentBorder(serverPlayer);
+                if(border != null && border.outsideEnough(serverPlayer.position())){
+                    double x = serverPlayer.getX();
+                    double z = serverPlayer.getZ();
+                    if(x <= border.minX - 1) x = border.minX + 0.3D;
+                    else if(x >= border.maxX + 1) x = border.maxX - 0.3D;
+                    if(z <= border.minZ - 1) z = border.minZ + 0.3D;
+                    else if(z >= border.maxZ + 1) z = border.maxZ - 0.3D;
+                    serverPlayer.teleportTo(x, serverPlayer.getY(), z);
+                }
+
+            }
+        }
     }
 
     @SubscribeEvent
@@ -62,8 +102,9 @@ public class ForgeEvents {
         //party list
         PartyList.init(((ServerLevel) level).getServer());
 
-        //sync data
-        DataSyncManager.syncLogIn(player);
+        //mp
+        PlayerMpManager.syncMpToClient(player);
+        PlayerMpManager.syncMaxMpToClient(player);
 
         //keepInventory
         KeepInventoryManager.addOrModifyPlayer(player, false);
@@ -76,11 +117,11 @@ public class ForgeEvents {
         //party list
         PartyList.getInstance().forceLeaveParty(player.getUUID());
 
-        //sync data
-        DataSyncManager.manageLogOut(player);
-
         //keepInventory
         KeepInventoryManager.removePlayerIfPresent(player);
+
+        //border
+        BorderManager.clearList(player);
     }
 
     @SubscribeEvent
@@ -88,6 +129,16 @@ public class ForgeEvents {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         JoinRequestCommand.register(dispatcher);
         RpgwDebugCommand.register(dispatcher);
+    }
+
+    @SubscribeEvent
+    public static void onEntityTeleport(EntityTeleportEvent.TeleportCommand event){
+        if(event.getEntity() instanceof Player){
+            ServerPlayer player = (ServerPlayer) event.getEntity();
+            BorderManager.removeIfOutside(player, event.getTarget());
+            BorderManager.onChange(player);
+        }
+
     }
 
     @SubscribeEvent

@@ -1,4 +1,7 @@
 {
+  "itemGroup.rpgwmod": "RPG with your friends Mod",
+  "item.rpgwmod.border_wrench": "Wrench (Border)",
+
   "gui.rpgw.partyMenu": "Party Menu",
   "gui.rpgw.partyMenu.currentParty": "Current Party",
   "gui.rpgw.partyMenu.noCurrentParty": "None",

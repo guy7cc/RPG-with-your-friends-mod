@@ -1,8 +1,13 @@
 package io.github.guy7cc;
 
 import com.mojang.logging.LogUtils;
+import io.github.guy7cc.block.RpgwBlocks;
+import io.github.guy7cc.block.entity.RpgwBlockEntities;
+import io.github.guy7cc.item.RpgwItems;
 import io.github.guy7cc.network.RpgwMessageManager;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,5 +21,11 @@ public class RpgwMod
     public RpgwMod()
     {
         RpgwMessageManager.registerMessages("main");
+
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        RpgwBlocks.BLOCKS.register(bus);
+        RpgwItems.ITEMS.register(bus);
+        RpgwBlockEntities.BLOCK_ENTITIES.register(bus);
     }
 }
