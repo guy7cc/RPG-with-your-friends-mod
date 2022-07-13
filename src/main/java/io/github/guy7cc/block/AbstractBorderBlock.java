@@ -1,10 +1,15 @@
 package io.github.guy7cc.block;
 
 import io.github.guy7cc.block.entity.AbstractBorderBlockEntity;
+import io.github.guy7cc.client.screen.BorderBlockEditScreen;
 import io.github.guy7cc.item.RpgwItems;
+import io.github.guy7cc.network.ClientboundSyncBorderPacket;
+import io.github.guy7cc.network.RpgwMessageManager;
 import io.github.guy7cc.syncdata.BorderManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +18,7 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.PacketDistributor;
 
 public abstract class AbstractBorderBlock extends BaseEntityBlock {
 
@@ -25,7 +31,9 @@ public abstract class AbstractBorderBlock extends BaseEntityBlock {
         BlockEntity entity = pLevel.getBlockEntity(pPos);
         if(pPlayer.getItemInHand(pHand).getItem() == RpgwItems.BORDER_WRENCH.get() && entity instanceof AbstractBorderBlockEntity borderBE){
             if(pLevel.isClientSide){
-                //open screen
+                Minecraft.getInstance().setScreen(new BorderBlockEditScreen(this.getName(), borderBE));
+            } else {
+                RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) pPlayer), new ClientboundSyncBorderPacket(borderBE.border, true));
             }
             return InteractionResult.sidedSuccess(pLevel.isClientSide);
         }

@@ -61,6 +61,11 @@ public class CreatePartyScreen extends Screen {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
 
+    @Override
+    public void tick() {
+        this.nameEdit.tick();
+    }
+
     private void renderBg(PoseStack pPoseStack){
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

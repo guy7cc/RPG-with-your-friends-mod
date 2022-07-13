@@ -3,11 +3,17 @@ package io.github.guy7cc.rpg;
 import net.minecraft.world.phys.Vec3;
 
 public class Border {
+    private static int borderIdCount = 0;
+
     public int id;
     public double minX;
     public double maxX;
     public double minZ;
     public double maxZ;
+
+    public Border(double minX, double maxX, double minZ, double maxZ){
+        this(borderIdCount++, minX, maxX, minZ, maxZ);
+    }
 
     public Border(int id, double minX, double maxX, double minZ, double maxZ) {
         this.id = id;

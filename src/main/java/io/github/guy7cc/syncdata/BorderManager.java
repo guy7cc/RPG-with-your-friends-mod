@@ -60,7 +60,7 @@ public class BorderManager {
     }
 
     public static void syncBorder(ServerPlayer player, Border border){
-        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncBorderPacket(border));
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncBorderPacket(border, false));
     }
 
     public static void clearList(ServerPlayer player){

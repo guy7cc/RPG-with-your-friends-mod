@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class AbstractBorderBlockEntity extends BlockEntity {
-    private static int borderIdCount = 0;
+
 
     public Border border;
 
@@ -23,7 +23,7 @@ public abstract class AbstractBorderBlockEntity extends BlockEntity {
 
     public AbstractBorderBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState, double minX, double maxX, double minZ, double maxZ){
         super(pType, pWorldPosition, pBlockState);
-        this.border = new Border(borderIdCount++, minX, maxX, minZ, maxZ);
+        this.border = new Border(minX, maxX, minZ, maxZ);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, AbstractBorderBlockEntity blockEntity){
