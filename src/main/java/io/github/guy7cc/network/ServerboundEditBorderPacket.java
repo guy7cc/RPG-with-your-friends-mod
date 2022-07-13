@@ -48,6 +48,7 @@ public class ServerboundEditBorderPacket {
                 if(level.getBlockEntity(this.pos) instanceof AbstractBorderBlockEntity borderBE){
                     BorderManager.remove(level.getServer(), borderBE.border.id);
                     borderBE.border = this.border;
+                    borderBE.setChanged();
                     ctx.get().setPacketHandled(true);
                 }
             }
