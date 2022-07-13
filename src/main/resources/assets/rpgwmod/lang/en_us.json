@@ -1,4 +1,9 @@
 {
+  "block.rpgwmod.example_border_block": "Example Border Block",
+
+  "itemGroup.rpgwmod": "RPG with your friends Mod",
+  "item.rpgwmod.border_wrench": "Wrench (Border)",
+
   "gui.rpgw.partyMenu": "Party Menu",
   "gui.rpgw.partyMenu.currentParty": "Current Party",
   "gui.rpgw.partyMenu.noCurrentParty": "None",
@@ -16,6 +21,12 @@
   "gui.rpgw.partyMenu.leave": "Leave",
   "gui.rpgw.partyMenu.cannotLeave": "You cannot leave the party now.",
   "gui.rpgw.partyMenu.someoneLeave": "%s left the party.",
+
+  "gui.rpgwmod.borderBlockEdit.negative.x": "Negative X",
+  "gui.rpgwmod.borderBlockEdit.negative.z": "Negative Z",
+  "gui.rpgwmod.borderBlockEdit.positive.x": "Positive X",
+  "gui.rpgwmod.borderBlockEdit.positive.z": "Positive Z",
+  "gui.rpgwmod.borderBlockEdit.invalid": "Cannot save invalid values.",
 
   "commands.rpgw.jreqAccepted": "The join request has been accepted.",
   "commands.rpgw.jreqDenied": "The join request has been denied.",
