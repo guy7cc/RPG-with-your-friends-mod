@@ -50,10 +50,10 @@ public class ServerboundManagePartyPacket {
                     if(PartyList.getInstance().canJoinParty(uuid, id)){
                         Party party = PartyList.getInstance().byId(id);
                         ServerPlayer leader = sender.getServer().getPlayerList().getPlayer(party.getMemberList().get(0));
-                        leader.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.joinRequestCheck", sender.getName()), false);
+                        leader.displayClientMessage(new TranslatableComponent("gui.rpgwmod.partyMenu.joinRequestCheck", sender.getName()), false);
                         leader.displayClientMessage(
                                 new TextComponent("[")
-                                        .append(new TranslatableComponent("gui.rpgw.partyMenu.joinRequestAccept"))
+                                        .append(new TranslatableComponent("gui.rpgwmod.partyMenu.joinRequestAccept"))
                                         .append(new TextComponent("]"))
                                         .withStyle(Style.EMPTY.withColor(0x00ff00).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jreq accept " + this.uuid + " " + this.id)))
                                         .append(
@@ -61,13 +61,13 @@ public class ServerboundManagePartyPacket {
                                         )
                                         .append(
                                                 new TextComponent("[")
-                                                        .append(new TranslatableComponent("gui.rpgw.partyMenu.joinRequestDeny"))
+                                                        .append(new TranslatableComponent("gui.rpgwmod.partyMenu.joinRequestDeny"))
                                                         .append(new TextComponent("]"))
                                                         .withStyle(Style.EMPTY.withColor(0xff0000).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jreq deny " + this.uuid + " " + this.id)))
                                         )
                                 , false);
                     } else {
-                        sender.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.joinRequestFail"), false);
+                        sender.displayClientMessage(new TranslatableComponent("gui.rpgwmod.partyMenu.joinRequestFail"), false);
                     }
                     break;
                 case CREATE:
@@ -75,7 +75,7 @@ public class ServerboundManagePartyPacket {
                         PartyList.getInstance().createParty(this.name, this.uuid);
                         RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundSyncPartyListPacket(PartyList.getInstance()));
                     } else {
-                        sender.displayClientMessage(new TranslatableComponent("gui.rpgw.createPartyMenu.cannotCreate"), false);
+                        sender.displayClientMessage(new TranslatableComponent("gui.rpgwmod.createPartyMenu.cannotCreate"), false);
                     }
                     break;
                 case CHANGE_LEADER:
@@ -83,7 +83,7 @@ public class ServerboundManagePartyPacket {
                         PartyList.getInstance().changeLeader(this.uuid);
                         RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundSyncPartyListPacket(PartyList.getInstance()));
                     } else {
-                        sender.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.cannotChangeLeader"), false);
+                        sender.displayClientMessage(new TranslatableComponent("gui.rpgwmod.partyMenu.cannotChangeLeader"), false);
                     }
                     break;
                 case LEAVE:
@@ -91,7 +91,7 @@ public class ServerboundManagePartyPacket {
                         PartyList.getInstance().leaveParty(this.uuid);
                         RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> sender), new ClientboundSyncPartyListPacket(PartyList.getInstance()));
                     } else {
-                        sender.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.cannotLeave"), false);
+                        sender.displayClientMessage(new TranslatableComponent("gui.rpgwmod.partyMenu.cannotLeave"), false);
                     }
                     break;
                 case REQUEST_INFO:

@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class ExampleBorderBlock extends AbstractBorderBlock{
+public class ExampleBorderBlock extends AbstractBorderBlock {
     public ExampleBorderBlock(Properties properties) {
         super(properties);
     }
@@ -30,6 +30,6 @@ public class ExampleBorderBlock extends AbstractBorderBlock{
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, RpgwBlockEntities.EXAMPLE_BORDER_BLOCK_ENTITY.get(), ExampleBorderBlockEntity::tick);
+        return createTickerHelper(pBlockEntityType, RpgwBlockEntities.EXAMPLE_BORDER.get(), ExampleBorderBlockEntity::tick);
     }
 }

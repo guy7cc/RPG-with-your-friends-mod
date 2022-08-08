@@ -1,7 +1,6 @@
 package io.github.guy7cc.network;
 
-import io.github.guy7cc.block.AbstractBorderBlock;
-import io.github.guy7cc.block.entity.AbstractBorderBlockEntity;
+import io.github.guy7cc.block.entity.IBorderBlockEntity;
 import io.github.guy7cc.rpg.Border;
 import io.github.guy7cc.syncdata.BorderManager;
 import net.minecraft.core.BlockPos;
@@ -45,10 +44,11 @@ public class ServerboundEditBorderPacket {
             ServerPlayer player = ctx.get().getSender();
             if(player != null){
                 ServerLevel level = (ServerLevel) player.level;
-                if(level.getBlockEntity(this.pos) instanceof AbstractBorderBlockEntity borderBE){
-                    BorderManager.remove(level.getServer(), borderBE.border.id);
-                    borderBE.border = this.border;
-                    borderBE.setChanged();
+                BlockEntity entity = level.getBlockEntity(this.pos);
+                if(entity != null && entity instanceof IBorderBlockEntity borderBE){
+                    BorderManager.remove(level.getServer(), borderBE.getBorder().id);
+                    borderBE.setBorder(this.border);
+                    entity.setChanged();
                     ctx.get().setPacketHandled(true);
                 }
             }

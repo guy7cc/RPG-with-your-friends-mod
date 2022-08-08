@@ -72,7 +72,7 @@ public class Party {
         } else {
             if(!isClientSide){
                 ServerPlayer player = server.getPlayerList().getPlayer(member);
-                broadcastMessage(new TranslatableComponent(  "gui.rpgw.partyMenu.someoneLeave", player.getName()));
+                broadcastMessage(new TranslatableComponent(  "gui.rpgwmod.partyMenu.someoneLeave", player.getName()));
             }
             onRemoved(member);
             memberList.remove(member);
@@ -84,7 +84,7 @@ public class Party {
     public void forceRemoveMember(UUID member){
         if(!isClientSide){
             ServerPlayer player = server.getPlayerList().getPlayer(member);
-            broadcastMessage(new TranslatableComponent(  "gui.rpgw.partyMenu.someoneLeave", player.getName()));
+            broadcastMessage(new TranslatableComponent(  "gui.rpgwmod.partyMenu.someoneLeave", player.getName()));
         }
         onRemoved(member);
         memberList.remove(member);

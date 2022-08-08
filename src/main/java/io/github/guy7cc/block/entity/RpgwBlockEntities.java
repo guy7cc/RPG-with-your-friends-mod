@@ -10,6 +10,12 @@ import net.minecraftforge.registries.RegistryObject;
 public class RpgwBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, RpgwMod.MOD_ID);
 
-    public static final RegistryObject<BlockEntityType<ExampleBorderBlockEntity>> EXAMPLE_BORDER_BLOCK_ENTITY = BLOCK_ENTITIES.register("example_border_block_entity",
-            () -> BlockEntityType.Builder.of(ExampleBorderBlockEntity::new, RpgwBlocks.EXAMPLE_BORDER_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<ExampleBorderBlockEntity>> EXAMPLE_BORDER = BLOCK_ENTITIES.register("example_border_block_entity",
+            () -> BlockEntityType.Builder.of(ExampleBorderBlockEntity::new, RpgwBlocks.EXAMPLE_BORDER.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<RpgwSpawnerBlockEntity>> RPGW_SPAWNER = BLOCK_ENTITIES.register("rpgw_spawner_block_entity",
+            () -> BlockEntityType.Builder.of(RpgwSpawnerBlockEntity::new, RpgwBlocks.RPGW_SPAWNER.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<BorderedRpgwSpawnerBlockEntity>> BORDERED_RPGW_SPAWNER = BLOCK_ENTITIES.register("bordered_rpgw_spawner_block_entity",
+            () -> BlockEntityType.Builder.of(BorderedRpgwSpawnerBlockEntity::new, RpgwBlocks.BORDERED_RPGW_SPAWNER.get()).build(null));
 }

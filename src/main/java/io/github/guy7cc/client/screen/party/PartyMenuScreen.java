@@ -49,7 +49,7 @@ public class PartyMenuScreen extends Screen {
     private Component partyName;
 
     public PartyMenuScreen() {
-        super(new TranslatableComponent("gui.rpgw.partyMenu"));
+        super(new TranslatableComponent("gui.rpgwmod.partyMenu"));
     }
 
     @Override
@@ -61,22 +61,22 @@ public class PartyMenuScreen extends Screen {
         this.titleLabelY = topPos + 5;
 
         this.partySelectionList = new PartySelectionList(this, this.minecraft, 218, this.height, 0, this.height, 50);
-        this.joinRequestButton = new Button(this.leftPos + 10, this.topPos + 106, 80, 20, new TranslatableComponent("gui.rpgw.partyMenu.joinRequest"), button -> {
+        this.joinRequestButton = new Button(this.leftPos + 10, this.topPos + 106, 80, 20, new TranslatableComponent("gui.rpgwmod.partyMenu.joinRequest"), button -> {
             PartySelectionList.PartyEntry entry = partySelectionList.getSelected();
             if(entry != null && !entry.getParty().isMember(this.minecraft.player.getUUID())){
                 RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.JOIN_REQUEST, "", this.minecraft.player.getUUID(), entry.getParty().getId()));
             }
             else{
-                this.minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgw.partyMenu.joinRequestFail"), false);
+                this.minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgwmod.partyMenu.joinRequestFail"), false);
             }
         });
-        this.createPartyButton = new Button(this.leftPos + 10, this.topPos + 128, 80, 20, new TranslatableComponent("gui.rpgw.createPartyMenu.create"), button -> {
+        this.createPartyButton = new Button(this.leftPos + 10, this.topPos + 128, 80, 20, new TranslatableComponent("gui.rpgwmod.createPartyMenu.create"), button -> {
             this.minecraft.getInstance().setScreen(new CreatePartyScreen());
         });
-        this.changeLeaderButton = new Button(this.leftPos + 10, this.topPos + 150, 80, 20, new TranslatableComponent("gui.rpgw.partyMenu.changeLeader"), button -> {
+        this.changeLeaderButton = new Button(this.leftPos + 10, this.topPos + 150, 80, 20, new TranslatableComponent("gui.rpgwmod.partyMenu.changeLeader"), button -> {
             RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.CHANGE_LEADER, "", this.minecraft.player.getUUID(), 0));
         });
-        this.leavePartyButton = new Button(this.leftPos + 10, this.topPos + 172, 80, 20, new TranslatableComponent("gui.rpgw.partyMenu.leave"), button -> {
+        this.leavePartyButton = new Button(this.leftPos + 10, this.topPos + 172, 80, 20, new TranslatableComponent("gui.rpgwmod.partyMenu.leave"), button -> {
             RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.LEAVE, "", this.minecraft.player.getUUID(), 0));
         });
         this.refreshButton = new ImageButton(this.leftPos + 40, this.topPos + 194, 20, 20, 0, 0, 20, REFRESH_BUTTON_LOCATION, 32, 64, button -> {
@@ -118,7 +118,7 @@ public class PartyMenuScreen extends Screen {
         pPoseStack.pushPose();
         pPoseStack.translate(0, 0, 100);
         this.font.draw(pPoseStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-        Component currentParty = new TranslatableComponent("gui.rpgw.partyMenu.currentParty").withStyle(Style.EMPTY.withUnderlined(true));
+        Component currentParty = new TranslatableComponent("gui.rpgwmod.partyMenu.currentParty").withStyle(Style.EMPTY.withUnderlined(true));
         this.font.draw(pPoseStack, currentParty, this.leftPos + 50 - this.font.width(currentParty) / 2f, this.topPos + 63, 4210752);
         this.font.draw(pPoseStack, this.partyName, this.leftPos + 50 - this.font.width(this.partyName) / 2f, this.topPos + 75, 4210752);
         pPoseStack.popPose();
@@ -151,11 +151,11 @@ public class PartyMenuScreen extends Screen {
                 this.partyName = new TextComponent(party.getName()).withStyle(Style.EMPTY.withBold(true));
             } else {
                 this.player = this.minecraft.player;
-                this.partyName = new TranslatableComponent("gui.rpgw.partyMenu.noCurrentParty");
+                this.partyName = new TranslatableComponent("gui.rpgwmod.partyMenu.noCurrentParty");
             }
         } else {
             this.player = this.minecraft.player;
-            this.partyName = new TranslatableComponent("gui.rpgw.partyMenu.noCurrentParty");
+            this.partyName = new TranslatableComponent("gui.rpgwmod.partyMenu.noCurrentParty");
         }
     }
 

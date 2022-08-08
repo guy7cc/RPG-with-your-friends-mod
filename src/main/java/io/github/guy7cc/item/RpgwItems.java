@@ -6,6 +6,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -13,9 +14,10 @@ import net.minecraftforge.registries.RegistryObject;
 public class RpgwItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RpgwMod.MOD_ID);
 
-    public static final RegistryObject<Item> EXAMPLE_BORDER_BLOCK_ITEM = ITEMS.register("example_border_block", () -> new BlockItem(RpgwBlocks.EXAMPLE_BORDER_BLOCK.get(), defaultProperties()));
+    //items
+    public static final RegistryObject<Item> BORDER_WRENCH = ITEMS.register("border_wrench", () -> new BorderWrenchItem(defaultProperties()));
 
-    public static final RegistryObject<Item> BORDER_WRENCH = ITEMS.register("border_wrench", () -> new Item(defaultProperties()));
+    public static final RegistryObject<Item> SPAWNER_WRENCH = ITEMS.register("spawner_wrench", () -> new SpawnerWrenchItem(defaultProperties()));
 
     public static CreativeModeTab creativeTab = new CreativeModeTab(RpgwMod.MOD_ID) {
         @Override
@@ -26,5 +28,9 @@ public class RpgwItems {
 
     public static Item.Properties defaultProperties() {
         return new Item.Properties().tab(creativeTab);
+    }
+
+    public static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block){
+        ITEMS.register(name, () -> new BlockItem(block.get(), defaultProperties()));
     }
 }
