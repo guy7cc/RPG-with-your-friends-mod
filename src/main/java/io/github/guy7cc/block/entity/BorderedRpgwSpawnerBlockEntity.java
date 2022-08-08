@@ -7,17 +7,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ExampleBorderBlockEntity extends BlockEntity implements IBorderBlockEntity {
+public class BorderedRpgwSpawnerBlockEntity extends RpgwSpawnerBlockEntity implements IBorderBlockEntity {
     private Border border;
-
     private int tickCount;
 
-    public ExampleBorderBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
-        super(RpgwBlockEntities.EXAMPLE_BORDER.get(), pWorldPosition, pBlockState);
+    public BorderedRpgwSpawnerBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
+        super(RpgwBlockEntities.BORDERED_RPGW_SPAWNER.get(), pWorldPosition, pBlockState);
         this.border = new Border(pWorldPosition.getX() - 3, pWorldPosition.getX() + 4, pWorldPosition.getZ() - 3, pWorldPosition.getZ() + 4);
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, ExampleBorderBlockEntity blockEntity){
+    public static void clientTick(Level level, BlockPos pos, BlockState state, BorderedRpgwSpawnerBlockEntity blockEntity){
+        RpgwSpawnerBlockEntity.clientTick(level, pos, state, blockEntity);
+    }
+
+    public static void serverTick(Level level, BlockPos pos, BlockState state, BorderedRpgwSpawnerBlockEntity blockEntity){
+        RpgwSpawnerBlockEntity.serverTick(level, pos, state, blockEntity);
         blockEntity.tickCount++;
         blockEntity.tickBorder(blockEntity.tickCount, level, pos, state, blockEntity);
     }

@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -64,10 +65,28 @@ public class ForgeEvents {
             if(player.level.isClientSide) {
                 Border border = BorderManager.clientBorder;
                 if(border != null){
-                    player.setPos(
-                            Math.max(border.minX + 0.3D, Math.min(border.maxX - 0.3D, player.getX())),
-                            player.getY(),
-                            Math.max(border.minZ + 0.3D, Math.min(border.maxZ - 0.3D, player.getZ())));
+                    Vec3 pos = player.position();
+                    Vec3 delta = player.getDeltaMovement();
+                    double x = pos.x;
+                    double deltaX = delta.x;
+                    double z = pos.z;
+                    double deltaZ = delta.z;
+                    if(x < border.minX + 0.3D){
+                        x = border.minX + 0.3D;
+                        deltaX = 0;
+                    } else if(x > border.maxX - 0.3D){
+                        x = border.maxX - 0.3D;
+                        deltaX = 0;
+                    }
+                    if(z < border.minZ + 0.3D){
+                        z = border.minZ + 0.3D;
+                        deltaZ = 0;
+                    } else if(z > border.maxZ - 0.3D){
+                        z = border.maxZ - 0.3D;
+                        deltaZ = 0;
+                    }
+                    player.setPos(x, pos.y, z);
+                    player.setDeltaMovement(deltaX, delta.y, deltaZ);
                 }
             } else {
                 ServerPlayer serverPlayer = (ServerPlayer) player;

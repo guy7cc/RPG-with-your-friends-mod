@@ -30,7 +30,7 @@ public class CreatePartyScreen extends Screen {
     private int titleLabelY;
 
     public CreatePartyScreen() {
-        super(new TranslatableComponent("gui.rpgw.createPartyMenu"));
+        super(new TranslatableComponent("gui.rpgwmod.createPartyMenu"));
     }
 
     @Override
@@ -41,11 +41,11 @@ public class CreatePartyScreen extends Screen {
         this.titleLabelY = topPos + 5;
 
         this.nameEdit = new EditBox(this.font, this.leftPos + 18, this.topPos + 18, 164, 20, new TextComponent(""));
-        this.createButton = new Button(this.leftPos + 30, this.topPos + 40, 60, 20, new TranslatableComponent("gui.rpgw.createPartyMenu.create"), button -> {
+        this.createButton = new Button(this.leftPos + 30, this.topPos + 40, 60, 20, new TranslatableComponent("gui.rpgwmod.createPartyMenu.create"), button -> {
             RpgwMessageManager.sendToServer(new ServerboundManagePartyPacket(ServerboundManagePartyPacket.Type.CREATE, nameEdit.getValue().isEmpty() ? "No Name" : nameEdit.getValue(), Minecraft.getInstance().player.getUUID(), 0));
             Minecraft.getInstance().setScreen(new PartyMenuScreen());
         });
-        this.cancelButton = new Button(this.leftPos + 110, this.topPos + 40, 60, 20, new TranslatableComponent("gui.rpgw.createPartyMenu.cancel"), button -> {
+        this.cancelButton = new Button(this.leftPos + 110, this.topPos + 40, 60, 20, new TranslatableComponent("gui.rpgwmod.createPartyMenu.cancel"), button -> {
             Minecraft.getInstance().setScreen(new PartyMenuScreen());
         });
         addRenderableWidget(this.nameEdit);
