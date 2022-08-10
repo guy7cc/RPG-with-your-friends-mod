@@ -66,7 +66,9 @@ public class PartyList {
     public boolean createParty(String name, UUID leaderUUID){
         if(isInParty(leaderUUID)) return false;
         ServerPlayer leader = server.getPlayerList().getPlayer(leaderUUID);
-        partyList.add(new Party(name, leader, id()));
+        if (leader != null) {
+            partyList.add(new Party(name, leader, id()));
+        }
         return true;
     }
 

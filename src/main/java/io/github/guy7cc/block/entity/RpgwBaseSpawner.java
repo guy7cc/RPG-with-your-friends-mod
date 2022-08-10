@@ -30,14 +30,14 @@ public abstract class RpgwBaseSpawner {
         this.renderBoundingBox = new AABB(pos.getX() - 3, pos.getY() - 3, pos.getZ() - 3, pos.getX() + 4, pos.getY() + 4, pos.getZ() + 4);
     }
 
+    public RpgwBaseSpawner(CompoundTag tag){
+        this.spawnArea = Util.loadAABB(tag.getCompound("SpawnArea"));
+        this.playerArea = Util.loadAABB(tag.getCompound("PlayerArea"));
+    }
+
     public abstract void clientTick(Level pLevel, BlockPos pPos);
 
     public abstract void serverTick(ServerLevel pServerLevel, BlockPos pPos);
-
-    public void load(@Nullable Level pLevel, BlockPos pPos, CompoundTag pTag){
-        this.spawnArea = Util.loadAABB(pTag.getCompound("SpawnArea"));
-        this.playerArea = Util.loadAABB(pTag.getCompound("PlayerArea"));
-    }
 
     public CompoundTag save(CompoundTag pTag){
         pTag.put("SpawnArea", Util.saveAABB(this.spawnArea));
@@ -112,6 +112,8 @@ public abstract class RpgwBaseSpawner {
                 Math.max(this.spawnArea.maxZ, aabb.maxZ));
     }
 
+    public abstract Type getType();
+
     public static class Single extends RpgwBaseSpawner{
         private CompoundTag entityToSpawn;
         private int tickCount = 0;
@@ -119,6 +121,16 @@ public abstract class RpgwBaseSpawner {
             super(pos);
             this.entityToSpawn = new CompoundTag();
             this.entityToSpawn.putString("id", "minecraft:pig");
+        }
+
+        public Single(CompoundTag tag){
+            super(tag);
+            if(tag.contains("EntityToSpawn")){
+                this.entityToSpawn = tag.getCompound("EntityToSpawn");
+            } else {
+                this.entityToSpawn = new CompoundTag();
+                this.entityToSpawn.putString("id", "minecraft:pig");
+            }
         }
 
         @Override
@@ -135,20 +147,32 @@ public abstract class RpgwBaseSpawner {
         }
 
         @Override
-        public void load(@Nullable Level pLevel, BlockPos pPos, CompoundTag pTag){
-            if(pTag.contains("EntityToSpawn")){
-                this.entityToSpawn = pTag.getCompound("EntityToSpawn");
-            } else {
-                this.entityToSpawn = new CompoundTag();
-                this.entityToSpawn.putString("id", "minecraft:pig");
-            }
-            super.load(pLevel, pPos, pTag);
-        }
-
-        @Override
         public CompoundTag save(CompoundTag pTag) {
             pTag.put("EntityToSpawn", this.entityToSpawn);
             return super.save(pTag);
+        }
+
+        @Override
+        public Type getType(){
+            return Type.SINGLE;
+        }
+    }
+
+    public enum Type{
+        SINGLE(0);
+
+        private int id;
+        Type(int id){
+            this.id = id;
+        }
+
+        public int getId(){ return this.id; }
+
+        public static Type byId(int id){
+            for(Type type : values()){
+                if(type.id == id) return type;
+            }
+            return null;
         }
     }
 }

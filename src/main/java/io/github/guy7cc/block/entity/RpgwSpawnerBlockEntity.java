@@ -1,6 +1,7 @@
 package io.github.guy7cc.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,5 +37,23 @@ public class RpgwSpawnerBlockEntity extends BlockEntity {
 
     public RpgwBaseSpawner getBaseSpawner() {
         return baseSpawner;
+    }
+
+    @Override
+    public void load(CompoundTag pTag) {
+        super.load(pTag);
+        RpgwBaseSpawner.Type type = RpgwBaseSpawner.Type.byId(pTag.getInt("SpawnerType"));
+        switch(type){
+            case SINGLE:
+                break;
+            default:
+                this.baseSpawner = new RpgwBaseSpawner.Single(this.getBlockPos());
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag pTag) {
+        super.saveAdditional(pTag);
+        this.baseSpawner.save(pTag);
     }
 }
