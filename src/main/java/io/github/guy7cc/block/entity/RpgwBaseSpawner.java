@@ -33,6 +33,14 @@ public abstract class RpgwBaseSpawner {
     public RpgwBaseSpawner(CompoundTag tag){
         this.spawnArea = Util.loadAABB(tag.getCompound("SpawnArea"));
         this.playerArea = Util.loadAABB(tag.getCompound("PlayerArea"));
+        this.renderBoundingBox = new AABB(
+                Math.min(this.spawnArea.minX, this.playerArea.minX),
+                Math.min(this.spawnArea.minY, this.playerArea.minY),
+                Math.min(this.spawnArea.minZ, this.playerArea.minZ),
+                Math.max(this.spawnArea.maxX, this.playerArea.maxX),
+                Math.max(this.spawnArea.maxY, this.playerArea.maxY),
+                Math.max(this.spawnArea.maxZ, this.playerArea.maxZ)
+        );
     }
 
     public abstract void clientTick(Level pLevel, BlockPos pPos);

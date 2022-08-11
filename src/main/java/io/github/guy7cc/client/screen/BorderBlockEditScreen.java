@@ -43,10 +43,10 @@ public class BorderBlockEditScreen extends Screen {
         }
 
         Font font = Minecraft.getInstance().font;
-        this.minXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 43, 150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.x"));
-        this.maxXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 21,  150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.x"));
-        this.minZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 1, 150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.z"));
-        this.maxZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 23, 150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.z"));
+        this.minXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 43, 150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.x"));
+        this.maxXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 21,  150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.x"));
+        this.minZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 1, 150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.z"));
+        this.maxZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 23, 150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.z"));
 
         resetValues();
 
@@ -71,7 +71,7 @@ public class BorderBlockEditScreen extends Screen {
                 minecraft.setScreen(null);
             } else {
                 Minecraft minecraft = Minecraft.getInstance();
-                minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.invalid"), false);
+                minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgwmod.editScreen.invalid"), false);
                 minecraft.setScreen(null);
             }
         });
@@ -95,13 +95,13 @@ public class BorderBlockEditScreen extends Screen {
         Component component;
         component = this.title;
         font.draw(poseStack, component, this.width / 2 - font.width(component) / 2, this.height / 2 - 66, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.x");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.min.x");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 - 36, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.x");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.max.x");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 - 14, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.z");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.min.z");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 + 8, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.z");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.max.z");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 + 31, 0xffffff);
     }
 
