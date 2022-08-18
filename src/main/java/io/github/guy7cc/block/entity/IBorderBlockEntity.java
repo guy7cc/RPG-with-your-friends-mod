@@ -17,9 +17,11 @@ public interface IBorderBlockEntity {
     void setBorder(Border border);
 
     default void loadBorder(CompoundTag pTag) {
-        Border border = new Border();
-        if(pTag.contains("Border")) border.deserializeNBT(pTag.getCompound("Border"));
-        setBorder(border);
+        if(pTag.contains("Border")){
+            Border border = new Border();
+            border.deserializeNBT(pTag.getCompound("Border"));
+            setBorder(border);
+        }
     }
 
     default void saveBorder(CompoundTag pTag) {

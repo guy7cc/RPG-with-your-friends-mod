@@ -31,6 +31,8 @@
   "gui.rpgwmod.editScreen.max.y": "Maximum Y",
   "gui.rpgwmod.editScreen.max.z": "Maximum Z",
   "gui.rpgwmod.editScreen.invalid": "Cannot save invalid values.",
+  "gui.rpgwmod.editScreen.spawnArea": "Spawn",
+  "gui.rpgwmod.editScreen.playerArea": "Player",
 
   "commands.rpgw.jreqAccepted": "The join request has been accepted.",
   "commands.rpgw.jreqDenied": "The join request has been denied.",

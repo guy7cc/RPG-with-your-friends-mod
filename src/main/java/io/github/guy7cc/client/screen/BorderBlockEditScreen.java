@@ -70,7 +70,6 @@ public class BorderBlockEditScreen extends Screen {
                 RpgwMessageManager.sendToServer(new ServerboundEditBorderPacket(border, blockPos));
                 minecraft.setScreen(null);
             } else {
-                Minecraft minecraft = Minecraft.getInstance();
                 minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgwmod.editScreen.invalid"), false);
                 minecraft.setScreen(null);
             }
@@ -127,7 +126,12 @@ public class BorderBlockEditScreen extends Screen {
     }
 
     private boolean validValues(){
-        String[] strArray = new String[]{ minXEdit.getValue(), maxXEdit.getValue(), minZEdit.getValue(), maxZEdit.getValue() };
+        String[] strArray = new String[]{
+                this.minXEdit.getValue(),
+                this.maxXEdit.getValue(),
+                this.minZEdit.getValue(),
+                this.maxZEdit.getValue()
+        };
         Double[] valueArray = new Double[4];
         for(int i = 0; i < 4; i++){
             try{

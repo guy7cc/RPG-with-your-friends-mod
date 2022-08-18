@@ -46,20 +46,33 @@ public class RpgwSpawnerBlockEntity extends BlockEntity {
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        RpgwBaseSpawner.Type type = RpgwBaseSpawner.Type.byId(pTag.getInt("SpawnerType"));
-        switch(type){
-            case SINGLE:
-                this.baseSpawner = new RpgwBaseSpawner.Single(pTag);
-                break;
-            default:
-                this.baseSpawner = new RpgwBaseSpawner.Single(this.getBlockPos());
+        if(pTag.contains("Spawner")){
+            CompoundTag spawnerTag = pTag.getCompound("Spawner");
+            RpgwBaseSpawner.Type type = RpgwBaseSpawner.Type.byId(spawnerTag.getInt("Type"));
+            switch(type){
+                case SINGLE:
+                    this.baseSpawner = new RpgwBaseSpawner.Single(spawnerTag);
+                    break;
+                default:
+                    this.baseSpawner = new RpgwBaseSpawner.Single(this.getBlockPos());
+            }
+        } else {
+            this.baseSpawner = new RpgwBaseSpawner.Single(this.getBlockPos());
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
-        this.baseSpawner.save(pTag);
+        CompoundTag spawnerTag = new CompoundTag();
+        spawnerTag.putInt("Type", this.baseSpawner.getType().getId());
+        this.baseSpawner.save(spawnerTag);
+        pTag.put("Spawner", spawnerTag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        return this.saveWithoutMetadata();
     }
 
     @Nullable
