@@ -36,8 +36,14 @@ public class RpgwSpawnerBlockEditScreen extends Screen {
     private EditBox maxZPlayerAreaEdit;
 
     private EditBox entityIdBox;
+    private EditBox minDelayEdit;
+    private EditBox maxDelayEdit;
+    private EditBox remainEdit;
+    private EditBox maxAliveEdit;
 
     private Button saveButton;
+
+    private RpgwBaseSpawner.Type mode;
 
     public RpgwSpawnerBlockEditScreen(Component pTitle, RpgwSpawnerBlockEntity blockEntity) {
         super(pTitle);
@@ -47,19 +53,26 @@ public class RpgwSpawnerBlockEditScreen extends Screen {
     @Override
     protected void init() {
         Font font = Minecraft.getInstance().font;
-        this.minXSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 - 65, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.x"));
-        this.minYSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 - 43, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.y"));
-        this.minZSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 - 21, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.z"));
-        this.maxXSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 + 1 , 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.x"));
-        this.maxYSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 + 23, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.y"));
-        this.maxZSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 + 45, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.z"));
-        this.minXPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 - 65, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.x"));
-        this.minYPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 - 43, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.y"));
-        this.minZPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 - 21, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.z"));
-        this.maxXPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 + 1 , 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.x"));
-        this.maxYPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 + 23, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.y"));
-        this.maxZPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 + 45, 60, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.z"));
+        Component message = new TextComponent("");
+        this.minXSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 - 65, 60, 20, message);
+        this.minYSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 - 43, 60, 20, message);
+        this.minZSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 - 21, 60, 20, message);
+        this.maxXSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 + 1 , 60, 20, message);
+        this.maxYSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 + 23, 60, 20, message);
+        this.maxZSpawnAreaEdit = new EditBox(font, this.width / 2 - 105, this.height / 2 + 45, 60, 20, message);
+        this.minXPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 - 65, 60, 20, message);
+        this.minYPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 - 43, 60, 20, message);
+        this.minZPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 - 21, 60, 20, message);
+        this.maxXPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 + 1 , 60, 20, message);
+        this.maxYPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 + 23, 60, 20, message);
+        this.maxZPlayerAreaEdit = new EditBox(font, this.width / 2 - 43, this.height / 2 + 45, 60, 20, message);
+        this.entityIdBox = new EditBox(font, this.width / 2 + 47, this.height / 2 - 65, 90, 20, message);
+        this.minDelayEdit = new EditBox(font, this.width / 2 + 47, this.height / 2 - 21, 30, 20, message);
+        this.maxDelayEdit = new EditBox(font, this.width / 2 + 87, this.height / 2 - 21, 30, 20, message);
 
+        this.entityIdBox.setEditable(false);
+
+        this.setVisible();
         this.resetValues();
 
         Consumer<String> responder = str -> {
@@ -122,19 +135,10 @@ public class RpgwSpawnerBlockEditScreen extends Screen {
         this.addRenderableWidget(this.maxXPlayerAreaEdit);
         this.addRenderableWidget(this.maxYPlayerAreaEdit);
         this.addRenderableWidget(this.maxZPlayerAreaEdit);
+        this.addRenderableWidget(this.entityIdBox);
+        this.addRenderableWidget(this.minDelayEdit);
+        this.addRenderableWidget(this.maxDelayEdit);
         this.addRenderableWidget(this.saveButton);
-
-        RpgwBaseSpawner baseSpawner = blockEntity.getBaseSpawner();
-        switch(baseSpawner.getType()){
-            case SINGLE:
-                this.entityIdBox = new EditBox(font, this.width / 2 + 47, this.height / 2 - 65, 90, 20, new TextComponent(""));
-                this.entityIdBox.setValue(((RpgwBaseSpawner.Single) baseSpawner).getEntityId().getRegistryName().toString());
-                this.entityIdBox.setEditable(false);
-                this.addRenderableWidget(this.entityIdBox);
-                break;
-            default:
-                minecraft.setScreen(null);
-        }
     }
 
     @Override
@@ -165,13 +169,29 @@ public class RpgwSpawnerBlockEditScreen extends Screen {
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 115, this.height / 2 + 30, 0xffffff);
         component = new TranslatableComponent("gui.rpgwmod.editScreen.max.z");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 115, this.height / 2 + 52, 0xffffff);
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.delay");
+        font.draw(poseStack, component, this.width / 2 + 47, this.height / 2 - 36, 0xffffff);
+        component = new TextComponent("..");
+        font.draw(poseStack, component, this.width / 2 + 80, this.height / 2 - 18, 0xffffff);
+    }
 
+    private void setVisible(){
+        RpgwBaseSpawner spawner = this.blockEntity.getBaseSpawner();
+        switch(spawner.getType()){
+            case SINGLE:
+                break;
+            case FROM_TABLE:
+                this.entityIdBox.setVisible(false);
+                break;
+            default:
+                break;
+        }
     }
 
     private void resetValues(){
         RpgwBaseSpawner spawner = this.blockEntity.getBaseSpawner();
         AABB spawnArea = spawner.getSpawnArea();
-        AABB playerArea = spawner.getSpawnArea();
+        AABB playerArea = spawner.getPlayerArea();
         this.minXSpawnAreaEdit.setValue(Double.toString(spawnArea.minX));
         this.minYSpawnAreaEdit.setValue(Double.toString(spawnArea.minY));
         this.minZSpawnAreaEdit.setValue(Double.toString(spawnArea.minZ));
@@ -184,6 +204,14 @@ public class RpgwSpawnerBlockEditScreen extends Screen {
         this.maxXPlayerAreaEdit.setValue(Double.toString(playerArea.maxX));
         this.maxYPlayerAreaEdit.setValue(Double.toString(playerArea.maxY));
         this.maxZPlayerAreaEdit.setValue(Double.toString(playerArea.maxZ));
+
+        switch(spawner.getType()){
+            case SINGLE:
+                this.entityIdBox.setValue(((RpgwBaseSpawner.Single) spawner).getEntityId().getRegistryName().toString());
+                break;
+            default:
+                minecraft.setScreen(null);
+        }
     }
 
     private boolean validValues(){

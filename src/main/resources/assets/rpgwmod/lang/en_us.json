@@ -33,6 +33,7 @@
   "gui.rpgwmod.editScreen.invalid": "Cannot save invalid values.",
   "gui.rpgwmod.editScreen.spawnArea": "Spawn",
   "gui.rpgwmod.editScreen.playerArea": "Player",
+  "gui.rpgwmod.editScreen.delay": "Delay",
 
   "commands.rpgw.jreqAccepted": "The join request has been accepted.",
   "commands.rpgw.jreqDenied": "The join request has been denied.",

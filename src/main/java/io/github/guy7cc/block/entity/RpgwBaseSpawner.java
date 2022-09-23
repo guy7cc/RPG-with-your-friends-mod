@@ -211,7 +211,8 @@ public abstract class RpgwBaseSpawner {
     }
 
     public enum Type{
-        SINGLE(0);
+        SINGLE(0),
+        FROM_TABLE(1);
 
         private int id;
         Type(int id){
