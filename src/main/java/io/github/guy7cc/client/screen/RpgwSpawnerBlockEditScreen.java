@@ -180,7 +180,7 @@ public class RpgwSpawnerBlockEditScreen extends Screen {
         switch(spawner.getType()){
             case SINGLE:
                 break;
-            case FROM_TABLE:
+            case UNIQUE:
                 this.entityIdBox.setVisible(false);
                 break;
             default:

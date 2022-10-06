@@ -1,5 +1,6 @@
 package io.github.guy7cc.block.entity;
 
+import io.github.guy7cc.block.RpgwBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -37,6 +38,9 @@ public class RpgwSpawnerBlockEntity extends BlockEntity {
 
     public static void serverTick(Level pLevel, BlockPos pPos, BlockState pState, RpgwSpawnerBlockEntity pBlockEntity){
         pBlockEntity.baseSpawner.serverTick((ServerLevel) pLevel, pPos);
+        if(pBlockEntity.baseSpawner.isFinished()){
+            pLevel.setBlock(pPos, RpgwBlocks.INACTIVATED_RPGW_SPAWNER.get().defaultBlockState(), 3);
+        }
     }
 
     public RpgwBaseSpawner getBaseSpawner() {

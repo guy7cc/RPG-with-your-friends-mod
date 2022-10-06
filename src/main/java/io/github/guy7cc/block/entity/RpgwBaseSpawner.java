@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Function;
 
 public abstract class RpgwBaseSpawner {
     protected List<Entity> entityList = new ArrayList<>();
@@ -130,6 +131,8 @@ public abstract class RpgwBaseSpawner {
 
     public abstract Type getType();
 
+    public abstract boolean isFinished();
+
     public static class Single extends RpgwBaseSpawner{
         private CompoundTag entityToSpawn;
         private int minDelay = 60;
@@ -170,6 +173,7 @@ public abstract class RpgwBaseSpawner {
 
         @Override
         public void serverTick(ServerLevel pServerLevel, BlockPos pPos) {
+            if(spawnCount <= 0) return;
             delay--;
             if(entityList.size() >= maxAliveEntityCount){
                 if(delay < 0){
@@ -178,6 +182,7 @@ public abstract class RpgwBaseSpawner {
                 }
             } else if(delay < 0 && isNearPlayer(pServerLevel)){
                 Entity entity = summon(pServerLevel, this.entityToSpawn);
+                spawnCount--;
                 if(entity != null) delay();
             }
         }
@@ -197,6 +202,11 @@ public abstract class RpgwBaseSpawner {
             return Type.SINGLE;
         }
 
+        @Override
+        public boolean isFinished(){
+            return spawnCount <= 0;
+        }
+
         public EntityType<?> getEntityId(){
             return EntityType.byString(entityToSpawn.getString("id")).orElse(EntityType.PIG);
         }
@@ -210,9 +220,42 @@ public abstract class RpgwBaseSpawner {
         }
     }
 
+    public static class Unique extends RpgwBaseSpawner{
+        private int tickCount = 0;
+        private boolean isFinished = false;
+
+        public Unique(BlockPos pos) {
+            super(pos);
+        }
+
+        public Unique(CompoundTag tag) {
+            super(tag);
+        }
+
+        @Override
+        public void clientTick(Level pLevel, BlockPos pPos) {
+
+        }
+
+        @Override
+        public void serverTick(ServerLevel pServerLevel, BlockPos pPos) {
+
+        }
+
+        @Override
+        public Type getType() {
+            return Type.UNIQUE;
+        }
+
+        @Override
+        public boolean isFinished() {
+            return isFinished;
+        }
+    }
+
     public enum Type{
         SINGLE(0),
-        FROM_TABLE(1);
+        UNIQUE(1);
 
         private int id;
         Type(int id){

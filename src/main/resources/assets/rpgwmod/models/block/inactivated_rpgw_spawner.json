@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "rpgwmod:block/inactivated_rpgw_spawner"
+  }
+}
