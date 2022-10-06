@@ -27,6 +27,7 @@ public class RpgwMessageManager {
 
         net.registerMessage(id(), ServerboundManagePartyPacket.class, ServerboundManagePartyPacket::toBytes, ServerboundManagePartyPacket::new, ServerboundManagePartyPacket::handle);
         net.registerMessage(id(), ServerboundEditBorderPacket.class, ServerboundEditBorderPacket::toBytes, ServerboundEditBorderPacket::new, ServerboundEditBorderPacket::handle);
+        net.registerMessage(id(), ServerboundEditRpgwSpawnerBlockPacket.class, ServerboundEditRpgwSpawnerBlockPacket::toBytes, ServerboundEditRpgwSpawnerBlockPacket::new, ServerboundEditRpgwSpawnerBlockPacket::handle);
         net.registerMessage(id(), ClientboundSyncPartyListPacket.class, ClientboundSyncPartyListPacket::toBytes, ClientboundSyncPartyListPacket::new, ClientboundSyncPartyListPacket::handle);
         net.registerMessage(id(), ClientboundSyncPartyPacket.class, ClientboundSyncPartyPacket::toBytes, ClientboundSyncPartyPacket::new, ClientboundSyncPartyPacket::handle);
         net.registerMessage(id(), ClientboundSyncPlayerMpPacket.class, ClientboundSyncPlayerMpPacket::toBytes, ClientboundSyncPlayerMpPacket::new, ClientboundSyncPlayerMpPacket::handle);

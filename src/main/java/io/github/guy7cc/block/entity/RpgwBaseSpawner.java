@@ -2,21 +2,23 @@ package io.github.guy7cc.block.entity;
 
 import io.github.guy7cc.util.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.function.Function;
 
 public abstract class RpgwBaseSpawner {
     protected List<Entity> entityList = new ArrayList<>();
@@ -30,14 +32,22 @@ public abstract class RpgwBaseSpawner {
         this.renderBoundingBox = new AABB(pos.getX() - 3, pos.getY() - 3, pos.getZ() - 3, pos.getX() + 4, pos.getY() + 4, pos.getZ() + 4);
     }
 
+    public RpgwBaseSpawner(CompoundTag tag){
+        this.spawnArea = Util.loadAABB(tag.getCompound("SpawnArea"));
+        this.playerArea = Util.loadAABB(tag.getCompound("PlayerArea"));
+        this.renderBoundingBox = new AABB(
+                Math.min(this.spawnArea.minX, this.playerArea.minX),
+                Math.min(this.spawnArea.minY, this.playerArea.minY),
+                Math.min(this.spawnArea.minZ, this.playerArea.minZ),
+                Math.max(this.spawnArea.maxX, this.playerArea.maxX),
+                Math.max(this.spawnArea.maxY, this.playerArea.maxY),
+                Math.max(this.spawnArea.maxZ, this.playerArea.maxZ)
+        );
+    }
+
     public abstract void clientTick(Level pLevel, BlockPos pPos);
 
     public abstract void serverTick(ServerLevel pServerLevel, BlockPos pPos);
-
-    public void load(@Nullable Level pLevel, BlockPos pPos, CompoundTag pTag){
-        this.spawnArea = Util.loadAABB(pTag.getCompound("SpawnArea"));
-        this.playerArea = Util.loadAABB(pTag.getCompound("PlayerArea"));
-    }
 
     public CompoundTag save(CompoundTag pTag){
         pTag.put("SpawnArea", Util.saveAABB(this.spawnArea));
@@ -45,17 +55,18 @@ public abstract class RpgwBaseSpawner {
         return pTag;
     }
 
-    protected boolean isNearPlayer(Level level){
-        for(Player player : level.players()){
-            if(playerArea.contains(player.position())) return true;
+    protected boolean isNearPlayer(ServerLevel level){
+        for(ServerPlayer player : level.players()){
+            GameType gameType = player.gameMode.getGameModeForPlayer();
+            if(gameType != GameType.CREATIVE && gameType != GameType.SPECTATOR && playerArea.contains(player.position())) return true;
         }
         return false;
     }
 
-    protected void summon(ServerLevel level, CompoundTag tag){
+    protected Entity summon(ServerLevel level, CompoundTag tag){
         Optional<EntityType<?>> optional = EntityType.by(tag);
-        if(optional.isEmpty()) return;
-        if (!optional.get().getCategory().isFriendly() && level.getDifficulty() == Difficulty.PEACEFUL) return;
+        if(optional.isEmpty()) return null;
+        if (!optional.get().getCategory().isFriendly() && level.getDifficulty() == Difficulty.PEACEFUL) return null;
         double x = 0;
         double y = 0;
         double z = 0;
@@ -65,7 +76,7 @@ public abstract class RpgwBaseSpawner {
             y = spawnArea.minY + (spawnArea.maxY - spawnArea.minY) * level.random.nextDouble();
             z = spawnArea.minZ + (spawnArea.maxZ - spawnArea.minZ) * level.random.nextDouble();
             if(level.noCollision(optional.get().getAABB(x, y, z))) break;
-            else if(i == maxCount - 1) return;
+            else if(i == maxCount - 1) return null;
         }
         BlockPos pos = new BlockPos(x, y, z);
         double finalX = x;
@@ -75,11 +86,17 @@ public abstract class RpgwBaseSpawner {
             e.moveTo(finalX, finalY, finalZ, e.getYRot(), e.getXRot());
             return e;
         });
-        if(entity == null) return;
+        if(entity == null) return null;
         entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), level.random.nextFloat() * 360.0F, 0.0F);
-        if(!level.tryAddFreshEntityWithPassengers(entity)) return;
+        if(!level.tryAddFreshEntityWithPassengers(entity)) return null;
         level.levelEvent(2004, pos, 0);
         if(entity instanceof Mob) ((Mob)entity).spawnAnim();
+        entityList.add(entity);
+        return entity;
+    }
+
+    protected void removeDeadEntities(){
+        entityList.removeIf(e -> e.isRemoved());
     }
 
     public AABB getSpawnArea() {
@@ -112,13 +129,41 @@ public abstract class RpgwBaseSpawner {
                 Math.max(this.spawnArea.maxZ, aabb.maxZ));
     }
 
+    public abstract Type getType();
+
+    public abstract boolean isFinished();
+
     public static class Single extends RpgwBaseSpawner{
         private CompoundTag entityToSpawn;
-        private int tickCount = 0;
+        private int minDelay = 60;
+        private int maxDelay = 100;
+        private int delay = 40;
+
+        private int spawnCount = 5;
+
+        private int maxAliveEntityCount = 3;
+
+        private Random random = new Random();
+
         public Single(BlockPos pos){
             super(pos);
             this.entityToSpawn = new CompoundTag();
             this.entityToSpawn.putString("id", "minecraft:pig");
+        }
+
+        public Single(CompoundTag tag){
+            super(tag);
+            if(tag.contains("EntityToSpawn")){
+                this.entityToSpawn = tag.getCompound("EntityToSpawn");
+                this.minDelay = tag.getInt("MinDelay");
+                this.maxDelay = tag.getInt("MaxDelay");
+                this.delay();
+                this.spawnCount = tag.getInt("SpawnCount");
+                this.maxAliveEntityCount = tag.getInt("MaxAlive");
+            } else {
+                this.entityToSpawn = new CompoundTag();
+                this.entityToSpawn.putString("id", "minecraft:pig");
+            }
         }
 
         @Override
@@ -128,27 +173,102 @@ public abstract class RpgwBaseSpawner {
 
         @Override
         public void serverTick(ServerLevel pServerLevel, BlockPos pPos) {
-            tickCount++;
-            if(tickCount % 60 == 0 && isNearPlayer(pServerLevel)){
-                summon(pServerLevel, this.entityToSpawn);
+            if(spawnCount <= 0) return;
+            delay--;
+            if(entityList.size() >= maxAliveEntityCount){
+                if(delay < 0){
+                    this.removeDeadEntities();
+                    this.delay();
+                }
+            } else if(delay < 0 && isNearPlayer(pServerLevel)){
+                Entity entity = summon(pServerLevel, this.entityToSpawn);
+                spawnCount--;
+                if(entity != null) delay();
             }
-        }
-
-        @Override
-        public void load(@Nullable Level pLevel, BlockPos pPos, CompoundTag pTag){
-            if(pTag.contains("EntityToSpawn")){
-                this.entityToSpawn = pTag.getCompound("EntityToSpawn");
-            } else {
-                this.entityToSpawn = new CompoundTag();
-                this.entityToSpawn.putString("id", "minecraft:pig");
-            }
-            super.load(pLevel, pPos, pTag);
         }
 
         @Override
         public CompoundTag save(CompoundTag pTag) {
             pTag.put("EntityToSpawn", this.entityToSpawn);
+            pTag.putInt("MinDelay", this.minDelay);
+            pTag.putInt("MaxDelay", this.maxDelay);
+            pTag.putInt("SpawnCount", this.spawnCount);
+            pTag.putInt("MaxAlive", this.maxAliveEntityCount);
             return super.save(pTag);
+        }
+
+        @Override
+        public Type getType(){
+            return Type.SINGLE;
+        }
+
+        @Override
+        public boolean isFinished(){
+            return spawnCount <= 0;
+        }
+
+        public EntityType<?> getEntityId(){
+            return EntityType.byString(entityToSpawn.getString("id")).orElse(EntityType.PIG);
+        }
+
+        public void setEntityId(EntityType<?> type){
+            this.entityToSpawn.putString("id", Registry.ENTITY_TYPE.getKey(type).toString());
+        }
+
+        private void delay(){
+            this.delay = this.minDelay + (int)((this.maxDelay - this.minDelay) * random.nextDouble());
+        }
+    }
+
+    public static class Unique extends RpgwBaseSpawner{
+        private int tickCount = 0;
+        private boolean isFinished = false;
+
+        public Unique(BlockPos pos) {
+            super(pos);
+        }
+
+        public Unique(CompoundTag tag) {
+            super(tag);
+        }
+
+        @Override
+        public void clientTick(Level pLevel, BlockPos pPos) {
+
+        }
+
+        @Override
+        public void serverTick(ServerLevel pServerLevel, BlockPos pPos) {
+
+        }
+
+        @Override
+        public Type getType() {
+            return Type.UNIQUE;
+        }
+
+        @Override
+        public boolean isFinished() {
+            return isFinished;
+        }
+    }
+
+    public enum Type{
+        SINGLE(0),
+        UNIQUE(1);
+
+        private int id;
+        Type(int id){
+            this.id = id;
+        }
+
+        public int getId(){ return this.id; }
+
+        public static Type byId(int id){
+            for(Type type : values()){
+                if(type.id == id) return type;
+            }
+            return null;
         }
     }
 }

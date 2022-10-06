@@ -21,10 +21,10 @@ public class BorderBlockEditScreen extends Screen {
     private BlockEntity be;
     private IBorderBlockEntity asBorder;
 
-    private EditBox negativeXEdit;
-    private EditBox negativeZEdit;
-    private EditBox positiveXEdit;
-    private EditBox positiveZEdit;
+    private EditBox minXEdit;
+    private EditBox maxXEdit;
+    private EditBox minZEdit;
+    private EditBox maxZEdit;
     private Button saveButton;
 
     public BorderBlockEditScreen(Component pTitle, BlockEntity borderBE) {
@@ -43,43 +43,42 @@ public class BorderBlockEditScreen extends Screen {
         }
 
         Font font = Minecraft.getInstance().font;
-        this.negativeXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 43, 150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.x"));
-        this.negativeZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 21, 150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.z"));
-        this.positiveXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 1,  150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.x"));
-        this.positiveZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 23, 150, 20, new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.z"));
+        this.minXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 43, 150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.x"));
+        this.maxXEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 - 21,  150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.x"));
+        this.minZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 1, 150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.min.z"));
+        this.maxZEdit = new EditBox(font, this.width / 2 - 50, this.height / 2 + 23, 150, 20, new TranslatableComponent("gui.rpgwmod.editScreen.max.z"));
 
         resetValues();
 
         Consumer<String> responder = str -> {
             this.saveButton.active = validValues();
         };
-        this.negativeXEdit.setResponder(responder);
-        this.negativeZEdit.setResponder(responder);
-        this.positiveXEdit.setResponder(responder);
-        this.positiveZEdit.setResponder(responder);
+        this.minXEdit.setResponder(responder);
+        this.maxXEdit.setResponder(responder);
+        this.minZEdit.setResponder(responder);
+        this.maxZEdit.setResponder(responder);
 
         this.saveButton = new Button(this.width / 2 - 50, this.height / 2 + 55, 100, 20, new TranslatableComponent("structure_block.mode.save"), button -> {
             if(validValues()){
-                double negativeX = Double.parseDouble(this.negativeXEdit.getValue());
-                double positiveX = Double.parseDouble(this.positiveXEdit.getValue());
-                double negativeZ = Double.parseDouble(this.negativeZEdit.getValue());
-                double positiveZ = Double.parseDouble(this.positiveZEdit.getValue());
+                double negativeX = Double.parseDouble(this.minXEdit.getValue());
+                double negativeZ = Double.parseDouble(this.minZEdit.getValue());
+                double positiveX = Double.parseDouble(this.maxXEdit.getValue());
+                double positiveZ = Double.parseDouble(this.maxZEdit.getValue());
                 BlockPos blockPos = be.getBlockPos();
 
-                Border border = new Border(blockPos.getX() - negativeX, blockPos.getX() + positiveX + 1, blockPos.getZ() - negativeZ, blockPos.getZ() + positiveZ + 1);
+                Border border = new Border(negativeX, positiveX, negativeZ, positiveZ);
                 RpgwMessageManager.sendToServer(new ServerboundEditBorderPacket(border, blockPos));
                 minecraft.setScreen(null);
             } else {
-                Minecraft minecraft = Minecraft.getInstance();
-                minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.invalid"), false);
+                minecraft.player.displayClientMessage(new TranslatableComponent("gui.rpgwmod.editScreen.invalid"), false);
                 minecraft.setScreen(null);
             }
         });
 
-        this.addRenderableWidget(this.negativeXEdit);
-        this.addRenderableWidget(this.negativeZEdit);
-        this.addRenderableWidget(this.positiveXEdit);
-        this.addRenderableWidget(this.positiveZEdit);
+        this.addRenderableWidget(this.minXEdit);
+        this.addRenderableWidget(this.maxXEdit);
+        this.addRenderableWidget(this.minZEdit);
+        this.addRenderableWidget(this.maxZEdit);
         this.addRenderableWidget(this.saveButton);
     }
 
@@ -95,22 +94,22 @@ public class BorderBlockEditScreen extends Screen {
         Component component;
         component = this.title;
         font.draw(poseStack, component, this.width / 2 - font.width(component) / 2, this.height / 2 - 66, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.x");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.min.x");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 - 36, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.negative.z");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.max.x");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 - 14, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.x");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.min.z");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 + 8, 0xffffff);
-        component = new TranslatableComponent("gui.rpgwmodmod.borderBlockEdit.positive.z");
+        component = new TranslatableComponent("gui.rpgwmod.editScreen.max.z");
         font.draw(poseStack, component, this.width / 2 - font.width(component) - 60, this.height / 2 + 31, 0xffffff);
     }
 
     @Override
     public void tick() {
-        negativeXEdit.tick();
-        negativeZEdit.tick();
-        positiveXEdit.tick();
-        positiveZEdit.tick();
+        minXEdit.tick();
+        maxXEdit.tick();
+        minZEdit.tick();
+        maxZEdit.tick();
     }
 
     public void setBorder(Border border){
@@ -119,24 +118,28 @@ public class BorderBlockEditScreen extends Screen {
     }
 
     private void resetValues(){
-        BlockPos pos = be.getBlockPos();
         Border border = asBorder.getBorder();
-        this.negativeXEdit.setValue(Double.toString(pos.getX() - border.minX));
-        this.negativeZEdit.setValue(Double.toString(pos.getZ() - border.minZ));
-        this.positiveXEdit.setValue(Double.toString(border.maxX - pos.getX() - 1));
-        this.positiveZEdit.setValue(Double.toString(border.maxZ - pos.getZ() - 1));
+        this.minXEdit.setValue(Double.toString(border.minX));
+        this.maxXEdit.setValue(Double.toString(border.maxX));
+        this.minZEdit.setValue(Double.toString(border.minZ));
+        this.maxZEdit.setValue(Double.toString(border.maxZ));
     }
 
     private boolean validValues(){
-        String[] valueArray = new String[]{ negativeXEdit.getValue(), negativeZEdit.getValue(), positiveXEdit.getValue(), positiveZEdit.getValue() };
-        for(String str : valueArray){
+        String[] strArray = new String[]{
+                this.minXEdit.getValue(),
+                this.maxXEdit.getValue(),
+                this.minZEdit.getValue(),
+                this.maxZEdit.getValue()
+        };
+        Double[] valueArray = new Double[4];
+        for(int i = 0; i < 4; i++){
             try{
-                double value = Double.parseDouble(str);
-                if(value < 0D) return false;
+                valueArray[i] = Double.parseDouble(strArray[i]);
             } catch(NumberFormatException e){
                 return false;
             }
         }
-        return true;
+        return valueArray[0] <= valueArray[1] - 1 && valueArray[2] <= valueArray[3] - 1;
     }
 }
