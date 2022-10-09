@@ -17,7 +17,7 @@ public class PlayerMp implements INBTSerializable<CompoundTag> {
     protected float mp;
     protected float max;
     protected ServerPlayer player;
-    public PlayerMp(ServerPlayer player, float max) { this(player, 0, 20); }
+    public PlayerMp(ServerPlayer player) { this(player, 0, 20); }
     public PlayerMp(ServerPlayer player, float mp, float max) {
         this.mp = mp;
         this.max = max;

@@ -6,11 +6,9 @@ import io.github.guy7cc.command.JoinRequestCommand;
 import io.github.guy7cc.command.RpgwDebugCommand;
 import io.github.guy7cc.rpg.Border;
 import io.github.guy7cc.rpg.PartyList;
-import io.github.guy7cc.save.cap.PlayerMiscCapabilityProvider;
-import io.github.guy7cc.save.cap.PlayerMpCapabilityProvider;
+import io.github.guy7cc.save.cap.*;
 import io.github.guy7cc.syncdata.BorderManager;
 import io.github.guy7cc.syncdata.PlayerMpManager;
-import io.github.guy7cc.save.cap.KeepInventoryManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,9 +31,9 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event){
         if(event.getObject() instanceof ServerPlayer player){
-            if(!event.getObject().getCapability(PlayerMpCapabilityProvider.PLAYER_MP_CAPABILITY).isPresent()){
-                event.addCapability(PlayerMpCapabilityProvider.PLAYER_MP_LOCATION, new PlayerMpCapabilityProvider(player));
-                event.addCapability(PlayerMiscCapabilityProvider.PLAYER_MISC_LOCATION, new PlayerMiscCapabilityProvider());
+            if(!event.getObject().getCapability(PlayerMpProvider.PLAYER_MP_CAPABILITY).isPresent()){
+                event.addCapability(PlayerMpProvider.PLAYER_MP_LOCATION, new PlayerMpProvider(() -> new PlayerMp(player)));
+                event.addCapability(MiscPlayerDataProvider.PLAYER_MISC_LOCATION, new MiscPlayerDataProvider(MiscPlayerData::new));
             }
         }
     }
@@ -50,8 +48,8 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event){
         event.getOriginal().reviveCaps();
-        event.getOriginal().getCapability(PlayerMiscCapabilityProvider.PLAYER_MISC_CAPABILITY).ifPresent(oldCap -> {
-            event.getPlayer().getCapability(PlayerMiscCapabilityProvider.PLAYER_MISC_CAPABILITY).ifPresent(newCap -> {
+        event.getOriginal().getCapability(MiscPlayerDataProvider.PLAYER_MISC_CAPABILITY).ifPresent(oldCap -> {
+            event.getPlayer().getCapability(MiscPlayerDataProvider.PLAYER_MISC_CAPABILITY).ifPresent(newCap -> {
                 newCap.keepInventory = oldCap.keepInventory;
             });
         });
@@ -126,7 +124,7 @@ public class ForgeEvents {
         PlayerMpManager.syncMaxMpToClient(player);
 
         //keepInventory
-        KeepInventoryManager.addOrModifyPlayer(player, false);
+        KeepInventoryManager.addOrModifyPlayer(player, true);
     }
 
     @SubscribeEvent

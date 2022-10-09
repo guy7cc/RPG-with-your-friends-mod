@@ -1,12 +1,9 @@
 package io.github.guy7cc.syncdata;
 
-import io.github.guy7cc.network.ClientboundSyncPlayerMpPacket;
-import io.github.guy7cc.network.RpgwMessageManager;
 import io.github.guy7cc.save.cap.PlayerMp;
-import io.github.guy7cc.save.cap.PlayerMpCapabilityProvider;
+import io.github.guy7cc.save.cap.PlayerMpProvider;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +43,7 @@ public class PlayerMpManager {
 
     //server-side
     public static PlayerMp getPlayerMp(ServerPlayer player){
-        return player.getCapability(PlayerMpCapabilityProvider.PLAYER_MP_CAPABILITY).orElse(null);
+        return player.getCapability(PlayerMpProvider.PLAYER_MP_CAPABILITY).orElse(null);
     }
 
     public static void syncMpToClient(ServerPlayer player){
