@@ -1,16 +1,10 @@
 package io.github.guy7cc.save.cap;
 
-import io.github.guy7cc.save.cap.PlayerMiscCap;
-import io.github.guy7cc.save.cap.PlayerMiscCapabilityProvider;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class KeepInventoryManager {
     private static Map<UUID, Boolean> keepInventoryMap = new HashMap<>();
@@ -28,7 +22,7 @@ public class KeepInventoryManager {
     }
 
     public static void collectItems(ServerPlayer player){
-        PlayerMiscCap cap = player.getCapability(PlayerMiscCapabilityProvider.PLAYER_MISC_CAPABILITY).orElse(null);
+        PlayerMiscData cap = player.getCapability(PlayerMiscDataProvider.PLAYER_MISC_CAPABILITY).orElse(null);
         if(cap != null){
             Inventory inv = player.getInventory();
             cap.keepInventory = new ArrayList<>();
@@ -39,7 +33,7 @@ public class KeepInventoryManager {
     }
 
     public static void restoreInventory(ServerPlayer player){
-        PlayerMiscCap cap = player.getCapability(PlayerMiscCapabilityProvider.PLAYER_MISC_CAPABILITY).orElse(null);
+        PlayerMiscData cap = player.getCapability(PlayerMiscDataProvider.PLAYER_MISC_CAPABILITY).orElse(null);
         if(cap != null){
             Inventory inv = player.getInventory();
             for(int i = 0; i < 36 && i < cap.keepInventory.size(); i++){

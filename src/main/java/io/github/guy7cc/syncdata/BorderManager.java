@@ -14,7 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
@@ -186,5 +188,47 @@ public class BorderManager {
         }
     }
 
-
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event){
+        if(event.phase != TickEvent.Phase.END) return;
+        Player player = event.player;
+        if(player.level.isClientSide) {
+            Border border = BorderManager.clientBorder;
+            if(border != null){
+                Vec3 pos = player.position();
+                Vec3 delta = player.getDeltaMovement();
+                double x = pos.x;
+                double deltaX = delta.x;
+                double z = pos.z;
+                double deltaZ = delta.z;
+                if(x < border.minX + 0.3D){
+                    x = border.minX + 0.3D;
+                    deltaX = 0;
+                } else if(x > border.maxX - 0.3D){
+                    x = border.maxX - 0.3D;
+                    deltaX = 0;
+                }
+                if(z < border.minZ + 0.3D){
+                    z = border.minZ + 0.3D;
+                    deltaZ = 0;
+                } else if(z > border.maxZ - 0.3D){
+                    z = border.maxZ - 0.3D;
+                    deltaZ = 0;
+                }
+                player.setPos(x, pos.y, z);
+                player.setDeltaMovement(deltaX, delta.y, deltaZ);
+            }
+        } else {
+            ServerPlayer serverPlayer = (ServerPlayer) player;
+            Border border = BorderManager.getCurrentBorder(serverPlayer);
+            if(border != null && border.outsideEnough(serverPlayer.position())){
+                double x = serverPlayer.getX();
+                double z = serverPlayer.getZ();
+                if(x <= border.minX - 1) x = border.minX + 0.3D;
+                else if(x >= border.maxX + 1) x = border.maxX - 0.3D;
+                if(z <= border.minZ - 1) z = border.minZ + 0.3D;
+                else if(z >= border.maxZ + 1) z = border.maxZ - 0.3D;
+                serverPlayer.teleportTo(x, serverPlayer.getY(), z);
+            }
+        }
+    }
 }

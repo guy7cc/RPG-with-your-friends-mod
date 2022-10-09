@@ -3,16 +3,15 @@ package io.github.guy7cc.save.cap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PlayerMiscCap implements INBTSerializable<CompoundTag> {
+public class PlayerMiscData implements INBTSerializable<CompoundTag> {
     public List<ItemStack> keepInventory = new ArrayList<>();
 
-    public PlayerMiscCap() {}
+    public PlayerMiscData() {}
 
     @Override
     public CompoundTag serializeNBT() {
