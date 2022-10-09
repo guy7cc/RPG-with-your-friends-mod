@@ -3,7 +3,6 @@ package io.github.guy7cc.rpg;
 import io.github.guy7cc.network.ClientboundSyncPartyPacket;
 import io.github.guy7cc.network.RpgwMessageManager;
 import io.github.guy7cc.syncdata.PlayerMpManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -97,7 +96,7 @@ public class Party {
             ServerPlayer player = server.getPlayerList().getPlayer(uuid);
             if(player != null){
                 syncPartyToMember(player);
-                PlayerMpManager.syncMpToParty(player);
+                PlayerMpManager.syncToParty(player);
             }
         }
     }

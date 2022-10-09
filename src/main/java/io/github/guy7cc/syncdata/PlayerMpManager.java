@@ -14,8 +14,8 @@ public class PlayerMpManager {
 
     public static final float DEFAULT_MAX_MP = 20f;
 
-    public float mp;
-    public float maxMp;
+    private float mp;
+    private float maxMp;
 
     private PlayerMpManager(float mp, float maxMp){
         this.mp = mp;
@@ -46,27 +46,13 @@ public class PlayerMpManager {
         return player.getCapability(PlayerMpProvider.PLAYER_MP_CAPABILITY).orElse(null);
     }
 
-    public static void syncMpToClient(ServerPlayer player){
+    public static void syncToClient(ServerPlayer player){
         PlayerMp playerMp = getPlayerMp(player);
-        if(playerMp != null) playerMp.syncMpToClient();
+        if(playerMp != null) playerMp.syncToClient();
     }
 
-    public static void syncMpToParty(ServerPlayer player){
+    public static void syncToParty(ServerPlayer player){
         PlayerMp playerMp = getPlayerMp(player);
-        if(playerMp != null) playerMp.syncMpToParty();
-    }
-
-    public static void syncMaxMpToClient(ServerPlayer player){
-        PlayerMp playerMp = getPlayerMp(player);
-        if(playerMp != null) playerMp.syncMaxMpToClient();
-    }
-
-    public static void syncMaxMpToParty(ServerPlayer player){
-        PlayerMp playerMp = getPlayerMp(player);
-        if(playerMp != null) playerMp.syncMaxMpToParty();
-    }
-
-    public static void serverTick(ServerLevel level){
-
+        if(playerMp != null) playerMp.syncToParty();
     }
 }

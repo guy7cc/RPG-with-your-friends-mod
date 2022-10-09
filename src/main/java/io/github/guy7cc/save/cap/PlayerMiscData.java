@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MiscPlayerData implements INBTSerializable<CompoundTag> {
+public class PlayerMiscData implements INBTSerializable<CompoundTag> {
     public List<ItemStack> keepInventory = new ArrayList<>();
 
-    public MiscPlayerData() {}
+    public PlayerMiscData() {}
 
     @Override
     public CompoundTag serializeNBT() {

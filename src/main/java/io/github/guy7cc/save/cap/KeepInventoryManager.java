@@ -22,7 +22,7 @@ public class KeepInventoryManager {
     }
 
     public static void collectItems(ServerPlayer player){
-        MiscPlayerData cap = player.getCapability(MiscPlayerDataProvider.PLAYER_MISC_CAPABILITY).orElse(null);
+        PlayerMiscData cap = player.getCapability(PlayerMiscDataProvider.PLAYER_MISC_CAPABILITY).orElse(null);
         if(cap != null){
             Inventory inv = player.getInventory();
             cap.keepInventory = new ArrayList<>();
@@ -33,7 +33,7 @@ public class KeepInventoryManager {
     }
 
     public static void restoreInventory(ServerPlayer player){
-        MiscPlayerData cap = player.getCapability(MiscPlayerDataProvider.PLAYER_MISC_CAPABILITY).orElse(null);
+        PlayerMiscData cap = player.getCapability(PlayerMiscDataProvider.PLAYER_MISC_CAPABILITY).orElse(null);
         if(cap != null){
             Inventory inv = player.getInventory();
             for(int i = 0; i < 36 && i < cap.keepInventory.size(); i++){

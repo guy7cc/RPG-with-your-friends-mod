@@ -1,7 +1,7 @@
 package io.github.guy7cc.event;
 
 import io.github.guy7cc.RpgwMod;
-import io.github.guy7cc.save.cap.MiscPlayerData;
+import io.github.guy7cc.save.cap.PlayerMiscData;
 import io.github.guy7cc.save.cap.PlayerMp;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,6 +13,6 @@ public class ModEvents {
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event){
         event.register(PlayerMp.class);
-        event.register(MiscPlayerData.class);
+        event.register(PlayerMiscData.class);
     }
 }

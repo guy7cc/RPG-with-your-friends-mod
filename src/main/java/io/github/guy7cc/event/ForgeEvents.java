@@ -4,17 +4,16 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.command.JoinRequestCommand;
 import io.github.guy7cc.command.RpgwDebugCommand;
-import io.github.guy7cc.rpg.Border;
 import io.github.guy7cc.rpg.PartyList;
 import io.github.guy7cc.save.cap.*;
 import io.github.guy7cc.syncdata.BorderManager;
+import io.github.guy7cc.syncdata.PlayerMoneyManager;
 import io.github.guy7cc.syncdata.PlayerMpManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -33,7 +32,8 @@ public class ForgeEvents {
         if(event.getObject() instanceof ServerPlayer player){
             if(!event.getObject().getCapability(PlayerMpProvider.PLAYER_MP_CAPABILITY).isPresent()){
                 event.addCapability(PlayerMpProvider.PLAYER_MP_LOCATION, new PlayerMpProvider(() -> new PlayerMp(player)));
-                event.addCapability(MiscPlayerDataProvider.PLAYER_MISC_LOCATION, new MiscPlayerDataProvider(MiscPlayerData::new));
+                event.addCapability(PlayerMoneyProvider.PLAYER_MONEY_LOCATION, new PlayerMoneyProvider(() -> new PlayerMoney(player)));
+                event.addCapability(PlayerMiscDataProvider.PLAYER_MISC_LOCATION, new PlayerMiscDataProvider(PlayerMiscData::new));
             }
         }
     }
@@ -48,66 +48,20 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event){
         event.getOriginal().reviveCaps();
-        event.getOriginal().getCapability(MiscPlayerDataProvider.PLAYER_MISC_CAPABILITY).ifPresent(oldCap -> {
-            event.getPlayer().getCapability(MiscPlayerDataProvider.PLAYER_MISC_CAPABILITY).ifPresent(newCap -> {
-                newCap.keepInventory = oldCap.keepInventory;
-            });
-        });
+        PlayerMoneyProvider.onPlayerCloned(event);
+        PlayerMiscDataProvider.onPlayerCloned(event);
         event.getOriginal().invalidateCaps();
     }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event){
-        if(event.phase == TickEvent.Phase.END){
-            Player player = event.player;
-            if(player.level.isClientSide) {
-                Border border = BorderManager.clientBorder;
-                if(border != null){
-                    Vec3 pos = player.position();
-                    Vec3 delta = player.getDeltaMovement();
-                    double x = pos.x;
-                    double deltaX = delta.x;
-                    double z = pos.z;
-                    double deltaZ = delta.z;
-                    if(x < border.minX + 0.3D){
-                        x = border.minX + 0.3D;
-                        deltaX = 0;
-                    } else if(x > border.maxX - 0.3D){
-                        x = border.maxX - 0.3D;
-                        deltaX = 0;
-                    }
-                    if(z < border.minZ + 0.3D){
-                        z = border.minZ + 0.3D;
-                        deltaZ = 0;
-                    } else if(z > border.maxZ - 0.3D){
-                        z = border.maxZ - 0.3D;
-                        deltaZ = 0;
-                    }
-                    player.setPos(x, pos.y, z);
-                    player.setDeltaMovement(deltaX, delta.y, deltaZ);
-                }
-            } else {
-                ServerPlayer serverPlayer = (ServerPlayer) player;
-                Border border = BorderManager.getCurrentBorder(serverPlayer);
-                if(border != null && border.outsideEnough(serverPlayer.position())){
-                    double x = serverPlayer.getX();
-                    double z = serverPlayer.getZ();
-                    if(x <= border.minX - 1) x = border.minX + 0.3D;
-                    else if(x >= border.maxX + 1) x = border.maxX - 0.3D;
-                    if(z <= border.minZ - 1) z = border.minZ + 0.3D;
-                    else if(z >= border.maxZ + 1) z = border.maxZ - 0.3D;
-                    serverPlayer.teleportTo(x, serverPlayer.getY(), z);
-                }
-
-            }
-        }
+        BorderManager.onPlayerTick(event);
     }
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event){
         if(!event.world.isClientSide){
             ServerLevel level = (ServerLevel) event.world;
-            PlayerMpManager.serverTick(level);
         }
     }
 
@@ -120,8 +74,10 @@ public class ForgeEvents {
         PartyList.init(((ServerLevel) level).getServer());
 
         //mp
-        PlayerMpManager.syncMpToClient(player);
-        PlayerMpManager.syncMaxMpToClient(player);
+        PlayerMpManager.syncToClient(player);
+
+        //money
+        PlayerMoneyManager.syncToClient(player);
 
         //keepInventory
         KeepInventoryManager.addOrModifyPlayer(player, true);
