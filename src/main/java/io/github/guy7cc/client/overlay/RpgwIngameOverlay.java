@@ -3,7 +3,9 @@ package io.github.guy7cc.client.overlay;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.syncdata.PartyManager;
+import io.github.guy7cc.syncdata.PlayerMoneyManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -24,41 +26,15 @@ public class RpgwIngameOverlay{
     public static final ResourceLocation OVERLAY_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/overlays.png");
 
     private static int tickCount = 0;
-    private static long healthBlinkTime = 0;
-    private static float lastHealth = 0;
-    private static float backgroundHealthRate = 0;
-    private static long backgroundHealthRunningTime = -100;
-    private static long mpBlinkTime = 0;
-    private static float lastMp = 0;
-    private static float backgroundMpRate = 0;
-    private static long backgroundMpRunningTime = -100;
-
-    public static IIngameOverlay PLAYER_HEALTH_BAR_ELEMENT;
-    public static IIngameOverlay PLAYER_MP_BAR_ELEMENT;
 
     public static IIngameOverlay PLAYER_STATUS_ELEMENT;
     public static IIngameOverlay PARTY_STATUS_ELEMENT;
+    public static IIngameOverlay PLAYER_MONEY_ELEMENT;
 
     private static PartyMemberStatusRenderer localStatus;
     private static List<PartyMemberStatusRenderer> partyStatusList = new ArrayList<>();
 
     public static void registerOverlay(){
-        /*
-        PLAYER_HEALTH_BAR_ELEMENT = OverlayRegistry.registerOverlayAbove(ForgeIngameGui.EXPERIENCE_BAR_ELEMENT, "Player Health Bar", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
-            if (!Minecraft.getInstance().options.hideGui && gui.shouldDrawSurvivalElements())
-            {
-                gui.setupOverlayRenderState(true, false);
-                renderHealthBar(screenWidth, screenHeight, poseStack);
-            }
-        });
-        PLAYER_MP_BAR_ELEMENT = OverlayRegistry.registerOverlayAbove(PLAYER_HEALTH_BAR_ELEMENT, "Player Mp Bar", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
-            if (!Minecraft.getInstance().options.hideGui && gui.shouldDrawSurvivalElements())
-            {
-                gui.setupOverlayRenderState(true, false);
-                renderMpBar(screenWidth, screenHeight, poseStack);
-            }
-        });
-         */
         localStatus = new PartyMemberStatusRenderer(null, true);
         localStatus.needUpdatePlayer = false;
         PLAYER_STATUS_ELEMENT = OverlayRegistry.registerOverlayTop("Player Status", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
@@ -86,6 +62,12 @@ public class RpgwIngameOverlay{
                     }
                 }
             }
+        });
+        PLAYER_MONEY_ELEMENT = OverlayRegistry.registerOverlayTop("Player Money", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+            Font font = Minecraft.getInstance().font;
+            String s = String.valueOf(PlayerMoneyManager.money);
+            float width = font.width(s);
+            Minecraft.getInstance().font.draw(poseStack, s, screenWidth - width - 5, screenHeight - 10, 0xffffffff);
         });
     }
 

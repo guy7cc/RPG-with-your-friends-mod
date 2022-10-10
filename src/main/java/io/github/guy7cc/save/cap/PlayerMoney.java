@@ -31,6 +31,10 @@ public class PlayerMoney implements INBTSerializable<CompoundTag> {
         syncToClient();
     }
 
+    public void addMoney(long money){
+        setMoney(this.money + money);
+    }
+
     public void syncToClient(){
         RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPlayerMoneyPacket(this.money));
     }
