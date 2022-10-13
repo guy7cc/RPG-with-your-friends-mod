@@ -1,5 +1,6 @@
 package io.github.guy7cc.network;
 
+import io.github.guy7cc.client.overlay.RpgwIngameOverlay;
 import io.github.guy7cc.syncdata.PlayerMoneyManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,7 +27,7 @@ public class ClientboundSyncPlayerMoneyPacket {
     public void handle(Supplier<NetworkEvent.Context> ctx){
         ctx.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                PlayerMoneyManager.money = this.money;
+                PlayerMoneyManager.setPlayerMoney(this.money);
                 ctx.get().setPacketHandled(true);
             });
         });

@@ -4,7 +4,6 @@ import io.github.guy7cc.save.cap.PlayerMoney;
 import io.github.guy7cc.syncdata.PlayerMoneyManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -23,7 +22,7 @@ public class CoinItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
         if(!pLevel.isClientSide){
-            PlayerMoney playerMoney = PlayerMoneyManager.getPlayerMoney((ServerPlayer) pPlayer);
+            PlayerMoney playerMoney = PlayerMoneyManager.getPlayerMoneyCap((ServerPlayer) pPlayer);
             playerMoney.addMoney(rank.value);
             itemstack.shrink(1);
         }
