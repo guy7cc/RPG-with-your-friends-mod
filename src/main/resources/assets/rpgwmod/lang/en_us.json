@@ -5,6 +5,10 @@
 
   "itemGroup.rpgwmod": "RPG with your friends Mod",
   "item.rpgwmod.border_wrench": "Wrench (Border)",
+  "item.rpgwmod.iron_coin": "Iron Coin",
+  "item.rpgwmod.copper_coin": "Copper Coin",
+  "item.rpgwmod.silver_coin": "Silver Coin",
+  "item.rpgwmod.gold_coin": "Gold Coin",
 
   "gui.rpgwmod.partyMenu": "Party Menu",
   "gui.rpgwmod.partyMenu.currentParty": "Current Party",

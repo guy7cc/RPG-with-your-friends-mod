@@ -23,6 +23,7 @@ public class ClientForgeEvents {
     public static void onClientLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event){
         PartyManager.clientParty = null;
         BorderManager.clientBorder = null;
+        RpgwIngameOverlay.money.reset();
     }
 
     @SubscribeEvent

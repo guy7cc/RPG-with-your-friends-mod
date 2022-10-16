@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.UUID;
 
-public class PartyMemberStatusRenderer {
+public class PartyMemberStatusOverlay {
     public static final ResourceLocation OVERLAY_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/overlays.png");
 
     private float health = 0;
@@ -37,11 +37,11 @@ public class PartyMemberStatusRenderer {
     private Player player;
     private boolean local;
 
-    public PartyMemberStatusRenderer(UUID uuid){
+    public PartyMemberStatusOverlay(UUID uuid){
         this(uuid, false);
     }
 
-    public PartyMemberStatusRenderer(UUID uuid, boolean local){
+    public PartyMemberStatusOverlay(UUID uuid, boolean local){
         this.uuid = uuid;
         this.local = local;
     }
