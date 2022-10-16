@@ -15,7 +15,7 @@ public class PlayerMoneyManager {
 
     public static void setPlayerMoney(long money){
         PlayerMoneyManager.money = money;
-        RpgwIngameOverlay.money.onChangeMoney(money);
+        RpgwIngameOverlay.money.onChangeMoney();
     }
 
     //server-side
