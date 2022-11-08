@@ -3,7 +3,6 @@ package io.github.guy7cc.rpg;
 import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.slf4j.Logger;
 
@@ -18,6 +17,10 @@ public abstract class TradeNode implements INBTSerializable<CompoundTag> {
 
     private ItemStack itemStack;
     private int id;
+
+    public TradeNode(){
+        this.itemStack = ItemStack.EMPTY.copy();
+    }
 
     public TradeNode(ItemStack itemStack) {
         this.itemStack = itemStack;
@@ -46,10 +49,15 @@ public abstract class TradeNode implements INBTSerializable<CompoundTag> {
     }
 
 
-    public static class Buy extends TradeNode {
+    public static class Sell extends TradeNode {
         private long price;
 
-        public Buy(ItemStack itemStack, long price) {
+        public Sell(){
+            super();
+            price = 0;
+        }
+
+        public Sell(ItemStack itemStack, long price) {
             super(itemStack);
             this.price = price;
         }
@@ -68,14 +76,21 @@ public abstract class TradeNode implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public static class Sell extends TradeNode {
+    public static class Buy extends TradeNode {
         private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
         private long price;
         private int count;
         private Date availableFrom;
 
-        public Sell(ItemStack itemStack, long price, int count, Date availableFrom) {
+        public Buy(){
+            super();
+            price = 0;
+            count = 0;
+            availableFrom = new Date();
+        }
+
+        public Buy(ItemStack itemStack, long price, int count, Date availableFrom) {
             super(itemStack);
             this.price = price;
             this.count = count;
@@ -108,6 +123,11 @@ public abstract class TradeNode implements INBTSerializable<CompoundTag> {
 
     public static class Barter extends TradeNode {
         private ItemStack requirement;
+
+        public Barter(){
+            super();
+            requirement = ItemStack.EMPTY.copy();
+        }
 
         public Barter(ItemStack itemStack, ItemStack requirement){
             super(itemStack);
