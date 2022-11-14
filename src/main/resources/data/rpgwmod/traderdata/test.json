@@ -1,0 +1,35 @@
+{
+  "sell_list": [
+    {
+      "itemstack": {
+        "id": "minecraft:name_tag",
+        "Count": 1
+      },
+      "price": 1000
+    }
+  ],
+  "buy_list": [
+    {
+      "available_from": "Thu Jan 01 09:00:00 JST 1970",
+      "delay": 0,
+      "itemstack": {
+        "id": "minecraft:wheat",
+        "Count": 1
+      },
+      "price": 3,
+      "count": 10
+    }
+  ],
+  "barter_list": [
+    {
+      "itemstack": {
+        "id": "minecraft:ender_pearl",
+        "Count": 1
+      },
+      "requirement": {
+        "id": "minecraft:tropical_fish",
+        "Count": 1
+      }
+    }
+  ]
+}

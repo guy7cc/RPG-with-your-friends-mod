@@ -18,4 +18,7 @@ public class RpgwBlockEntities {
 
     public static final RegistryObject<BlockEntityType<BorderedRpgwSpawnerBlockEntity>> BORDERED_RPGW_SPAWNER = BLOCK_ENTITIES.register("bordered_rpgw_spawner_block_entity",
             () -> BlockEntityType.Builder.of(BorderedRpgwSpawnerBlockEntity::new, RpgwBlocks.BORDERED_RPGW_SPAWNER.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<VendingMachineBlockEntity>> VENDING_MACHINE = BLOCK_ENTITIES.register("vending_machine_block_entity",
+            () -> BlockEntityType.Builder.of(VendingMachineBlockEntity::new, RpgwBlocks.VENDING_MACHINE.get()).build(null));
 }
