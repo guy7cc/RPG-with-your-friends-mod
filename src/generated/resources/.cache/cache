@@ -1,2 +1,8 @@
-e47e71e6b2a7161ec365ceff81e6e8cd628cb1b7 data/rpgwmod/traderdata/sell/selltest.json
-c1b693aa55fdb0792e827c7d6e777b5933c342ad data/rpgwmod/traderdata/test.json
+a52550ea09bde714cae28f0cecbaaa08cee3d5a5 assets/rpgwmod/blockstates/vending_machine.json
+cf79cbc4fe03591964168f6842874aaaf8b3fd0c assets/rpgwmod/models/block/vending_machine_lower.json
+4563a6d7d49b651965a313e475078e009f9bf380 assets/rpgwmod/models/block/vending_machine_upper.json
+ab683a95bffb94be7b435ab0579553febb11a3cd assets/rpgwmod/models/item/vending_machine.json
+e47e71e6b2a7161ec365ceff81e6e8cd628cb1b7 data/rpgwmod/traderdata/buy/buytest.json
+4000258422b4e6b94eb9950cfbb3ca674bf0bcf5 data/rpgwmod/traderdata/sell/sell_wheat.json
+05d7e10d20d51792f7cc93fdf58a689cb8036b7a data/rpgwmod/traderdata/sell/selltest.json
+00af7227b27ecc13ac0ab665ca78bf6d6a9761dd data/rpgwmod/traderdata/test.json

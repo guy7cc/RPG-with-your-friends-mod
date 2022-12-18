@@ -1,23 +1,89 @@
 {
-  "sell_list": [
+  "buy_list": [
     {
       "itemstack": {
         "id": "minecraft:name_tag",
+        "Count": 2
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:red_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:pink_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:yellow_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:green_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:blue_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:light_blue_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:purple_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:black_dye",
+        "Count": 1
+      },
+      "price": 1000
+    },
+    {
+      "itemstack": {
+        "id": "minecraft:white_dye",
         "Count": 1
       },
       "price": 1000
     }
   ],
-  "buy_list": [
+  "sell_list": [
     {
-      "available_from": "Thu Jan 01 09:00:00 JST 1970",
-      "delay": 0,
+      "available_from": 0,
+      "delay": 10000,
+      "next": [
+        "sell_wheat"
+      ],
       "itemstack": {
         "id": "minecraft:wheat",
         "Count": 1
       },
       "price": 3,
-      "count": 10
+      "count": 2
     }
   ],
   "barter_list": [

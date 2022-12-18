@@ -7,8 +7,10 @@ import net.minecraft.client.Minecraft;
 public interface ITrader {
     TraderData getTraderData();
 
+    void setTraderData(TraderData data);
+
     default void setTraderScreen(){
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.setScreen(new TraderScreen(getTraderData()));
+        minecraft.setScreen(new TraderScreen(this));
     }
 }

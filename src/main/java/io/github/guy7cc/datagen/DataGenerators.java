@@ -13,6 +13,7 @@ public class DataGenerators {
     public static void gatherData(GatherDataEvent event){
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        generator.addProvider(new RpgwBlockStateProvider(generator, RpgwMod.MOD_ID, existingFileHelper));
         generator.addProvider(new TraderDataProvider(generator, existingFileHelper));
     }
 }

@@ -90,7 +90,7 @@ public class ForgeEvents {
         ServerPlayer player = (ServerPlayer) event.getPlayer();
 
         //party list
-        PartyList.getInstance().forceLeaveParty(player.getUUID());
+        if(PartyList.initedOnce()) PartyList.getInstance().forceLeaveParty(player.getUUID());
 
         //keepInventory
         KeepInventoryManager.removePlayerIfPresent(player);

@@ -1,0 +1,13 @@
+{
+  "available_from": 0,
+  "delay": 10000,
+  "next": [
+    "sell_wheat"
+  ],
+  "itemstack": {
+    "id": "minecraft:wheat",
+    "Count": 1
+  },
+  "price": 3,
+  "count": 2
+}

@@ -86,7 +86,7 @@ public class PlayerMoneyOverlay {
         Minecraft.getInstance().getItemRenderer().renderGuiItem(COINS[Math.max(i, 0)], screenWidth - 76, screenHeight - 15);
 
         Font font = Minecraft.getInstance().font;
-        String s = displayMoney + " G";
+        String s = displayMoney + " " + RpgwMod.CURRENCY;
         float width = font.width(s);
         Minecraft.getInstance().font.drawShadow(poseStack, s, screenWidth - width - 2, screenHeight - 10.5f, 0xffffffff);
 

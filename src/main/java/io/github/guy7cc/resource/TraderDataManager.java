@@ -21,8 +21,8 @@ public class TraderDataManager extends SimpleJsonResourceReloadListener {
     public static final TraderDataManager instance = new TraderDataManager();
 
     private Map<String, TraderData> dataMap = ImmutableMap.of();
-    private Map<String, TraderDataElement.Sell> sellMap = ImmutableMap.of();
     private Map<String, TraderDataElement.Buy> buyMap = ImmutableMap.of();
+    private Map<String, TraderDataElement.Sell> sellMap = ImmutableMap.of();
     private Map<String, TraderDataElement.Barter> barterMap = ImmutableMap.of();
 
     private TraderDataManager() {
@@ -32,8 +32,8 @@ public class TraderDataManager extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         ImmutableMap.Builder<String, TraderData> dataBuilder = ImmutableMap.builder();
-        ImmutableMap.Builder<String, TraderDataElement.Sell> sellBuilder = ImmutableMap.builder();
         ImmutableMap.Builder<String, TraderDataElement.Buy> buyBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<String, TraderDataElement.Sell> sellBuilder = ImmutableMap.builder();
         ImmutableMap.Builder<String, TraderDataElement.Barter> barterBuilder = ImmutableMap.builder();
 
         for(Map.Entry<ResourceLocation, JsonElement> entry : pObject.entrySet()) {
@@ -44,14 +44,14 @@ public class TraderDataManager extends SimpleJsonResourceReloadListener {
             try {
                 JsonObject json = GsonHelper.convertToJsonObject(entry.getValue(), "top element");
 
-                if(resourcelocation.getPath().startsWith("sell/")){
-                    TraderDataElement.Sell sell = TraderDataElement.Sell.CODEC.parse(JsonOps.INSTANCE, json).result().orElseThrow();
-                    path = resourcelocation.getPath().substring(5);
-                    sellBuilder.put(path, sell);
-                } else if(resourcelocation.getPath().startsWith("buy/")){
+                if(resourcelocation.getPath().startsWith("buy/")){
                     TraderDataElement.Buy buy = TraderDataElement.Buy.CODEC.parse(JsonOps.INSTANCE, json).result().orElseThrow();
                     path = resourcelocation.getPath().substring(4);
                     buyBuilder.put(path, buy);
+                } else if(resourcelocation.getPath().startsWith("sell/")){
+                    TraderDataElement.Sell sell = TraderDataElement.Sell.CODEC.parse(JsonOps.INSTANCE, json).result().orElseThrow();
+                    path = resourcelocation.getPath().substring(5);
+                    sellBuilder.put(path, sell);
                 } else if(resourcelocation.getPath().startsWith("barter/")){
                     TraderDataElement.Barter barter = TraderDataElement.Barter.CODEC.parse(JsonOps.INSTANCE, json).result().orElseThrow();
                     path = resourcelocation.getPath().substring(7);
@@ -66,31 +66,31 @@ public class TraderDataManager extends SimpleJsonResourceReloadListener {
         }
 
         dataMap = dataBuilder.build();
-        sellMap = sellBuilder.build();
         buyMap = buyBuilder.build();
+        sellMap = sellBuilder.build();
         barterMap = barterBuilder.build();
 
         LOGGER.info("Loaded {} trader data", dataMap.size());
-        LOGGER.info("Loaded {} trader sell elements", sellMap.size());
         LOGGER.info("Loaded {} trader buy elements", buyMap.size());
+        LOGGER.info("Loaded {} trader sell elements", sellMap.size());
         LOGGER.info("Loaded {} trader barter elements", barterMap.size());
 
 
     }
 
-    public Map<String, TraderDataElement.Sell> getSellMap() {
-        return sellMap;
+    public TraderDataElement.Buy getBuy(String key) {
+        return (TraderDataElement.Buy) buyMap.get(key).copy();
     }
 
-    public Map<String, TraderDataElement.Buy> getBuyMap() {
-        return buyMap;
+    public TraderDataElement.Sell getSell(String key) {
+        return (TraderDataElement.Sell) sellMap.get(key).copy();
     }
 
-    public Map<String, TraderDataElement.Barter> getBarterMap() {
-        return barterMap;
+    public TraderDataElement.Barter getBarter(String key) {
+        return (TraderDataElement.Barter) barterMap.get(key).copy();
     }
 
-    public Map<String, TraderData> getDataMap() {
-        return dataMap;
+    public TraderData getData(String key) {
+        return dataMap.get(key).copy();
     }
 }

@@ -1,6 +1,7 @@
 {
   "block.rpgwmod.rpgw_spawner": "RPGスポナー",
   "block.rpgwmod.bordered_rpgw_spawner": "境界付きRPGスポナー",
+  "block.rpgwmod.vending_machine": "自動販売機",
 
   "itemGroup.rpgwmod": "RPG with your friends Mod",
   "item.rpgwmod.border_wrench": "レンチ（ボーダー用）",
@@ -23,6 +24,14 @@
   "gui.rpgwmod.partyMenu.leave": "脱退",
   "gui.rpgwmod.partyMenu.cannotLeave": "今はパーティを抜けることができません。",
   "gui.rpgwmod.partyMenu.someoneLeave": "%sがパーティを脱退しました。",
+
+  "gui.rpgwmod.trader.buy": "買う",
+  "gui.rpgwmod.trader.sell": "売る",
+  "gui.rpgwmod.trader.barter": "交換",
+  "gui.rpgwmod.trader.upto": "%s 個まで",
+  "gui.rpgwmod.trader.available": "あと %s",
+  "gui.rpgwmod.trader.needs": "必要数: %s",
+  "gui.rpgwmod.trader.confirm": "確定",
 
   "commands.rpgw.jreqAccepted": "参加リクエストは受理されました。",
   "commands.rpgw.jreqDenied": "参加リクエストは却下されました。",
