@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 public class RpgwMod
 {
     public static final String MOD_ID = "rpgwmod";
+    public static final String CURRENCY = "G";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     public RpgwMod()

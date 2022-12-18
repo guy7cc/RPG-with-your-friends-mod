@@ -1,0 +1,10 @@
+{
+  "available_from": 0,
+  "delay": 10000,
+  "itemstack": {
+    "id": "minecraft:bell",
+    "Count": 1
+  },
+  "price": 250,
+  "count": 5
+}

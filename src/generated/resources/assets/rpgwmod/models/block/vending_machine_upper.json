@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "side": "rpgwmod:block/vending_machine_upper_side",
+    "front": "rpgwmod:block/vending_machine_upper_front",
+    "top": "minecraft:block/iron_block"
+  }
+}

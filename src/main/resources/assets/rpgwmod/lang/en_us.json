@@ -2,6 +2,7 @@
   "block.rpgwmod.example_border_block": "Example Border Block",
   "block.rpgwmod.rpgw_spawner": "RPG Spawner",
   "block.rpgwmod.bordered_rpgw_spawner": "Bordered RPG Spawner",
+  "block.rpgwmod.vending_machine": "Vending Machine",
 
   "itemGroup.rpgwmod": "RPG with your friends Mod",
   "item.rpgwmod.border_wrench": "Wrench (Border)",
@@ -38,6 +39,14 @@
   "gui.rpgwmod.editScreen.spawnArea": "Spawn",
   "gui.rpgwmod.editScreen.playerArea": "Player",
   "gui.rpgwmod.editScreen.delay": "Delay",
+
+  "gui.rpgwmod.trader.buy": "Buy",
+  "gui.rpgwmod.trader.sell": "Sell",
+  "gui.rpgwmod.trader.barter": "Barter",
+  "gui.rpgwmod.trader.upto": "Up to %s",
+  "gui.rpgwmod.trader.available": "%s to go",
+  "gui.rpgwmod.trader.needs": "Needs %s",
+  "gui.rpgwmod.trader.confirm": "Confirm",
 
   "commands.rpgw.jreqAccepted": "The join request has been accepted.",
   "commands.rpgw.jreqDenied": "The join request has been denied.",

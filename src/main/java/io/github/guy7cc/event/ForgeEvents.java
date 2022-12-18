@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.command.JoinRequestCommand;
 import io.github.guy7cc.command.RpgwDebugCommand;
+import io.github.guy7cc.resource.TraderDataManager;
 import io.github.guy7cc.rpg.PartyList;
 import io.github.guy7cc.save.cap.*;
 import io.github.guy7cc.syncdata.BorderManager;
@@ -14,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -88,7 +90,7 @@ public class ForgeEvents {
         ServerPlayer player = (ServerPlayer) event.getPlayer();
 
         //party list
-        PartyList.getInstance().forceLeaveParty(player.getUUID());
+        if(PartyList.initedOnce()) PartyList.getInstance().forceLeaveParty(player.getUUID());
 
         //keepInventory
         KeepInventoryManager.removePlayerIfPresent(player);
@@ -133,5 +135,10 @@ public class ForgeEvents {
         if(event.getPlayer() instanceof ServerPlayer player){
             KeepInventoryManager.restoreInventory(player);
         }
+    }
+
+    @SubscribeEvent
+    public static void onAddReloadListener(AddReloadListenerEvent event){
+        event.addListener(TraderDataManager.instance);
     }
 }
