@@ -25,6 +25,12 @@ public class RpgwBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        simpleBlockWithItem(RpgwBlocks.EXAMPLE_BORDER.get());
+
+        simpleBlockWithItem(RpgwBlocks.RPGW_SPAWNER.get());
+        simpleBlockWithItem(RpgwBlocks.BORDERED_RPGW_SPAWNER.get());
+        simpleBlockWithItem(RpgwBlocks.INACTIVATED_RPGW_SPAWNER.get());
+
         ResourceLocation name = RpgwBlocks.VENDING_MACHINE.get().getRegistryName();
         doubleOrientableBlockWithItem(RpgwBlocks.VENDING_MACHINE.get(),
                 blockTexture(modLoc(name.getPath() + "_upper_side")),
