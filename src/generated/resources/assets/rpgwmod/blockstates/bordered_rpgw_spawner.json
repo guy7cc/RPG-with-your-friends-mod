@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rpgwmod:block/bordered_rpgw_spawner"
+    }
+  }
+}
