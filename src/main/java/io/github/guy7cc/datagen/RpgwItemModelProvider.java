@@ -1,6 +1,7 @@
 package io.github.guy7cc.datagen;
 
 import io.github.guy7cc.RpgwMod;
+import io.github.guy7cc.item.RpgwItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -15,7 +16,13 @@ public class RpgwItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        handheldItem(RpgwItems.BORDER_WRENCH.get());
+        handheldItem(RpgwItems.SPAWNER_WRENCH.get());
 
+        simpleItem(RpgwItems.IRON_COIN.get());
+        simpleItem(RpgwItems.COPPER_COIN.get());
+        simpleItem(RpgwItems.SILVER_COIN.get());
+        simpleItem(RpgwItems.GOLD_COIN.get());
     }
 
     private ItemModelBuilder simpleItem(Item item){

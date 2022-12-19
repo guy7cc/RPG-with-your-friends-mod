@@ -16,6 +16,7 @@ public class DataGenerators {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         generator.addProvider(new RpgwBlockStateProvider(generator, RpgwMod.MOD_ID, existingFileHelper));
+        generator.addProvider(new RpgwItemModelProvider(generator, RpgwMod.MOD_ID, existingFileHelper));
         generator.addProvider(new RpgwEnUsLanguageProvider(generator, RpgwMod.MOD_ID));
         generator.addProvider(new RpgwJaJpLanguageProvider(generator, RpgwMod.MOD_ID));
         generator.addProvider(new TraderDataProvider(generator, existingFileHelper));

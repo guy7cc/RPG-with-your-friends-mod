@@ -1,6 +1,7 @@
 {
   "block.rpgwmod.bordered_rpgw_spawner": "Bordered RPG Spawner",
   "block.rpgwmod.example_border_block": "Example Border Block",
+  "block.rpgwmod.inactivated_rpgw_spawner": "Inactivated RPG Spawner",
   "block.rpgwmod.rpgw_spawner": "RPG Spawner",
   "block.rpgwmod.vending_machine": "Vending Machine",
   "commands.rpgw.jreqAccepted": "The join request has been accepted.",

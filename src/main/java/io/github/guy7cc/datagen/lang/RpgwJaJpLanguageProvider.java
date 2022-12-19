@@ -17,6 +17,7 @@ public class RpgwJaJpLanguageProvider extends RpgwAbstractLanguageProvider {
         add(RpgwBlocks.EXAMPLE_BORDER.get(), "参考用境界ブロック");
         add(RpgwBlocks.RPGW_SPAWNER.get(), "RPGスポナー");
         add(RpgwBlocks.BORDERED_RPGW_SPAWNER.get(), "境界付きRPGスポナー");
+        add(RpgwBlocks.INACTIVATED_RPGW_SPAWNER.get(), "不活性RPGスポナー");
         add(RpgwBlocks.VENDING_MACHINE.get(), "自動販売機");
 
         add(RpgwItems.BORDER_WRENCH.get(), "レンチ（ボーダー用）");

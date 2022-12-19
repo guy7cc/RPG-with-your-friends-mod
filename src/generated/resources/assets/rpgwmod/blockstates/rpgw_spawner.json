@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rpgwmod:block/rpgw_spawner"
+    }
+  }
+}

@@ -16,6 +16,7 @@ public class RpgwEnUsLanguageProvider extends RpgwAbstractLanguageProvider{
         add(RpgwBlocks.EXAMPLE_BORDER.get(), "Example Border Block");
         add(RpgwBlocks.RPGW_SPAWNER.get(), "RPG Spawner");
         add(RpgwBlocks.BORDERED_RPGW_SPAWNER.get(), "Bordered RPG Spawner");
+        add(RpgwBlocks.INACTIVATED_RPGW_SPAWNER.get(), "Inactivated RPG Spawner");
         add(RpgwBlocks.VENDING_MACHINE.get(), "Vending Machine");
         
         add(RpgwItems.BORDER_WRENCH.get(), "Wrench (Border)");
