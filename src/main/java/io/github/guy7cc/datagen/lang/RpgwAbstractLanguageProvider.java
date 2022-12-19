@@ -9,6 +9,10 @@ public abstract class RpgwAbstractLanguageProvider extends LanguageProvider {
         super(gen, modid, locale);
     }
 
+    public void addItemGroup(String key, String name){
+        add("itemGroup." + key, name);
+    }
+
     public void addGui(String key, String value){
         add("gui." + RpgwMod.MOD_ID + "." + key, value);
     }
