@@ -1,0 +1,16 @@
+{
+  "itemstack": {
+    "id": "minecraft:ender_pearl",
+    "Count": 1
+  },
+  "requirement": {
+    "id": "minecraft:tropical_fish",
+    "Count": 1
+  },
+  "next": [
+    {
+      "name": "bartertest",
+      "count": 1
+    }
+  ]
+}

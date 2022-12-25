@@ -76,7 +76,7 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         public static final Codec<Buy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemStack.CODEC.fieldOf("itemstack").forGetter(Buy::getItemStack),
                 Codec.LONG.fieldOf("price").forGetter(sell -> sell.price),
-                Codec.optionalField("next", Codec.pair(Codec.INT, Codec.STRING).listOf()).forGetter(sell -> sell.next)
+                Codec.optionalField("next", Codec.pair(Codec.INT.fieldOf("count").codec(), Codec.STRING.fieldOf("name").codec()).listOf()).forGetter(sell -> sell.next)
         ).apply(instance, Buy::new));
 
         private long price;
@@ -333,11 +333,11 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         public static final Codec<Barter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemStack.CODEC.fieldOf("itemstack").forGetter(Barter::getItemStack),
                 ItemStack.CODEC.fieldOf("requirement").forGetter(barter -> barter.requirement),
-                Codec.optionalField("next", Codec.pair(Codec.INT, Codec.STRING).listOf()).forGetter(barter -> barter.next)
+                Codec.optionalField("next", Codec.pair(Codec.INT.fieldOf("count").codec(), Codec.STRING.fieldOf("name").codec()).listOf()).forGetter(barter -> barter.next)
         ).apply(instance, Barter::new));
 
         private ItemStack requirement;
-        // If you buy A times, a sell element named B will be added.
+        // If you buy A times, a barter element named B will be added.
         private Optional<List<Pair<Integer, String>>> next;
 
         public Barter(){
@@ -375,6 +375,24 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
 
         public TraderDataElement copy(){
             return new Barter(itemStack, requirement, next);
+        }
+
+        public List<Barter> confirmTrade(int count){
+            List<Pair<Integer, String>> list = next.orElse(null);
+            List<Barter> add = new ArrayList<>();
+            if(list != null){
+                List<Pair<Integer, String>> newList = new ArrayList<>();
+                for(Pair<Integer, String> pair : list){
+                    if(pair.getFirst() <= count){
+                        Barter barter = TraderDataManager.instance.getBarter(pair.getSecond());
+                        if(barter != null) add.add(barter);
+                    } else{
+                        newList.add(new Pair<>(pair.getFirst() - count, pair.getSecond()));
+                    }
+                }
+                next = Optional.of(newList);
+            }
+            return add;
         }
 
         @Override

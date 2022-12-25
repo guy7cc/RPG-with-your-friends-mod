@@ -19,6 +19,7 @@ public class DataGenerators {
         generator.addProvider(new RpgwItemModelProvider(generator, RpgwMod.MOD_ID, existingFileHelper));
         generator.addProvider(new RpgwEnUsLanguageProvider(generator, RpgwMod.MOD_ID));
         generator.addProvider(new RpgwJaJpLanguageProvider(generator, RpgwMod.MOD_ID));
+        generator.addProvider(new DimensionDataProvider(generator, existingFileHelper));
         generator.addProvider(new TraderDataProvider(generator, existingFileHelper));
     }
 }

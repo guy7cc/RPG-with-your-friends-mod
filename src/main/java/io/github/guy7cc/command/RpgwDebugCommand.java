@@ -38,20 +38,6 @@ public class RpgwDebugCommand {
                                 )
                         )
                 )
-                .then(Commands.literal("setBlockEntity")
-                        .then(Commands.argument("blockpos", BlockPosArgument.blockPos())
-                                .executes(ctx -> {
-                                    return setBlockEntity(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "blockpos"));
-                                })
-                        )
-                )
-                .then(Commands.literal("getBlockEntity")
-                        .then(Commands.argument("blockpos", BlockPosArgument.blockPos())
-                                .executes(ctx -> {
-                                    return getBlockEntity(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "blockpos"));
-                                })
-                        )
-                )
                 .then(Commands.literal("saveBlockState")
                         .then(Commands.argument("blockpos", BlockPosArgument.blockPos())
                                 .then(Commands.argument("name", StringArgumentType.string())
@@ -83,23 +69,7 @@ public class RpgwDebugCommand {
         }
         return 1;
     }
-
-    private static int setBlockEntity(CommandSourceStack source, BlockPos pos) throws CommandSyntaxException {
-        ServerPlayer player = source.getPlayerOrException();
-        ServerLevel level = player.getLevel();
-        level.setBlockEntity(new VendingMachineBlockEntity(pos, level.getBlockState(pos)));
-        return 1;
-    }
-
-    private static int getBlockEntity(CommandSourceStack source, BlockPos pos) throws CommandSyntaxException {
-        ServerPlayer player = source.getPlayerOrException();
-        ServerLevel level = player.getLevel();
-        BlockEntity be = level.getBlockEntity(pos);
-        if(be == null) player.displayClientMessage(new TextComponent("null"), false);
-        else player.displayClientMessage(new TextComponent(be.toString()), false);
-        return 1;
-    }
-
+    
     private static int saveBlockState(CommandSourceStack source, BlockPos pos, String name) throws CommandSyntaxException {
         ServerLevel level = source.getLevel();
         JsonObject obj = BlockStateJsonConverter.toJson(level, pos);

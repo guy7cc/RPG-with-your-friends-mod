@@ -39,7 +39,6 @@ public class TraderDataManager extends SimpleJsonResourceReloadListener {
         for(Map.Entry<ResourceLocation, JsonElement> entry : pObject.entrySet()) {
             ResourceLocation resourcelocation = entry.getKey();
             String path = resourcelocation.getPath();
-            if (resourcelocation.getPath().startsWith("_")) continue; //Forge: filter anything beginning with "_" as it's used for metadata.
 
             try {
                 JsonObject json = GsonHelper.convertToJsonObject(entry.getValue(), "top element");
@@ -61,7 +60,7 @@ public class TraderDataManager extends SimpleJsonResourceReloadListener {
                     dataBuilder.put(path, data);
                 }
             } catch (IllegalArgumentException | JsonParseException  | NoSuchElementException exception) {
-                LOGGER.error("Parsing error loading recipe {}", resourcelocation, exception);
+                LOGGER.error("Parsing error loading trader data {}", resourcelocation, exception);
             }
         }
 

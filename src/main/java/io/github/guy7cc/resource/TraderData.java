@@ -94,6 +94,7 @@ public class TraderData implements INBTSerializable<CompoundTag> {
                 is4.setCount(is4.getCount() * count);
                 removeItemStack(player, is4);
                 addItemStack(player, is3);
+                barter.confirmTrade(count);
                 break;
         }
     }

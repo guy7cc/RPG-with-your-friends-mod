@@ -2,7 +2,10 @@ package io.github.guy7cc.datagen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.resource.TraderDataElement;
@@ -80,18 +83,18 @@ public class TraderDataProvider implements DataProvider {
                         sellMap.get("sell_wheat")
                 )),
                 new ArrayList<>(Arrays.asList(
-                        new TraderDataElement.Barter(new ItemStack(Items.ENDER_PEARL), new ItemStack(Items.TROPICAL_FISH), Optional.empty())
+                        barterMap.get("bartertest")
                 ))
         ));
     }
 
     private void registerBuy(Map<String, TraderDataElement.Buy> buyMap){
-        //[0-9/._-] and small letters
+        //[a-z0-9/._-]
         buyMap.put("buytest", new TraderDataElement.Buy(new ItemStack(Items.ICE), 100, Optional.empty()));
     }
 
     private void registerSell(Map<String, TraderDataElement.Sell> sellMap){
-        //[0-9/._-] and small letters
+        //[a-z0-9/._-]
         sellMap.put("sell_wheat", new TraderDataElement.Sell(new ItemStack(Items.WHEAT), 3, 2, 0, 10000, Optional.of(
                 List.of(
                         "sell_wheat"
@@ -101,7 +104,12 @@ public class TraderDataProvider implements DataProvider {
     }
 
     private void registerBarter(Map<String, TraderDataElement.Barter> barterMap){
-        //[0-9/._-] and small letters
+        //[a-z0-9/._-]
+        barterMap.put("bartertest", new TraderDataElement.Barter(new ItemStack(Items.ENDER_PEARL), new ItemStack(Items.TROPICAL_FISH), Optional.of(
+                List.of(
+                        new Pair<>(1, "bartertest")
+                )
+        )));
     }
 
     public void save(HashCache cache, JsonObject stateJson, String folder, String name){

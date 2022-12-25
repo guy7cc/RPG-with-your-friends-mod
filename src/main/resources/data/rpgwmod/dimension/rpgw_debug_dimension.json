@@ -1,0 +1,18 @@
+{
+  "type": "rpgwmod:rpgw_debug_dimension",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "rpgwmod:rpgw_debug_biome",
+      "lakes": false,
+      "features": false,
+      "layers": [
+        {
+          "block": "minecraft:air",
+          "height": 1
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}
