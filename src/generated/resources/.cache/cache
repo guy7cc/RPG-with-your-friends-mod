@@ -23,6 +23,8 @@ aec7a7c17459bbf1085dcb16aaa9da959eab6fd2 assets/rpgwmod/models/item/bordered_rpg
 338d517c0b4b7db9049dab8498324b709f446605 assets/rpgwmod/models/item/spawner_wrench.json
 ab683a95bffb94be7b435ab0579553febb11a3cd assets/rpgwmod/models/item/vending_machine.json
 c9d01fff824e2ac20d10cc03ba6442265ba54623 data/rpgwmod/rpgdata/dimension/test.json
+bef5946a5ce0a106d9152f1279374acfb29da964 data/rpgwmod/rpgdata/level/test_level.json
+951361d24c03f055a02d4e2ccd0946408a32241e data/rpgwmod/rpgdata/stage/test_stage.json
 3a50f28d68edad9a2932db6db1c4a187d1e1e7c4 data/rpgwmod/traderdata/barter/bartertest.json
 e47e71e6b2a7161ec365ceff81e6e8cd628cb1b7 data/rpgwmod/traderdata/buy/buytest.json
 4000258422b4e6b94eb9950cfbb3ca674bf0bcf5 data/rpgwmod/traderdata/sell/sell_wheat.json

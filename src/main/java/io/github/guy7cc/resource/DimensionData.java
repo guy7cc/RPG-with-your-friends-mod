@@ -12,14 +12,10 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record DimensionData(ResourceLocation key, String title, String subtitle) {
     public static final Codec<DimensionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("key").forGetter(data -> data.key.toString()),
-            Codec.STRING.fieldOf("title").forGetter(data -> data.title),
-            Codec.STRING.fieldOf("subtitle").forGetter(data -> data.subtitle)
+            ResourceLocation.CODEC.fieldOf("key").forGetter(DimensionData::key),
+            Codec.STRING.fieldOf("title").forGetter(DimensionData::title),
+            Codec.STRING.fieldOf("subtitle").forGetter(DimensionData::subtitle)
     ).apply(instance, DimensionData::new));
-
-    public DimensionData(String key, String title, String subtitle){
-        this(new ResourceLocation(key), title, subtitle);
-    }
 
     //client-side
     public void showTitleIfKeyMatches(){

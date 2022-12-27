@@ -30,9 +30,12 @@ public class BlockStateJsonConverter {
         JsonObject root = new JsonObject();
         root.addProperty("id", state.getBlock().getRegistryName().toString());
         if(!state.getValues().isEmpty()){
-            JsonObject values = new JsonObject();
+            JsonArray values = new JsonArray();
             for(var entry : state.getValues().entrySet()){
-                values.addProperty(entry.getKey().getName(), entry.getValue().toString());
+                JsonArray v = new JsonArray();
+                v.add(entry.getKey().getName());
+                v.add(entry.getValue().toString());
+                values.add(v);
             }
             root.add("properties", values);
         }
@@ -62,26 +65,33 @@ public class BlockStateJsonConverter {
 
     public static void setBlockFromJson(JsonObject obj, ServerLevel level){
         if(!obj.has("id")) LOGGER.warn("Cannot determine a block type because of not having the id in Json Object.");
-        Block block = Registry.BLOCK.get(new ResourceLocation(obj.get("id").getAsString()));
-        BlockPos pos = obj.has("pos") ? toBlockPos(obj.getAsJsonArray("pos")) : BlockPos.ZERO;
-        BlockState state = block.defaultBlockState();
-        if(obj.has("properties")){
-            for(var entry : obj.get("properties").getAsJsonObject().entrySet()){
-                String key = entry.getKey();
-                String value = entry.getValue().getAsString();
-                Property<?> property = block.getStateDefinition().getProperty(key);
-                state = setValueHelper(state, property, key, value);
+        if(!obj.has("pos")) LOGGER.warn("Cannot determine a block position to place the block.");
+
+        try{
+            Block block = Registry.BLOCK.get(new ResourceLocation(obj.get("id").getAsString()));
+            BlockPos pos = toBlockPos(obj.getAsJsonArray("pos"));
+            BlockState state = block.defaultBlockState();
+            if(obj.has("properties")){
+                for(var entry : obj.get("properties").getAsJsonArray()){
+                    JsonArray v = entry.getAsJsonArray();
+                    String key = v.get(0).getAsString();
+                    String value = v.get(1).getAsString();
+                    Property<?> property = block.getStateDefinition().getProperty(key);
+                    state = setValueHelper(state, property, key, value);
+                }
             }
-        }
-        level.setBlockAndUpdate(pos, state);
-        if(obj.has("tag") && block instanceof EntityBlock eb){
-            CompoundTag tag = CompoundTag.CODEC.parse(JsonOps.INSTANCE, obj.getAsJsonObject("tag")).result().orElse(null);
-            if(tag != null){
-                BlockEntity be = eb.newBlockEntity(pos, state);
-                level.setBlockEntity(be);
-                be.load(tag);
-                be.setChanged();
+            level.setBlockAndUpdate(pos, state);
+            if(obj.has("tag") && block instanceof EntityBlock eb){
+                CompoundTag tag = CompoundTag.CODEC.parse(JsonOps.INSTANCE, obj.getAsJsonObject("tag")).result().orElse(null);
+                if(tag != null){
+                    BlockEntity be = eb.newBlockEntity(pos, state);
+                    level.setBlockEntity(be);
+                    be.load(tag);
+                    be.setChanged();
+                }
             }
+        } catch(Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -95,7 +105,7 @@ public class BlockStateJsonConverter {
         return new BlockPos(arr[0], arr[1], arr[2]);
     }
 
-    private static <T extends Comparable<T>> BlockState setValueHelper(BlockState state, Property<T> property, String key, String value) {
+    public static <T extends Comparable<T>> BlockState setValueHelper(BlockState state, Property<T> property, String key, String value) {
         Optional<T> optional = property.getValue(value);
         if (optional.isPresent()) {
             return state.setValue(property, optional.get());

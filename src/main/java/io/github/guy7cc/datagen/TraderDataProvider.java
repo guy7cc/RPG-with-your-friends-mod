@@ -8,6 +8,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.github.guy7cc.RpgwMod;
+import io.github.guy7cc.resource.RpgLevel;
 import io.github.guy7cc.resource.TraderDataElement;
 import io.github.guy7cc.resource.TraderData;
 import net.minecraft.data.DataGenerator;
@@ -47,20 +48,40 @@ public class TraderDataProvider implements DataProvider {
         registerData(dataMap, buyMap, sellMap, barterMap);
 
         for(Map.Entry<String, TraderData> entry : dataMap.entrySet()){
-            JsonObject json = (JsonObject)TraderData.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata", entry.getKey());
+            DataResult<JsonElement> result = TraderData.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
         for(Map.Entry<String, TraderDataElement.Buy> entry : buyMap.entrySet()){
-            JsonObject json = (JsonObject) TraderDataElement.Buy.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata/buy", entry.getKey());
+            DataResult<JsonElement> result = TraderDataElement.Buy.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata/buy", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
         for(Map.Entry<String, TraderDataElement.Sell> entry : sellMap.entrySet()){
-            JsonObject json = (JsonObject) TraderDataElement.Sell.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata/sell", entry.getKey());
+            DataResult<JsonElement> result = TraderDataElement.Sell.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata/sell", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
         for(Map.Entry<String, TraderDataElement.Barter> entry : barterMap.entrySet()){
-            JsonObject json = (JsonObject)TraderDataElement.Barter.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata/barter", entry.getKey());
+            DataResult<JsonElement> result = TraderDataElement.Barter.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata/barter", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
     }
 
