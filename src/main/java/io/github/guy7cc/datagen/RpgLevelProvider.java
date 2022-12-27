@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.github.guy7cc.RpgwMod;
@@ -27,34 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class RpgLevelProvider implements DataProvider {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-
-    private final DataGenerator generator;
-
-    public RpgLevelProvider(DataGenerator gen, ExistingFileHelper exFileHelper){
-        generator = gen;
+public class RpgLevelProvider extends RpgwSimpleDataProvider<RpgLevel> {
+    public RpgLevelProvider(DataGenerator gen){
+        super(gen);
     }
 
     @Override
-    public void run(HashCache pCache){
-        HashMap<String, RpgLevel> map = new HashMap<>();
-
-        register(map);
-
-        for(Map.Entry<String, RpgLevel> entry : map.entrySet()){
-            DataResult<JsonElement> result = RpgLevel.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
-            if(result.result().isPresent()){
-                JsonObject json = (JsonObject)result.result().get();
-                save(pCache, json, entry.getKey());
-            } else {
-                LOGGER.error(result.error().get().message());
-            }
-        }
-    }
-
-    private void register(Map<String, RpgLevel> map){
+    protected void register(Map<String, RpgLevel> map){
         map.put("test_level", new RpgLevel(
                 "Debug Level",
                 "No Info",
@@ -70,15 +50,19 @@ public class RpgLevelProvider implements DataProvider {
                 )));
     }
 
-    public void save(HashCache cache, JsonObject stateJson, String name){
-        Path mainOutput = generator.getOutputFolder();
-        String pathSuffix = "data/" + RpgwMod.MOD_ID + "/rpgdata/level/" + name + ".json";
-        Path outputPath = mainOutput.resolve(pathSuffix);
-        try {
-            DataProvider.save(GSON, cache, stateJson, outputPath);
-        } catch (IOException e) {
-            LOGGER.error("Couldn't save rpg level to {}", outputPath, e);
-        }
+    @Override
+    protected Codec<RpgLevel> getCodec() {
+        return RpgLevel.CODEC;
+    }
+
+    @Override
+    protected String getFolder() {
+        return "rpgdata/level";
+    }
+
+    @Override
+    protected String getNameForLog() {
+        return "rpg level";
     }
 
     @Override

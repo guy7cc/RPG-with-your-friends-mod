@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.github.guy7cc.RpgwMod;
@@ -22,46 +23,29 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DimensionDataProvider implements DataProvider {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-
-    private final DataGenerator generator;
-
-    public DimensionDataProvider(DataGenerator gen, ExistingFileHelper exFileHelper){
-        generator = gen;
+public class DimensionDataProvider extends RpgwSimpleDataProvider<DimensionData> {
+    public DimensionDataProvider(DataGenerator gen){
+        super(gen);
     }
 
     @Override
-    public void run(HashCache pCache){
-        HashMap<String, DimensionData> map = new HashMap<>();
-
-        register(map);
-
-        for(Map.Entry<String, DimensionData> entry : map.entrySet()){
-            DataResult<JsonElement> result = DimensionData.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
-            if(result.result().isPresent()){
-                JsonObject json = (JsonObject)result.result().get();
-                save(pCache, json, entry.getKey());
-            } else {
-                LOGGER.error(result.error().get().message());
-            }
-        }
-    }
-
-    private void register(Map<String, DimensionData> map){
+    protected void register(Map<String, DimensionData> map){
         map.put("test", new DimensionData(RpgwDimensions.RPGW_DEBUG_DIMENSION_KEY.location(), "Debug World", "Coordinate (∞, 0)"));
     }
 
-    public void save(HashCache cache, JsonObject stateJson, String name){
-        Path mainOutput = generator.getOutputFolder();
-        String pathSuffix = "data/" + RpgwMod.MOD_ID + "/rpgdata/dimension/" + name + ".json";
-        Path outputPath = mainOutput.resolve(pathSuffix);
-        try {
-            DataProvider.save(GSON, cache, stateJson, outputPath);
-        } catch (IOException e) {
-            LOGGER.error("Couldn't save dimension data to {}", outputPath, e);
-        }
+    @Override
+    protected Codec<DimensionData> getCodec() {
+        return DimensionData.CODEC;
+    }
+
+    @Override
+    protected String getFolder() {
+        return "rpgdata/dimension";
+    }
+
+    @Override
+    protected String getNameForLog() {
+        return "dimension data";
     }
 
     @Override
