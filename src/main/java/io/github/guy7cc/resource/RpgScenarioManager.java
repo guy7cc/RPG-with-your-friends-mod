@@ -3,6 +3,7 @@ package io.github.guy7cc.resource;
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import io.github.guy7cc.RpgwMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -20,7 +21,7 @@ public class RpgScenarioManager extends SimpleJsonResourceReloadListener {
 
     public static final RpgScenarioManager instance = new RpgScenarioManager();
 
-    private Map<String, RpgScenario> map;
+    private Map<ResourceLocation, RpgScenario> map = new HashMap<>();
 
     public RpgScenarioManager() {
         super(GSON, "rpgdata/level");
@@ -28,21 +29,21 @@ public class RpgScenarioManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        map = new HashMap<>();
-        map.put("default", RpgScenario.DEFAULT);
+        map.clear();
+        map.put(new ResourceLocation(RpgwMod.MOD_ID, "default"), RpgScenario.DEFAULT);
         for(Map.Entry<ResourceLocation, JsonElement> entry : pObject.entrySet()){
             ResourceLocation resourcelocation = entry.getKey();
             try {
                 JsonObject json = GsonHelper.convertToJsonObject(entry.getValue(), "top element");
                 RpgScenario scenario = RpgScenario.CODEC.parse(JsonOps.INSTANCE, json).result().orElseThrow();
-                map.put(resourcelocation.getPath(), scenario);
+                map.put(resourcelocation, scenario);
             } catch (IllegalArgumentException | JsonParseException | NoSuchElementException exception) {
                 LOGGER.error("Parsing error loading rpg scenario {}", resourcelocation, exception);
             }
         }
     }
 
-    public RpgScenario get(String name){
-        return map.get(name);
+    public RpgScenario get(ResourceLocation location){
+        return map.get(location);
     }
 }

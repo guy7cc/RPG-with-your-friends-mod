@@ -180,8 +180,9 @@ public class RpgStageScreen extends Screen {
     }
 
     private void setActiveScenario(int slot){
+        if(slot < 0 || stage.scenarios().size() <= slot) return;
         activeSlot = slot;
-        String key = 0 <= activeSlot && activeSlot < stage.scenarios().size() ? stage.scenarios().get(activeSlot) : "";
+        ResourceLocation key = stage.scenarios().get(activeSlot);
         activeScenario = RpgScenarioManager.instance.get(key);
     }
 

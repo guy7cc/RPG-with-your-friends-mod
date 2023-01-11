@@ -17,6 +17,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.slf4j.Logger;
 
@@ -76,18 +77,20 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         public static final Codec<Buy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemStack.CODEC.fieldOf("itemstack").forGetter(Buy::getItemStack),
                 Codec.LONG.fieldOf("price").forGetter(sell -> sell.price),
-                Codec.optionalField("next", Codec.pair(Codec.INT.fieldOf("count").codec(), Codec.STRING.fieldOf("name").codec()).listOf()).forGetter(sell -> sell.next)
+                Codec.optionalField("next", Codec.pair(Codec.INT.fieldOf("count").codec(), ResourceLocation.CODEC.fieldOf("name").codec()).listOf()).forGetter(sell -> sell.next)
         ).apply(instance, Buy::new));
+
+        public static final Buy DEFAULT = new Buy(new ItemStack(Items.BARRIER), 1000, Optional.empty());
 
         private long price;
         // If you buy A times, a sell element named B will be added.
-        private Optional<List<Pair<Integer, String>>> next;
+        private Optional<List<Pair<Integer, ResourceLocation>>> next;
 
         public Buy(){
             this(ItemStack.EMPTY.copy(), 0, Optional.empty());
         }
 
-        public Buy(ItemStack itemStack, long price, Optional<List<Pair<Integer, String>>> next) {
+        public Buy(ItemStack itemStack, long price, Optional<List<Pair<Integer, ResourceLocation>>> next) {
             super(itemStack);
             this.price = price;
             this.next = next;
@@ -109,10 +112,10 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         }
 
         public TraderDataElement copy(){
-            List<Pair<Integer, String>> list = next.orElse(null);
+            List<Pair<Integer, ResourceLocation>> list = next.orElse(null);
             if(list != null){
-                List<Pair<Integer, String>> newList = new ArrayList<>();
-                for(Pair<Integer, String> pair : list){
+                List<Pair<Integer, ResourceLocation>> newList = new ArrayList<>();
+                for(Pair<Integer, ResourceLocation> pair : list){
                     newList.add(new Pair<>(pair.getFirst(), pair.getSecond()));
                 }
                 return new Buy(itemStack.copy(), price, Optional.of(newList));
@@ -120,11 +123,11 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         }
 
         public List<Buy> confirmTrade(int count){
-            List<Pair<Integer, String>> list = next.orElse(null);
+            List<Pair<Integer, ResourceLocation>> list = next.orElse(null);
             List<Buy> add = new ArrayList<>();
             if(list != null){
-                List<Pair<Integer, String>> newList = new ArrayList<>();
-                for(Pair<Integer, String> pair : list){
+                List<Pair<Integer, ResourceLocation>> newList = new ArrayList<>();
+                for(Pair<Integer, ResourceLocation> pair : list){
                     if(pair.getFirst() <= count){
                         Buy buy = TraderDataManager.instance.getBuy(pair.getSecond());
                         if(buy != null) add.add(buy);
@@ -141,13 +144,13 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         public CompoundTag serializeNBT() {
             CompoundTag tag = super.serializeNBT();
             tag.putLong("Price", this.price);
-            List<Pair<Integer, String>> list = next.orElse(null);
+            List<Pair<Integer, ResourceLocation>> list = next.orElse(null);
             if(list != null){
                 CompoundTag n = new CompoundTag();
                 for(int i = 0; i < list.size(); i++){
                     CompoundTag p = new CompoundTag();
                     p.putInt("Count", list.get(i).getFirst());
-                    p.putString("Name", list.get(i).getSecond());
+                    p.putString("Name", list.get(i).getSecond().toString());
                     n.put(String.format("%02d", i), p);
                 }
                 tag.put("Next", n);
@@ -160,11 +163,11 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
             super.deserializeNBT(nbt);
             price = nbt.getLong("Price");
             if(nbt.contains("Next")){
-                List<Pair<Integer, String>> list = new ArrayList<>();
+                List<Pair<Integer, ResourceLocation>> list = new ArrayList<>();
                 CompoundTag n = nbt.getCompound("Next");
                 for(String key : n.getAllKeys()){
                     CompoundTag p = n.getCompound(key);
-                    Pair<Integer, String> pair = new Pair<>(p.getInt("Count"), p.getString("Name"));
+                    Pair<Integer, ResourceLocation> pair = new Pair<>(p.getInt("Count"), new ResourceLocation(p.getString("Name")));
                     list.add(pair);
                 }
                 next = Optional.of(list);
@@ -179,22 +182,24 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
                 Codec.INT.fieldOf("count").forGetter(buy -> buy.count),
                 Codec.LONG.fieldOf("available_from").forGetter(buy -> buy.availableFrom.toEpochMilli()),
                 Codec.LONG.fieldOf("delay").forGetter(buy -> buy.delay),
-                Codec.optionalField("next", Codec.STRING.listOf()).forGetter(buy -> buy.next)
+                Codec.optionalField("next", ResourceLocation.CODEC.listOf()).forGetter(buy -> buy.next)
         ).apply(instance, Sell::new));
         private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+        public static final Sell DEFAULT = new Sell(new ItemStack(Items.BARRIER), 1000, 1, Instant.ofEpochMilli(0), 1000, Optional.empty());
 
         private long price;
         private int count;
         private Instant availableFrom;
         private long delay;
         // If you buy all of these items, this element will be deleted, and a buy element named this will be added.
-        private Optional<List<String>> next;
+        private Optional<List<ResourceLocation>> next;
 
         public Sell(){
             this(ItemStack.EMPTY.copy(), 0, 0, Instant.ofEpochMilli(0), 0, Optional.empty());
         }
 
-        public Sell(ItemStack itemStack, long price, int count, Instant availableFrom, long delay, Optional<List<String>> next) {
+        public Sell(ItemStack itemStack, long price, int count, Instant availableFrom, long delay, Optional<List<ResourceLocation>> next) {
             super(itemStack);
             this.price = price;
             this.count = count;
@@ -207,7 +212,7 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
             super(tag);
         }
 
-        public Sell(ItemStack itemStack, long price, int count, long longAvailableFrom, long delay, Optional<List<String>> next){
+        public Sell(ItemStack itemStack, long price, int count, long longAvailableFrom, long delay, Optional<List<ResourceLocation>> next){
             super(itemStack);
             this.price = price;
             this.count = count;
@@ -268,9 +273,9 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         }
 
         public TraderDataElement copy(){
-            List<String> list = next.orElse(null);
+            List<ResourceLocation> list = next.orElse(null);
             if(list != null){
-                List<String> newList = new ArrayList<>(list);
+                List<ResourceLocation> newList = new ArrayList<>(list);
                 return new Sell(itemStack.copy(), price, count, availableFrom, delay, Optional.of(newList));
             } else return new Sell(itemStack.copy(), price, count, Instant.ofEpochMilli(availableFrom.toEpochMilli()), delay, Optional.empty());
         }
@@ -279,9 +284,9 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
             this.count -= count;
             List<Sell> add = new ArrayList<>();
             if(this.count <= 0){
-                List<String> list = next.orElse(null);
+                List<ResourceLocation> list = next.orElse(null);
                 if(list != null){
-                    for(String key : list){
+                    for(ResourceLocation key : list){
                         Sell sell = TraderDataManager.instance.getSell(key);
                         if(sell != null) add.add(sell);
                     }
@@ -297,12 +302,12 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
             tag.putInt("Count", count);
             tag.putLong("AvailableFrom", availableFrom.toEpochMilli());
             tag.putLong("Delay", delay);
-            List<String> list = next.orElse(null);
+            List<ResourceLocation> list = next.orElse(null);
             if(list != null){
                 CompoundTag n = new CompoundTag();
                 for(int i = 0; i < list.size(); i++){
                     CompoundTag p = new CompoundTag();
-                    p.putString("Name", list.get(i));
+                    p.putString("Name", list.get(i).toString());
                     n.put(String.format("%02d", i), p);
                 }
                 tag.put("Next", n);
@@ -318,11 +323,11 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
             availableFrom = Instant.ofEpochMilli(nbt.getLong("AvailableFrom"));
             delay = nbt.getLong("Delay");
             if(nbt.contains("Next")){
-                List<String> list = new ArrayList<>();
+                List<ResourceLocation> list = new ArrayList<>();
                 CompoundTag n = nbt.getCompound("Next");
                 for(String key : n.getAllKeys()){
                     CompoundTag p = n.getCompound(key);
-                    list.add(p.getString("Name"));
+                    list.add(new ResourceLocation(p.getString("Name")));
                 }
                 next = Optional.of(list);
             } else next = Optional.empty();
@@ -333,18 +338,20 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         public static final Codec<Barter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemStack.CODEC.fieldOf("itemstack").forGetter(Barter::getItemStack),
                 ItemStack.CODEC.fieldOf("requirement").forGetter(barter -> barter.requirement),
-                Codec.optionalField("next", Codec.pair(Codec.INT.fieldOf("count").codec(), Codec.STRING.fieldOf("name").codec()).listOf()).forGetter(barter -> barter.next)
+                Codec.optionalField("next", Codec.pair(Codec.INT.fieldOf("count").codec(), ResourceLocation.CODEC.fieldOf("name").codec()).listOf()).forGetter(barter -> barter.next)
         ).apply(instance, Barter::new));
+
+        public static final Barter DEFAULT = new Barter(new ItemStack(Items.BARRIER), new ItemStack(Items.BARRIER), Optional.empty());
 
         private ItemStack requirement;
         // If you buy A times, a barter element named B will be added.
-        private Optional<List<Pair<Integer, String>>> next;
+        private Optional<List<Pair<Integer, ResourceLocation>>> next;
 
         public Barter(){
             this(ItemStack.EMPTY.copy(), ItemStack.EMPTY.copy(), Optional.empty());
         }
 
-        public Barter(ItemStack itemStack, ItemStack requirement, Optional<List<Pair<Integer, String>>> next){
+        public Barter(ItemStack itemStack, ItemStack requirement, Optional<List<Pair<Integer, ResourceLocation>>> next){
             super(itemStack);
             this.requirement = requirement;
             this.next = next;
@@ -378,11 +385,11 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         }
 
         public List<Barter> confirmTrade(int count){
-            List<Pair<Integer, String>> list = next.orElse(null);
+            List<Pair<Integer, ResourceLocation>> list = next.orElse(null);
             List<Barter> add = new ArrayList<>();
             if(list != null){
-                List<Pair<Integer, String>> newList = new ArrayList<>();
-                for(Pair<Integer, String> pair : list){
+                List<Pair<Integer, ResourceLocation>> newList = new ArrayList<>();
+                for(Pair<Integer, ResourceLocation> pair : list){
                     if(pair.getFirst() <= count){
                         Barter barter = TraderDataManager.instance.getBarter(pair.getSecond());
                         if(barter != null) add.add(barter);
@@ -399,13 +406,13 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         public CompoundTag serializeNBT() {
             CompoundTag tag = super.serializeNBT();
             tag.put("Requirement", requirement.serializeNBT());
-            List<Pair<Integer, String>> list = next.orElse(null);
+            List<Pair<Integer, ResourceLocation>> list = next.orElse(null);
             if(list != null){
                 CompoundTag n = new CompoundTag();
                 for(int i = 0; i < list.size(); i++){
                     CompoundTag p = new CompoundTag();
                     p.putInt("Count", list.get(i).getFirst());
-                    p.putString("Name", list.get(i).getSecond());
+                    p.putString("Name", list.get(i).getSecond().toString());
                     n.put(String.format("%02d", i), p);
                 }
                 tag.put("Next", n);
@@ -418,11 +425,11 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
             super.deserializeNBT(nbt);
             requirement = ItemStack.of(nbt.getCompound("Requirement"));
             if(nbt.contains("Next")){
-                List<Pair<Integer, String>> list = new ArrayList<>();
+                List<Pair<Integer, ResourceLocation>> list = new ArrayList<>();
                 CompoundTag n = nbt.getCompound("Next");
                 for(String key : n.getAllKeys()){
                     CompoundTag p = n.getCompound(key);
-                    Pair<Integer, String> pair = new Pair<>(p.getInt("Count"), p.getString("Name"));
+                    Pair<Integer, ResourceLocation> pair = new Pair<>(p.getInt("Count"), new ResourceLocation(p.getString("Name")));
                     list.add(pair);
                 }
                 next = Optional.of(list);

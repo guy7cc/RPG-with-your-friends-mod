@@ -13,6 +13,7 @@ import io.github.guy7cc.resource.TraderData;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -117,7 +118,7 @@ public class TraderDataProvider implements DataProvider {
         //[a-z0-9/._-]
         sellMap.put("sell_wheat", new TraderDataElement.Sell(new ItemStack(Items.WHEAT), 3, 2, 0, 10000, Optional.of(
                 List.of(
-                        "sell_wheat"
+                        new ResourceLocation(RpgwMod.MOD_ID, "sell_wheat")
                 )
         )));
         sellMap.put("selltest", new TraderDataElement.Sell(new ItemStack(Items.BELL), 250, 5, Instant.ofEpochMilli(0), 10000, Optional.empty()));
@@ -127,7 +128,7 @@ public class TraderDataProvider implements DataProvider {
         //[a-z0-9/._-]
         barterMap.put("bartertest", new TraderDataElement.Barter(new ItemStack(Items.ENDER_PEARL), new ItemStack(Items.TROPICAL_FISH), Optional.of(
                 List.of(
-                        new Pair<>(1, "bartertest")
+                        new Pair<>(1, new ResourceLocation(RpgwMod.MOD_ID, "bartertest"))
                 )
         )));
     }

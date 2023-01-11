@@ -1,6 +1,6 @@
 {
   "title": "Debug Stage",
   "scenarios": [
-    "test_level"
+    "rpgwmod:test_level"
   ]
 }

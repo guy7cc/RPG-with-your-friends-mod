@@ -76,7 +76,7 @@
       "available_from": 0,
       "delay": 10000,
       "next": [
-        "sell_wheat"
+        "rpgwmod:sell_wheat"
       ],
       "itemstack": {
         "id": "minecraft:wheat",
@@ -98,7 +98,7 @@
       },
       "next": [
         {
-          "name": "bartertest",
+          "name": "rpgwmod:bartertest",
           "count": 1
         }
       ]
