@@ -1,12 +1,10 @@
 package io.github.guy7cc.resource;
 
-import com.google.gson.JsonArray;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.guy7cc.util.BlockStateJsonConverter;
 import net.minecraft.core.BlockPos;
@@ -22,36 +20,23 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.function.Function;
 
-public abstract class RpgLevelSetUp {
-    public static final Codec<RpgLevelSetUp> CODEC = Codec.either(
-            SetBlock.CODEC,
-            Codec.either(Fill.CODEC, FromNbt.CODEC)
-                    .flatComapMap(
-                            either -> either.map(Function.identity(), Function.identity()),
-                            setUp -> {
-                                if(setUp instanceof Fill) return DataResult.success(Either.left((Fill)setUp));
-                                if(setUp instanceof FromNbt) return DataResult.success(Either.right((FromNbt)setUp));
-                                return DataResult.error("The set up object is neither fill nor fromNbt!");
-                            })
-    ).flatComapMap(
-            either -> either.map(Function.identity(), Function.identity()),
-            setUp -> {
-                if(setUp instanceof SetBlock) return DataResult.success(Either.left((SetBlock)setUp));
-                if(setUp != null) return DataResult.success(Either.right(setUp));
-                return DataResult.error("The set up object is null!");
-            });
+public abstract class RpgScenarioSetUp {
+    public static final Codec<RpgScenarioSetUp> CODEC = CodecUtil.toParentCodec(RpgScenarioSetUp.class,
+            new CodecWithType<>(SetBlock.CODEC, SetBlock.class),
+            new CodecWithType<>(Fill.CODEC, Fill.class),
+            new CodecWithType<>(FromNbt.CODEC, FromNbt.class)
+    );
 
     protected static final Logger LOGGER = LogUtils.getLogger();
 
     public abstract void perform(MinecraftServer server);
 
-    public static class SetBlock extends RpgLevelSetUp {
+    public static class SetBlock extends RpgScenarioSetUp {
         public static final Codec<SetBlock> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("dimension").forGetter(i -> i.dimension),
                 ResourceLocation.CODEC.fieldOf("id").forGetter(i -> i.id),
@@ -118,7 +103,7 @@ public abstract class RpgLevelSetUp {
         }
     }
 
-    public static class Fill extends RpgLevelSetUp {
+    public static class Fill extends RpgScenarioSetUp {
         public static final Codec<Fill> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("dimension").forGetter(i -> i.dimension),
                 ResourceLocation.CODEC.fieldOf("id").forGetter(i -> i.id),
@@ -150,7 +135,7 @@ public abstract class RpgLevelSetUp {
         }
     }
 
-    public static class FromNbt extends RpgLevelSetUp {
+    public static class FromNbt extends RpgScenarioSetUp {
         public static final Codec<FromNbt> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("dimension").forGetter(i -> i.dimension),
                 BlockPos.CODEC.fieldOf("pos").forGetter(i -> i.pos),

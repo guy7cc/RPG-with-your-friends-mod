@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "rpgwmod:block/rpg_stage"
+    },
+    "facing=south": {
+      "model": "rpgwmod:block/rpg_stage",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "rpgwmod:block/rpg_stage",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "rpgwmod:block/rpg_stage",
+      "y": 90
+    }
+  }
+}

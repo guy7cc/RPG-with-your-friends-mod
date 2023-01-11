@@ -8,7 +8,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.github.guy7cc.RpgwMod;
-import io.github.guy7cc.resource.RpgLevel;
 import io.github.guy7cc.resource.TraderDataElement;
 import io.github.guy7cc.resource.TraderData;
 import net.minecraft.data.DataGenerator;

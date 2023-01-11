@@ -73,5 +73,11 @@ public class RpgwJaJpLanguageProvider extends RpgwAbstractLanguageProvider {
         addCommands(command, "jreqAccepted", "参加リクエストは受理されました。");
         addCommands(command, "jreqDenied", "参加リクエストは却下されました。");
         addCommands(command, "jreqFail", "参加リクエストの処理に失敗しました。");
+
+        addRpgStageTitle("default", "これはステージタイトルのデフォルトです。");
+
+        addRpgScenarioTitle("default", "これはシナリオタイトルのデフォルトです。");
+
+        addRpgScenarioInfo("default", "これはシナリオ情報テキストのデフォルトです。");
     }
 }

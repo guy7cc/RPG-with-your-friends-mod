@@ -12,7 +12,6 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -136,7 +135,7 @@ public class PartyMenuScreen extends Screen {
         this.partySelectionList.updatePartyEntryList();
         refreshButtons();
         if(this.partyList != null){
-            Party party = this.partyList.getParty(this.getMinecraft().player.getUUID());
+            Party party = this.partyList.byPlayer(this.getMinecraft().player.getUUID());
             if(party != null && party.getMemberList().size() > 0){
                 AbstractClientPlayer leader = null;
                 for(AbstractClientPlayer p : this.minecraft.level.players()){

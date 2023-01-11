@@ -72,5 +72,11 @@ public class RpgwEnUsLanguageProvider extends RpgwAbstractLanguageProvider{
         addCommands(command, "jreqAccepted", "The join request has been accepted.");
         addCommands(command, "jreqDenied", "The join request has been denied.");
         addCommands(command, "jreqFail", "Failed to process the join request.");
+
+        addRpgStageTitle("default", "This is a title of the default stage.");
+
+        addRpgScenarioTitle("default", "This is a title of the default scenario.");
+
+        addRpgScenarioInfo("default", "This is a information text of the default scenario.");
     }
 }
