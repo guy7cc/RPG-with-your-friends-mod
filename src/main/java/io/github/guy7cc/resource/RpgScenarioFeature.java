@@ -6,8 +6,8 @@ import org.apache.commons.lang3.NotImplementedException;
 
 public abstract class RpgScenarioFeature {
     public static final Codec<RpgScenarioFeature> CODEC = CodecUtil.toParentCodec(RpgScenarioFeature.class,
-            new CodecWithType<>(Adventure.CODEC, Adventure.class),
-            new CodecWithType<>(KeepInventory.CODEC, KeepInventory.class)
+            new CodecUtil.WithType<>(Adventure.CODEC, Adventure.class),
+            new CodecUtil.WithType<>(KeepInventory.CODEC, KeepInventory.class)
     );
 
     public abstract void apply();

@@ -1,10 +1,8 @@
 package io.github.guy7cc.resource;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.guy7cc.util.BlockStateJsonConverter;
 import net.minecraft.core.BlockPos;
@@ -23,13 +21,12 @@ import net.minecraft.world.level.block.state.properties.Property;
 import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.function.Function;
 
 public abstract class RpgScenarioSetUp {
     public static final Codec<RpgScenarioSetUp> CODEC = CodecUtil.toParentCodec(RpgScenarioSetUp.class,
-            new CodecWithType<>(SetBlock.CODEC, SetBlock.class),
-            new CodecWithType<>(Fill.CODEC, Fill.class),
-            new CodecWithType<>(FromNbt.CODEC, FromNbt.class)
+            new CodecUtil.WithType<>(SetBlock.CODEC, SetBlock.class),
+            new CodecUtil.WithType<>(Fill.CODEC, Fill.class),
+            new CodecUtil.WithType<>(FromNbt.CODEC, FromNbt.class)
     );
 
     protected static final Logger LOGGER = LogUtils.getLogger();

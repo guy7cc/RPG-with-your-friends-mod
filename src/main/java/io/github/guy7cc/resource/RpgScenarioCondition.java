@@ -3,23 +3,20 @@ package io.github.guy7cc.resource;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.guy7cc.rpg.Party;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class RpgScenarioCondition {
     public static final Codec<RpgScenarioCondition> CODEC = CodecUtil.toParentCodec(RpgScenarioCondition.class, List.of(
-            new CodecWithType<>(MaxPlayer.CODEC, MaxPlayer.class),
-            new CodecWithType<>(PassedScenario.CODEC, PassedScenario.class),
-            new CodecWithType<>(AllowedItems.CODEC, AllowedItems.class),
-            new CodecWithType<>(BannedItems.CODEC, BannedItems.class)
+            new CodecUtil.WithType<>(MaxPlayer.CODEC, MaxPlayer.class),
+            new CodecUtil.WithType<>(PassedScenario.CODEC, PassedScenario.class),
+            new CodecUtil.WithType<>(AllowedItems.CODEC, AllowedItems.class),
+            new CodecUtil.WithType<>(BannedItems.CODEC, BannedItems.class)
     ));
 
     public abstract Collection<ServerPlayer> test(Party party);

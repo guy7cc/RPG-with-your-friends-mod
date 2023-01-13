@@ -3,22 +3,19 @@ package io.github.guy7cc.resource;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class RpgScenarioReward {
     public static final Codec<RpgScenarioReward> CODEC = CodecUtil.toParentCodec(RpgScenarioReward.class,
-            new CodecWithType<>(Exp.CODEC, Exp.class),
-            new CodecWithType<>(ExtendMaxExp.CODEC, ExtendMaxExp.class),
-            new CodecWithType<>(Items.CODEC, Items.class)
+            new CodecUtil.WithType<>(Exp.CODEC, Exp.class),
+            new CodecUtil.WithType<>(ExtendMaxExp.CODEC, ExtendMaxExp.class),
+            new CodecUtil.WithType<>(Items.CODEC, Items.class)
     );
 
     protected static final Logger LOGGER = LogManager.getLogger();
