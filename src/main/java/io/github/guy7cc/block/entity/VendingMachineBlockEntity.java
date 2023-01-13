@@ -21,7 +21,16 @@ public class VendingMachineBlockEntity extends BlockEntity implements ITrader {
     public VendingMachineBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         super(RpgwBlockEntities.VENDING_MACHINE.get(), pWorldPosition, pBlockState);
         defaultData = new ResourceLocation(RpgwMod.MOD_ID, "default");
-        data = TraderDataManager.instance.getData(defaultData);
+        data = TraderDataManager.instance.getDataOrDefault(defaultData);
+    }
+
+    public ResourceLocation getDefaultData() {
+        return defaultData;
+    }
+
+    public void setDefaultData(ResourceLocation location){
+        defaultData = TraderDataManager.instance.containsDataKey(location) ? location : new ResourceLocation(RpgwMod.MOD_ID, "default");
+        data = TraderDataManager.instance.getDataOrDefault(defaultData);
     }
 
     @Override
@@ -39,11 +48,7 @@ public class VendingMachineBlockEntity extends BlockEntity implements ITrader {
         if(pTag.contains("TraderData")){
             data = new TraderData(pTag.getCompound("TraderData"));
         } else {
-            data = TraderDataManager.instance.getData(defaultData);
-            if(data == null){
-                defaultData = new ResourceLocation(RpgwMod.MOD_ID, "default");
-                data = TraderDataManager.instance.getData(defaultData);
-            }
+            data = TraderDataManager.instance.getDataOrDefault(defaultData);
         }
     }
 

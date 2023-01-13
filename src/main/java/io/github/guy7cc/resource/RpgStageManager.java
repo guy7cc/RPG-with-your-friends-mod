@@ -43,7 +43,11 @@ public class RpgStageManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public RpgStage get(ResourceLocation location){
-        return map.get(location);
+    public boolean containsKey(ResourceLocation location){
+        return map.containsKey(location);
+    }
+
+    public RpgStage getOrDefault(ResourceLocation location){
+        return map.containsKey(location) ? map.get(location) : RpgStage.DEFAULT;
     }
 }

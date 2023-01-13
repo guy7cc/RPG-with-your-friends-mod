@@ -1,6 +1,5 @@
 package io.github.guy7cc.resource;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
@@ -78,23 +77,27 @@ public class TraderDataManager extends SimpleJsonResourceReloadListener {
         LOGGER.info("Loaded {} trader barter elements", barterMap.size());
     }
 
-    public TraderDataElement.Buy getBuy(ResourceLocation key) {
+    public TraderDataElement.Buy getBuyOrDefault(ResourceLocation key) {
         TraderDataElement.Buy buy = buyMap.get(key);
-        return buy != null ? (TraderDataElement.Buy) buy.copy() : null;
+        return (TraderDataElement.Buy) (buy != null ? buy : TraderDataElement.Buy.DEFAULT).copy();
     }
 
-    public TraderDataElement.Sell getSell(ResourceLocation key) {
+    public TraderDataElement.Sell getSellOrDefault(ResourceLocation key) {
         TraderDataElement.Sell sell = sellMap.get(key);
-        return sell != null ? (TraderDataElement.Sell) sell.copy() : null;
+        return (TraderDataElement.Sell) (sell != null ? sell : TraderDataElement.Sell.DEFAULT).copy();
     }
 
-    public TraderDataElement.Barter getBarter(ResourceLocation key) {
+    public TraderDataElement.Barter getBarterOrDefault(ResourceLocation key) {
         TraderDataElement.Barter barter = barterMap.get(key);
-        return barter != null ? (TraderDataElement.Barter) barter.copy() : null;
+        return (TraderDataElement.Barter) (barter != null ? barter : TraderDataElement.Barter.DEFAULT).copy();
     }
 
-    public TraderData getData(ResourceLocation key) {
+    public boolean containsDataKey(ResourceLocation key) {
+        return dataMap.containsKey(key);
+    }
+
+    public TraderData getDataOrDefault(ResourceLocation key) {
         TraderData data = dataMap.get(key);
-        return data != null ? (TraderData) data.copy() : null;
+        return data != null ? data.copy() : TraderData.DEFAULT.copy();
     }
 }

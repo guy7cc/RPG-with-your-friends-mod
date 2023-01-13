@@ -5,11 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.guy7cc.RpgwMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 
 public record DimensionData(ResourceLocation key, String title, String subtitle) {
     public static final Codec<DimensionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -21,7 +17,7 @@ public record DimensionData(ResourceLocation key, String title, String subtitle)
     public static final DimensionData DEFAULT = new DimensionData(new ResourceLocation(RpgwMod.MOD_ID, "rpgw_debug_dimension"), "Debug World", "Coordinate (∞, 0)");
 
     //client-side
-    public void showTitleIfKeyMatches(){
+    public void show(){
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.gui.setTitle(new TextComponent(title));
         minecraft.gui.setSubtitle(new TextComponent(subtitle));

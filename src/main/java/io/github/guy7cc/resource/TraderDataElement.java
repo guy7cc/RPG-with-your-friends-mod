@@ -21,7 +21,6 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.slf4j.Logger;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -129,7 +128,7 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
                 List<Pair<Integer, ResourceLocation>> newList = new ArrayList<>();
                 for(Pair<Integer, ResourceLocation> pair : list){
                     if(pair.getFirst() <= count){
-                        Buy buy = TraderDataManager.instance.getBuy(pair.getSecond());
+                        Buy buy = TraderDataManager.instance.getBuyOrDefault(pair.getSecond());
                         if(buy != null) add.add(buy);
                     } else{
                         newList.add(new Pair<>(pair.getFirst() - count, pair.getSecond()));
@@ -287,7 +286,7 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
                 List<ResourceLocation> list = next.orElse(null);
                 if(list != null){
                     for(ResourceLocation key : list){
-                        Sell sell = TraderDataManager.instance.getSell(key);
+                        Sell sell = TraderDataManager.instance.getSellOrDefault(key);
                         if(sell != null) add.add(sell);
                     }
                 }
@@ -391,7 +390,7 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
                 List<Pair<Integer, ResourceLocation>> newList = new ArrayList<>();
                 for(Pair<Integer, ResourceLocation> pair : list){
                     if(pair.getFirst() <= count){
-                        Barter barter = TraderDataManager.instance.getBarter(pair.getSecond());
+                        Barter barter = TraderDataManager.instance.getBarterOrDefault(pair.getSecond());
                         if(barter != null) add.add(barter);
                     } else{
                         newList.add(new Pair<>(pair.getFirst() - count, pair.getSecond()));

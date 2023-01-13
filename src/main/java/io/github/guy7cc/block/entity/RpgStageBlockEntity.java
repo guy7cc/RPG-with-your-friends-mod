@@ -2,6 +2,7 @@ package io.github.guy7cc.block.entity;
 
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.block.RpgwBlocks;
+import io.github.guy7cc.resource.RpgStageManager;
 import io.github.guy7cc.resource.TraderData;
 import io.github.guy7cc.resource.TraderDataManager;
 import net.minecraft.client.Minecraft;
@@ -33,6 +34,14 @@ public class RpgStageBlockEntity extends BlockEntity {
         renderBoundingBox = new AABB(pWorldPosition).inflate(0, 1d, 0);
     }
 
+    public ResourceLocation getStage(){
+        return stage;
+    }
+
+    public void setStage(ResourceLocation stage){
+        this.stage = RpgStageManager.instance.containsKey(stage) ? stage : new ResourceLocation(RpgwMod.MOD_ID, "default");
+    }
+
     @Override
     public AABB getRenderBoundingBox() {
         return renderBoundingBox;
@@ -52,10 +61,6 @@ public class RpgStageBlockEntity extends BlockEntity {
         pBlockEntity.swordTick = Math.max(0, Math.min(20, pBlockEntity.swordTick));
     }
 
-    public ResourceLocation getStage(){
-        return stage;
-    }
-
     public int getSwordTick(){
         return swordTick;
     }
@@ -67,7 +72,8 @@ public class RpgStageBlockEntity extends BlockEntity {
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        stage = pTag.contains("Stage") ? new ResourceLocation(pTag.getString("Stage")) : new ResourceLocation(RpgwMod.MOD_ID, "default");
+        ResourceLocation stage = new ResourceLocation(pTag.getString("Stage"));
+        this.stage = RpgStageManager.instance.containsKey(stage) ? stage : new ResourceLocation(RpgwMod.MOD_ID, "default");
     }
 
     @Override

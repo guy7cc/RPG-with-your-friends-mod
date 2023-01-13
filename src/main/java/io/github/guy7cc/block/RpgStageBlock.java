@@ -2,6 +2,8 @@ package io.github.guy7cc.block;
 
 import io.github.guy7cc.block.entity.RpgStageBlockEntity;
 import io.github.guy7cc.client.screen.RpgStageScreen;
+import io.github.guy7cc.client.screen.RpgwEditDataScreen;
+import io.github.guy7cc.item.RpgwItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -84,7 +86,11 @@ public class RpgStageBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if(pLevel.isClientSide && pLevel.getBlockEntity(pPos) instanceof RpgStageBlockEntity be){
-            Minecraft.getInstance().setScreen(new RpgStageScreen(be));
+            if(pPlayer.getItemInHand(pHand).is(RpgwItems.DEBUG_WRENCH.get())){
+                Minecraft.getInstance().setScreen(new RpgwEditDataScreen(pPos, be.getStage().toString()));
+            } else {
+                Minecraft.getInstance().setScreen(new RpgStageScreen(be));
+            }
         }
         return InteractionResult.sidedSuccess(pLevel.isClientSide);
     }

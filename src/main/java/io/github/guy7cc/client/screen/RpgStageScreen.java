@@ -44,8 +44,7 @@ public class RpgStageScreen extends Screen {
 
     public RpgStageScreen(RpgStageBlockEntity be) {
         super(TextComponent.EMPTY);
-        stage = RpgStageManager.instance.get(be.getStage());
-        if(stage == null) stage = RpgStage.DEFAULT;
+        stage = RpgStageManager.instance.getOrDefault(be.getStage());
         setActiveScenario(0);
     }
 
@@ -183,7 +182,7 @@ public class RpgStageScreen extends Screen {
         if(slot < 0 || stage.scenarios().size() <= slot) return;
         activeSlot = slot;
         ResourceLocation key = stage.scenarios().get(activeSlot);
-        activeScenario = RpgScenarioManager.instance.get(key);
+        activeScenario = RpgScenarioManager.instance.getOrDefault(key);
     }
 
     private int getStageIndex(double mouseX, double mouseY){

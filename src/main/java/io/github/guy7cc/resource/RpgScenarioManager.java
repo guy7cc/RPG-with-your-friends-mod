@@ -43,7 +43,7 @@ public class RpgScenarioManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public RpgScenario get(ResourceLocation location){
-        return map.get(location);
+    public RpgScenario getOrDefault(ResourceLocation location){
+        return map.containsKey(location) ? map.get(location) : RpgScenario.DEFAULT;
     }
 }

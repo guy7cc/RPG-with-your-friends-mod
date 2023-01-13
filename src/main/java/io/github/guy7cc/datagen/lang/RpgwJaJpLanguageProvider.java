@@ -20,8 +20,6 @@ public class RpgwJaJpLanguageProvider extends RpgwAbstractLanguageProvider {
         add(RpgwBlocks.INACTIVATED_RPGW_SPAWNER.get(), "不活性RPGスポナー");
         add(RpgwBlocks.VENDING_MACHINE.get(), "自動販売機");
 
-        add(RpgwItems.BORDER_WRENCH.get(), "レンチ（ボーダー用）");
-        add(RpgwItems.SPAWNER_WRENCH.get(), "レンチ（スポナー用）");
         add(RpgwItems.IRON_COIN.get(), "硬貨 鉄");
         add(RpgwItems.COPPER_COIN.get(), "硬貨 銅");
         add(RpgwItems.SILVER_COIN.get(), "硬貨 銀");

@@ -16,7 +16,7 @@ public class RpgStageProvider extends RpgwSimpleDataProvider<RpgStage> {
 
     @Override
     protected void register(Map<String, RpgStage> map){
-        map.put("test_stage", new RpgStage("Debug Stage", List.of(new ResourceLocation(RpgwMod.MOD_ID, "test_level"))));
+        map.put("test_stage", new RpgStage("Debug Stage", List.of(new ResourceLocation(RpgwMod.MOD_ID, "default"))));
     }
 
     @Override

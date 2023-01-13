@@ -23,7 +23,7 @@ public class RpgwSpawnerBlockEntityRenderer implements BlockEntityRenderer<RpgwS
     @Override
     public void render(RpgwSpawnerBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         Player player = Minecraft.getInstance().player;
-        if(player.getMainHandItem().is(RpgwItems.SPAWNER_WRENCH.get()) || player.getOffhandItem().is(RpgwItems.SPAWNER_WRENCH.get())){
+        if(player.getMainHandItem().is(RpgwItems.DEBUG_WRENCH.get()) || player.getOffhandItem().is(RpgwItems.DEBUG_WRENCH.get())){
             BlockPos pos = pBlockEntity.getBlockPos();
             AABB spawnArea = pBlockEntity.getBaseSpawner().getSpawnArea();
             AABB playerArea = pBlockEntity.getBaseSpawner().getPlayerArea();
