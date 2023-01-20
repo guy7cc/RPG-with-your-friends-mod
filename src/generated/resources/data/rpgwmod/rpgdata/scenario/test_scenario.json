@@ -1,0 +1,75 @@
+{
+  "setUp": [
+    {
+      "pos": [
+        0,
+        99,
+        0
+      ],
+      "properties": [
+        {
+          "value": "bottom",
+          "name": "type"
+        },
+        {
+          "value": "false",
+          "name": "waterlogged"
+        }
+      ],
+      "dimension": "rpgwmod:rpgw_debug_dimension",
+      "id": "minecraft:stone_brick_slab"
+    }
+  ],
+  "initialReward": [
+    {
+      "exp": 100
+    },
+    {
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:diamond_axe",
+            "Count": 1,
+            "tag": {
+              "Damage": 0
+            }
+          },
+          "index": 0
+        },
+        {
+          "item": {
+            "id": "minecraft:name_tag",
+            "Count": 3
+          },
+          "index": 1
+        }
+      ]
+    }
+  ],
+  "repeatReward": [
+    {
+      "exp": 10
+    }
+  ],
+  "features": [
+    {
+      "adventure": true
+    },
+    {
+      "keepInventory": true
+    }
+  ],
+  "conditions": [
+    {
+      "max": 3
+    }
+  ],
+  "title": "{\"text\":\"Debug Scenario\"}",
+  "info": "{\"extra\":[{\"color\":\"#FF4444\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://github.com/guy7cc/RPG-with-your-friends-mod\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"Hover Event\"}},\"text\":\"Github repository\"},{\"text\":\"\\n\\n\\n\\n\"}],\"text\":\"\\n\\n\\n\\n\\n\\n\"}",
+  "spawnPoint": [
+    0,
+    100,
+    0
+  ],
+  "dimension": "rpgwmod:rpgw_debug_dimension"
+}

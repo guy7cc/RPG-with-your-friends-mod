@@ -26,6 +26,7 @@ public class RpgwMessageManager {
         INSTANCE = net;
 
         net.registerMessage(id(), ServerboundManagePartyPacket.class, ServerboundManagePartyPacket::toBytes, ServerboundManagePartyPacket::new, ServerboundManagePartyPacket::handle);
+        net.registerMessage(id(), ServerboundEditDataPacket.class, ServerboundEditDataPacket::toBytes, ServerboundEditDataPacket::new, ServerboundEditDataPacket::handle);
         net.registerMessage(id(), ServerboundEditBorderPacket.class, ServerboundEditBorderPacket::toBytes, ServerboundEditBorderPacket::new, ServerboundEditBorderPacket::handle);
         net.registerMessage(id(), ServerboundEditRpgwSpawnerBlockPacket.class, ServerboundEditRpgwSpawnerBlockPacket::toBytes, ServerboundEditRpgwSpawnerBlockPacket::new, ServerboundEditRpgwSpawnerBlockPacket::handle);
         net.registerMessage(id(), ServerboundConfirmTradeOnVendingMachinePacket.class, ServerboundConfirmTradeOnVendingMachinePacket::toBytes, ServerboundConfirmTradeOnVendingMachinePacket::new, ServerboundConfirmTradeOnVendingMachinePacket::handle);

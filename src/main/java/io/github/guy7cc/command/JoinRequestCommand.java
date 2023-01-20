@@ -6,10 +6,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.rpg.Party;
 import io.github.guy7cc.rpg.PartyList;
-import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.RangeArgument;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
@@ -46,8 +44,8 @@ public class JoinRequestCommand {
         ServerPlayer member = partyList.getServer().getPlayerList().getPlayer(uuid);
         Party partyById = partyList.byId(id);
         Party partyByLeader = partyList.byLeader(leader.getUUID());
-        if(partyById != null && partyByLeader != null && member != null && partyById == partyByLeader && !partyList.isInParty(uuid)){
-            partyById.addMember(uuid);
+        if(partyById != null && partyByLeader != null && member != null && partyById == partyByLeader && !partyList.inParty(uuid)){
+            partyList.joinParty(uuid, id);
             leader.displayClientMessage(new TranslatableComponent("commands.rpgw.jreqAccepted"), false);
             member.displayClientMessage(new TranslatableComponent("commands.rpgw.jreqAccepted"), false);
         }
@@ -67,7 +65,7 @@ public class JoinRequestCommand {
         ServerPlayer member = partyList.getServer().getPlayerList().getPlayer(uuid);
         Party partyById = partyList.byId(id);
         Party partyByLeader = partyList.byLeader(leader.getUUID());
-        if(partyById != null && partyByLeader != null && member != null && partyById == partyByLeader && !partyList.isInParty(uuid)){
+        if(partyById != null && partyByLeader != null && member != null && partyById == partyByLeader && !partyList.inParty(uuid)){
             leader.displayClientMessage(new TranslatableComponent("commands.rpgw.jreqDenied"), false);
             member.displayClientMessage(new TranslatableComponent("commands.rpgw.jreqDenied"), false);
         }

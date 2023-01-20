@@ -13,6 +13,7 @@ import io.github.guy7cc.resource.TraderData;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -47,20 +48,40 @@ public class TraderDataProvider implements DataProvider {
         registerData(dataMap, buyMap, sellMap, barterMap);
 
         for(Map.Entry<String, TraderData> entry : dataMap.entrySet()){
-            JsonObject json = (JsonObject)TraderData.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata", entry.getKey());
+            DataResult<JsonElement> result = TraderData.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
         for(Map.Entry<String, TraderDataElement.Buy> entry : buyMap.entrySet()){
-            JsonObject json = (JsonObject) TraderDataElement.Buy.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata/buy", entry.getKey());
+            DataResult<JsonElement> result = TraderDataElement.Buy.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata/buy", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
         for(Map.Entry<String, TraderDataElement.Sell> entry : sellMap.entrySet()){
-            JsonObject json = (JsonObject) TraderDataElement.Sell.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata/sell", entry.getKey());
+            DataResult<JsonElement> result = TraderDataElement.Sell.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata/sell", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
         for(Map.Entry<String, TraderDataElement.Barter> entry : barterMap.entrySet()){
-            JsonObject json = (JsonObject)TraderDataElement.Barter.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).result().get();
-            save(pCache, json, "traderdata/barter", entry.getKey());
+            DataResult<JsonElement> result = TraderDataElement.Barter.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            if(result.result().isPresent()){
+                JsonObject json = (JsonObject)result.result().get();
+                save(pCache, json, "traderdata/barter", entry.getKey());
+            } else {
+                LOGGER.error(result.error().get().message());
+            }
         }
     }
 
@@ -97,7 +118,7 @@ public class TraderDataProvider implements DataProvider {
         //[a-z0-9/._-]
         sellMap.put("sell_wheat", new TraderDataElement.Sell(new ItemStack(Items.WHEAT), 3, 2, 0, 10000, Optional.of(
                 List.of(
-                        "sell_wheat"
+                        new ResourceLocation(RpgwMod.MOD_ID, "sell_wheat")
                 )
         )));
         sellMap.put("selltest", new TraderDataElement.Sell(new ItemStack(Items.BELL), 250, 5, Instant.ofEpochMilli(0), 10000, Optional.empty()));
@@ -107,7 +128,7 @@ public class TraderDataProvider implements DataProvider {
         //[a-z0-9/._-]
         barterMap.put("bartertest", new TraderDataElement.Barter(new ItemStack(Items.ENDER_PEARL), new ItemStack(Items.TROPICAL_FISH), Optional.of(
                 List.of(
-                        new Pair<>(1, "bartertest")
+                        new Pair<>(1, new ResourceLocation(RpgwMod.MOD_ID, "bartertest"))
                 )
         )));
     }

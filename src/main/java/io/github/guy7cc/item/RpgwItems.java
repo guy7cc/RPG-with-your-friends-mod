@@ -15,9 +15,7 @@ public class RpgwItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RpgwMod.MOD_ID);
 
     //items
-    public static final RegistryObject<Item> BORDER_WRENCH = ITEMS.register("border_wrench", () -> new BorderWrenchItem(defaultProperties()));
-
-    public static final RegistryObject<Item> SPAWNER_WRENCH = ITEMS.register("spawner_wrench", () -> new SpawnerWrenchItem(defaultProperties()));
+    public static final RegistryObject<Item> DEBUG_WRENCH = ITEMS.register("debug_wrench", () -> new Item(defaultProperties()));
 
     public static final RegistryObject<Item> IRON_COIN = ITEMS.register("iron_coin", () -> new CoinItem(CoinItem.Rank.IRON, defaultProperties()));
     public static final RegistryObject<Item> COPPER_COIN = ITEMS.register("copper_coin", () -> new CoinItem(CoinItem.Rank.COPPER, defaultProperties()));
@@ -27,7 +25,7 @@ public class RpgwItems {
     public static CreativeModeTab creativeTab = new CreativeModeTab(RpgwMod.MOD_ID) {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(BORDER_WRENCH.get());
+            return new ItemStack(RpgwBlocks.RPGW_SPAWNER.get());
         }
     };
 

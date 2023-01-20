@@ -20,4 +20,16 @@ public abstract class RpgwAbstractLanguageProvider extends LanguageProvider {
     public void addCommands(String command, String key, String value){
         add("commands." + command + "." + key, value);
     }
+
+    public void addRpgStageTitle(String key, String value) {
+        add("rpgstage.title." + key, value);
+    }
+
+    public void addRpgScenarioTitle(String key, String value){
+        add("rpgscenario.title." + key, value);
+    }
+
+    public void addRpgScenarioInfo(String key, String value){
+        add("rpgscenario.info." + key, value);
+    }
 }

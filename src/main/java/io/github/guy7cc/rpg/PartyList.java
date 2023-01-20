@@ -3,6 +3,7 @@ package io.github.guy7cc.rpg;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -10,22 +11,22 @@ import java.util.function.Consumer;
 public class PartyList {
     private static PartyList instance;
     private static boolean initedOnce = false;
+
     private MinecraftServer server;
     private List<Party> partyList = new ArrayList<>();
-    private static int id = 0;
+    private Map<UUID, Party> partyByPlayer = new HashMap<>();
+    private Map<Integer, Party> partyById = new HashMap();
 
-    public final boolean isClientSide;
+    private static int id = 0;
 
     //server-side constructor
     private PartyList(MinecraftServer server){
         this.server = server;
-        this.isClientSide = false;
     }
 
     //client-side constructor
     private PartyList(List<Party> partyList) {
         this.partyList = partyList;
-        this.isClientSide = true;
     }
 
     public static void init(MinecraftServer server){
@@ -42,95 +43,89 @@ public class PartyList {
         return instance;
     }
 
+    public boolean isClientSide(){
+        return server == null;
+    }
+
     public MinecraftServer getServer() { return server; }
 
-    public boolean canJoinParty(UUID uuid, int id){
-        if(isInParty(uuid)) return false;
+    public boolean canJoinParty(@NotNull UUID uuid, int id){
+        if(inParty(uuid)) return false;
         Party party = byId(id);
         if(party == null) return false;
         return true;
     }
 
-    public boolean joinParty(UUID uuid, int id){
-        if(isInParty(uuid)) return false;
+    public boolean joinParty(@NotNull UUID uuid, int id){
+        if(inParty(uuid)) return false;
         Party party = byId(id);
         if(party == null) return false;
         party.addMember(uuid);
+        partyByPlayer.put(uuid, party);
         return true;
     }
 
-    public boolean canCreateParty(UUID leaderUUID){
-        return !isInParty(leaderUUID);
+    public boolean canCreateParty(@NotNull UUID leaderUUID){
+        return !inParty(leaderUUID);
     }
 
-    public boolean createParty(String name, UUID leaderUUID){
-        if(isInParty(leaderUUID)) return false;
+    public boolean createParty(String name, @NotNull UUID leaderUUID){
+        if(inParty(leaderUUID)) return false;
         ServerPlayer leader = server.getPlayerList().getPlayer(leaderUUID);
         if (leader != null) {
-            partyList.add(new Party(name, leader, id()));
+            Party party = new Party(name, leader, id());
+            partyList.add(party);
+            partyByPlayer.put(leaderUUID, party);
+            partyById.put(party.getId(), party);
         }
         return true;
     }
 
-    public boolean canLeaveParty(UUID memberUUID){
-        Party party = getParty(memberUUID);
-        return party != null && !party.isBound(memberUUID);
+    public boolean canLeaveParty(@NotNull UUID memberUUID){
+        return inParty(memberUUID);
     }
 
-    public boolean leaveParty(UUID memberUUID){
-        Party party = getParty(memberUUID);
-        if(party == null || party.isBound(memberUUID)) return false;
-        party.removeMember(memberUUID);
-        if(party.size() == 0) partyList.remove(party);
-        return true;
-    }
-
-    public boolean forceLeaveParty(UUID memberUUID){
-        Party party = getParty(memberUUID);
+    public boolean leaveParty(@NotNull UUID memberUUID){
+        Party party = byPlayer(memberUUID);
         if(party == null) return false;
-        party.forceRemoveMember(memberUUID);
+        party.removeMember(memberUUID);
+        partyByPlayer.remove(memberUUID);
+        if(party.size() == 0) {
+            partyList.remove(party);
+            partyById.remove(party.getId());
+        }
         return true;
     }
 
-    public boolean canChangeLeader(UUID leaderUUID){
-        Party party = getParty(leaderUUID);
+    public boolean canChangeLeader(@NotNull UUID leaderUUID){
+        Party party = byPlayer(leaderUUID);
         return party != null && party.isLeader(leaderUUID) && party.size() > 1;
     }
 
-    public boolean changeLeader(UUID leaderUUID){
-        Party party = getParty(leaderUUID);
+    public boolean changeLeader(@NotNull UUID leaderUUID){
+        Party party = byPlayer(leaderUUID);
         if(party == null || !party.isLeader(leaderUUID) || party.size() <= 1) return false;
         party.changeLeaderToNext();
         return true;
     }
 
-    public boolean isInParty(UUID memberUUID){
-        for(Party party : partyList){
-            if(party.isMember(memberUUID)) return true;
-        }
-        return false;
+    public boolean inParty(@NotNull UUID memberUUID){
+        return partyByPlayer.get(memberUUID) != null;
     }
 
-    public Party getParty(UUID memberUUID){
-        for(Party party : partyList){
-            if(party.isMember(memberUUID)) return party;
-        }
-        return null;
+    public Party byPlayer(@NotNull UUID memberUUID){
+        return partyByPlayer.get(memberUUID);
     }
 
     public Party byId(int id){
-        for(Party party : partyList){
-            if(party.getId() == id) return party;
-        }
-        return null;
+        return partyById.get(id);
     }
 
-    public Party byLeader(UUID uuid){
-        for(Party party : partyList){
+    public Party byLeader(@NotNull UUID leaderUUID){
+        Party party = partyByPlayer.get(leaderUUID);
+        if(party != null){
             List<UUID> list = party.getMemberList();
-            if(list.size() > 0 && list.get(0).equals(uuid)){
-                return party;
-            }
+            return list.size() > 0 && list.get(0).equals(leaderUUID) ? party : null;
         }
         return null;
     }

@@ -21,4 +21,7 @@ public class RpgwBlockEntities {
 
     public static final RegistryObject<BlockEntityType<VendingMachineBlockEntity>> VENDING_MACHINE = BLOCK_ENTITIES.register("vending_machine_block_entity",
             () -> BlockEntityType.Builder.of(VendingMachineBlockEntity::new, RpgwBlocks.VENDING_MACHINE.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<RpgStageBlockEntity>> RPG_STAGE = BLOCK_ENTITIES.register("rpg_stage_block_entity",
+            () -> BlockEntityType.Builder.of(RpgStageBlockEntity::new, RpgwBlocks.RPG_STAGE.get()).build(null));
 }

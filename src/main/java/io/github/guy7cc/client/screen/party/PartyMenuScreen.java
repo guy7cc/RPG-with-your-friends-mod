@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.guy7cc.RpgwMod;
+import io.github.guy7cc.client.screen.ScreenUtil;
 import io.github.guy7cc.network.RpgwMessageManager;
 import io.github.guy7cc.network.ServerboundManagePartyPacket;
 import io.github.guy7cc.rpg.Party;
@@ -12,7 +13,6 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -136,7 +136,7 @@ public class PartyMenuScreen extends Screen {
         this.partySelectionList.updatePartyEntryList();
         refreshButtons();
         if(this.partyList != null){
-            Party party = this.partyList.getParty(this.getMinecraft().player.getUUID());
+            Party party = this.partyList.byPlayer(this.getMinecraft().player.getUUID());
             if(party != null && party.getMemberList().size() > 0){
                 AbstractClientPlayer leader = null;
                 for(AbstractClientPlayer p : this.minecraft.level.players()){
@@ -179,15 +179,10 @@ public class PartyMenuScreen extends Screen {
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers){
-        InputConstants.Key mouseKey = InputConstants.getKey(pKeyCode, pScanCode);
         if(super.keyPressed(pKeyCode, pScanCode, pModifiers)){
             return true;
-        } else if(this.minecraft.options.keyInventory.isActiveAndMatches(mouseKey)){
-            this.onClose();
-            return true;
-        } else {
-            return false;
         }
+        return ScreenUtil.closeIfInventoryKeyPressed(minecraft, pKeyCode, pScanCode);
     }
 
     @Override

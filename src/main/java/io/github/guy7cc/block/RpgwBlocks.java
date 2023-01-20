@@ -25,6 +25,7 @@ public class RpgwBlocks {
     public static final RegistryObject<BorderedRpgwSpawnerBlock> BORDERED_RPGW_SPAWNER = registerBlockWithItem("bordered_rpgw_spawner", () -> new BorderedRpgwSpawnerBlock(BlockBehaviour.Properties.copy(Blocks.SPAWNER)));
     public static final RegistryObject<Block> INACTIVATED_RPGW_SPAWNER = registerBlockWithItem("inactivated_rpgw_spawner", () -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.SPAWNER)));
     public static final RegistryObject<VendingMachineBlock> VENDING_MACHINE = registerBlockWithItem("vending_machine", () -> new VendingMachineBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
+    public static final RegistryObject<RpgStageBlock> RPG_STAGE = registerBlockWithItem("rpg_stage", () -> new RpgStageBlock(BlockBehaviour.Properties.copy(Blocks.NETHERITE_BLOCK)));
 
     public static <T extends Block> RegistryObject<T> registerBlockWithItem(String name, Supplier<T> block){
         RegistryObject<T> registryObject = BLOCKS.register(name, block);

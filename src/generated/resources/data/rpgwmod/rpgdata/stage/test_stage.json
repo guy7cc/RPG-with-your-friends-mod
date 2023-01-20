@@ -1,0 +1,7 @@
+{
+  "title": "{\"text\":\"Debug Stage\"}",
+  "scenarios": [
+    "rpgwmod:default",
+    "rpgwmod:test_scenario"
+  ]
+}

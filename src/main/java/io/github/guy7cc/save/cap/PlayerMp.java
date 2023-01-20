@@ -48,7 +48,7 @@ public class PlayerMp implements INBTSerializable<CompoundTag> {
     }
 
     public void syncToParty(){
-        Party party = PartyList.getInstance().getParty(player.getUUID());
+        Party party = PartyList.getInstance().byPlayer(player.getUUID());
         if(party != null){
             MinecraftServer server = player.getServer();
             for(UUID uuid : party.getMemberList()){

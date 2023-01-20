@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "rpgwmod:item/border_wrench"
+    "layer0": "rpgwmod:item/debug_wrench"
   }
 }

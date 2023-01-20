@@ -3,6 +3,7 @@ package io.github.guy7cc.client.event;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.block.RpgwBlocks;
 import io.github.guy7cc.block.entity.RpgwBlockEntities;
+import io.github.guy7cc.block.entity.renderer.RpgStageBlockEntityRenderer;
 import io.github.guy7cc.block.entity.renderer.RpgwSpawnerBlockEntityRenderer;
 import io.github.guy7cc.client.overlay.RpgwIngameOverlay;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -31,5 +32,6 @@ public class ClientModEvents {
     public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event){
         event.registerBlockEntityRenderer(RpgwBlockEntities.RPGW_SPAWNER.get(), ctx -> new RpgwSpawnerBlockEntityRenderer());
         event.registerBlockEntityRenderer(RpgwBlockEntities.BORDERED_RPGW_SPAWNER.get(), ctx -> new RpgwSpawnerBlockEntityRenderer());
+        event.registerBlockEntityRenderer(RpgwBlockEntities.RPG_STAGE.get(), ctx -> new RpgStageBlockEntityRenderer());
     }
 }

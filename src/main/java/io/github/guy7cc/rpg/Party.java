@@ -18,10 +18,7 @@ public class Party {
     private String name;
     private int id;
     private List<UUID> memberList = new ArrayList<>();
-    private Set<UUID> bindList = new HashSet<>();
     private MinecraftServer server;
-
-    public final boolean isClientSide;
 
     //server-side constructor
     public Party(String name, ServerPlayer leader, int id) {
@@ -29,17 +26,14 @@ public class Party {
         this.id = id;
         this.memberList.add(leader.getUUID());
         this.server = leader.getServer();
-        this.isClientSide = false;
         onChange();
     }
 
     //client-side constructor
-    private Party(String name, List<UUID> memberList, List<UUID> bindList, int id) {
+    private Party(String name, List<UUID> memberList, int id) {
         this.name = name;
         this.id = id;
         this.memberList.addAll(memberList);
-        this.bindList.addAll(bindList);
-        this.isClientSide = true;
     }
 
     public String getName() {
@@ -47,7 +41,20 @@ public class Party {
     }
 
     public List<UUID> getMemberList() {
-        return new ArrayList<>(memberList);
+        return Collections.unmodifiableList(memberList);
+    }
+
+    public List<ServerPlayer> getPlayers(){
+        if(!isClientSide()){
+            PlayerList playerList = server.getPlayerList();
+            List<ServerPlayer> players = new ArrayList<>(size());
+            for(UUID uuid : memberList){
+                ServerPlayer p = playerList.getPlayer(uuid);
+                if(p != null) players.add(p);
+            }
+            return players;
+        }
+        return null;
     }
 
     public int getId() {
@@ -58,6 +65,14 @@ public class Party {
         return memberList.size();
     }
 
+    public boolean isClientSide(){
+        return server == null;
+    }
+
+    public MinecraftServer getServer(){
+        return server;
+    }
+
     public void addMember(UUID member) {
         if (!memberList.contains(member)) {
             memberList.add(member);
@@ -66,32 +81,18 @@ public class Party {
     }
 
     public boolean removeMember(UUID member) {
-        if (bindList.contains(member)) {
-            return false;
-        } else {
-            if(!isClientSide){
-                ServerPlayer player = server.getPlayerList().getPlayer(member);
-                broadcastMessage(new TranslatableComponent(  "gui.rpgwmod.partyMenu.someoneLeave", player.getName()));
-            }
-            onRemoved(member);
-            memberList.remove(member);
-            onChange();
-            return true;
-        }
-    }
-
-    public void forceRemoveMember(UUID member){
-        if(!isClientSide){
+        if(!isClientSide()){
             ServerPlayer player = server.getPlayerList().getPlayer(member);
             broadcastMessage(new TranslatableComponent(  "gui.rpgwmod.partyMenu.someoneLeave", player.getName()));
         }
         onRemoved(member);
         memberList.remove(member);
         onChange();
+        return true;
     }
 
     public void onChange(){
-        if(isClientSide) return;
+        if(isClientSide()) return;
         for(UUID uuid : memberList){
             ServerPlayer player = server.getPlayerList().getPlayer(uuid);
             if(player != null){
@@ -102,15 +103,11 @@ public class Party {
     }
 
     public void onRemoved(UUID uuid){
-        if(isClientSide) return;
+        if(isClientSide()) return;
         ServerPlayer player = server.getPlayerList().getPlayer(uuid);
         if(player != null) {
             RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSyncPartyPacket((Party) null));
         }
-    }
-
-    public void bindAll() {
-        bindList.addAll(memberList);
     }
 
     public boolean isLeader(UUID leader) {
@@ -121,17 +118,13 @@ public class Party {
         return memberList.contains(member);
     }
 
-    public boolean isBound(UUID member) {
-        return bindList.contains(member);
-    }
-
     public void changeLeaderToNext() {
         UUID leaderUUID = memberList.remove(0);
         memberList.add(leaderUUID);
     }
 
     public void broadcastMessage(Component component) {
-        if(isClientSide) return;
+        if(isClientSide()) return;
         PlayerList playerList = this.server.getPlayerList();
         for (UUID memberUUID : memberList) {
             ServerPlayer player = playerList.getPlayer(memberUUID);
@@ -148,17 +141,11 @@ public class Party {
         partyTag.putString("partyName", this.name);
         partyTag.putInt("partyId", this.id);
         CompoundTag memberTag = new CompoundTag();
-        CompoundTag bindTag = new CompoundTag();
         int i = 0;
         for (UUID memberUUID : memberList) {
             memberTag.putUUID("" + i++, memberUUID);
         }
-        i = 0;
-        for (UUID bindUUID : bindList) {
-            bindTag.putUUID("" + i++, bindUUID);
-        }
         partyTag.put("memberList", memberTag);
-        partyTag.put("bindList", bindTag);
         return partyTag;
     }
 
@@ -166,15 +153,10 @@ public class Party {
         String partyName = tag.getString("partyName");
         int partyId = tag.getInt("partyId");
         CompoundTag memberTag = tag.getCompound("memberList");
-        CompoundTag bindTag = tag.getCompound("bindList");
         List<UUID> memberList = new ArrayList<>();
-        List<UUID> bindList = new ArrayList<>();
         for (String key : memberTag.getAllKeys()) {
             memberList.add(memberTag.getUUID(key));
         }
-        for (String key : bindTag.getAllKeys()) {
-            bindList.add(bindTag.getUUID(key));
-        }
-        return new Party(partyName, memberList, bindList, partyId);
+        return new Party(partyName, memberList, partyId);
     }
 }

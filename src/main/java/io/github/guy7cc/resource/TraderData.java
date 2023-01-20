@@ -27,6 +27,8 @@ public class TraderData implements INBTSerializable<CompoundTag> {
             TraderDataElement.Barter.CODEC.listOf().fieldOf("barter_list").forGetter(data -> data.barterList)
     ).apply(instance, TraderData::new));
 
+    public static final TraderData DEFAULT = new TraderData(List.of(TraderDataElement.Buy.DEFAULT), List.of(TraderDataElement.Sell.DEFAULT), List.of(TraderDataElement.Barter.DEFAULT));
+
     private List<TraderDataElement.Buy> buyList;
     private List<TraderDataElement.Sell> sellList;
     private List<TraderDataElement.Barter> barterList;

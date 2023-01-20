@@ -41,11 +41,13 @@
   "gui.rpgwmod.trader.needs": "Needs %s",
   "gui.rpgwmod.trader.sell": "Sell",
   "gui.rpgwmod.trader.upto": "Up to %s",
-  "item.rpgwmod.border_wrench": "Wrench (Border)",
   "item.rpgwmod.copper_coin": "Copper Coin",
   "item.rpgwmod.gold_coin": "Gold Coin",
   "item.rpgwmod.iron_coin": "Iron Coin",
   "item.rpgwmod.silver_coin": "Silver Coin",
-  "item.rpgwmod.spawner_wrench": "Wrench (Spawner)",
-  "itemGroup.rpgwmod": "RPG with your friends Mod"
+  "itemGroup.rpgwmod": "RPG with your friends Mod",
+  "rpgscenario.feature.noKeepInventory": "\u00A7c\u00A7lLose items \u00A7rafter death",
+  "rpgscenario.info.default": "This is a information text of the default scenario.",
+  "rpgscenario.title.default": "This is a title of the default scenario.",
+  "rpgstage.title.default": "This is a title of the default stage."
 }

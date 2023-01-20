@@ -18,9 +18,7 @@ public class RpgwEnUsLanguageProvider extends RpgwAbstractLanguageProvider{
         add(RpgwBlocks.BORDERED_RPGW_SPAWNER.get(), "Bordered RPG Spawner");
         add(RpgwBlocks.INACTIVATED_RPGW_SPAWNER.get(), "Inactivated RPG Spawner");
         add(RpgwBlocks.VENDING_MACHINE.get(), "Vending Machine");
-        
-        add(RpgwItems.BORDER_WRENCH.get(), "Wrench (Border)");
-        add(RpgwItems.SPAWNER_WRENCH.get(), "Wrench (Spawner)");
+
         add(RpgwItems.IRON_COIN.get(), "Iron Coin");
         add(RpgwItems.COPPER_COIN.get(), "Copper Coin");
         add(RpgwItems.SILVER_COIN.get(), "Silver Coin");
@@ -72,5 +70,13 @@ public class RpgwEnUsLanguageProvider extends RpgwAbstractLanguageProvider{
         addCommands(command, "jreqAccepted", "The join request has been accepted.");
         addCommands(command, "jreqDenied", "The join request has been denied.");
         addCommands(command, "jreqFail", "Failed to process the join request.");
+
+        addRpgStageTitle("default", "This is a title of the default stage.");
+
+        addRpgScenarioTitle("default", "This is a title of the default scenario.");
+
+        addRpgScenarioInfo("default", "This is a information text of the default scenario.");
+
+        add("rpgscenario.feature.noKeepInventory", "§c§lLose items §rafter death");
     }
 }

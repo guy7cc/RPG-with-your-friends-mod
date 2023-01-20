@@ -16,8 +16,7 @@ public class RpgwItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        handheldItem(RpgwItems.BORDER_WRENCH.get());
-        handheldItem(RpgwItems.SPAWNER_WRENCH.get());
+        handheldItem(RpgwItems.DEBUG_WRENCH.get());
 
         simpleItem(RpgwItems.IRON_COIN.get());
         simpleItem(RpgwItems.COPPER_COIN.get());

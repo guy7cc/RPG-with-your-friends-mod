@@ -1,7 +1,9 @@
 package io.github.guy7cc.block;
 
 import io.github.guy7cc.block.entity.VendingMachineBlockEntity;
+import io.github.guy7cc.client.screen.RpgwEditDataScreen;
 import io.github.guy7cc.client.screen.TraderScreen;
+import io.github.guy7cc.item.RpgwItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,9 +42,14 @@ public class VendingMachineBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        BlockEntity be = pLevel.getBlockEntity(pState.getValue(HALF) == DoubleBlockHalf.LOWER ? pPos.above() : pPos);
+        BlockPos bePos = pState.getValue(HALF) == DoubleBlockHalf.LOWER ? pPos.above() : pPos;
+        BlockEntity be = pLevel.getBlockEntity(bePos);
         if(pLevel.isClientSide && be instanceof VendingMachineBlockEntity vm){
-            vm.setTraderScreen();
+            if(pPlayer.getItemInHand(pHand).is(RpgwItems.DEBUG_WRENCH.get())){
+                Minecraft.getInstance().setScreen(new RpgwEditDataScreen(bePos, vm.getDefaultData().toString()));
+            } else {
+                vm.setTraderScreen();
+            }
         }
         return InteractionResult.sidedSuccess(pLevel.isClientSide);
     }

@@ -39,6 +39,11 @@ public class RpgwBlockStateProvider extends BlockStateProvider {
                 blockTexture(modLoc(name.getPath() + "_lower_side")),
                 blockTexture(modLoc(name.getPath() + "_lower_front")),
                 blockTexture(Blocks.IRON_BLOCK));
+
+        Block block = RpgwBlocks.RPG_STAGE.get();
+        ModelFile modelFile = models().getExistingFile(block.getRegistryName());
+        itemModels().withExistingParent(block.getRegistryName().getPath(), modelFile.getLocation());
+        horizontalBlock(block, modelFile);
     }
 
     private void simpleBlockWithItem(Block block) {

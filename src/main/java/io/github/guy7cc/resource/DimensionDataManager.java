@@ -3,6 +3,7 @@ package io.github.guy7cc.resource;
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import io.github.guy7cc.RpgwMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -10,10 +11,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class DimensionDataManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
@@ -21,7 +19,7 @@ public class DimensionDataManager extends SimpleJsonResourceReloadListener {
 
     public static final DimensionDataManager instance = new DimensionDataManager();
 
-    private List<DimensionData> dataList;
+    private Map<ResourceLocation, DimensionData> map = new HashMap<>();
 
     private DimensionDataManager() {
         super(GSON, "rpgdata/dimension");
@@ -29,23 +27,25 @@ public class DimensionDataManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        dataList = new ArrayList<>();
+        map.clear();
+        map.put(new ResourceLocation(RpgwMod.MOD_ID, "default"), DimensionData.DEFAULT);
         for(Map.Entry<ResourceLocation, JsonElement> entry : pObject.entrySet()){
             ResourceLocation resourcelocation = entry.getKey();
             try {
                 JsonObject json = GsonHelper.convertToJsonObject(entry.getValue(), "top element");
                 DimensionData data = DimensionData.CODEC.parse(JsonOps.INSTANCE, json).result().orElseThrow();
-                dataList.add(data);
+                map.put(data.key(), data);
             } catch (IllegalArgumentException | JsonParseException | NoSuchElementException exception) {
                 LOGGER.error("Parsing error loading rpgw dimension data {}", resourcelocation, exception);
             }
         }
     }
 
-    public DimensionData get(ResourceLocation dimLoc){
-        for(DimensionData data : dataList){
-            if(data.key().equals(dimLoc)) return data;
-        }
-        return null;
+    public boolean containsKey(ResourceLocation dimLoc){
+        return map.containsKey(dimLoc);
+    }
+
+    public DimensionData getOrDefault(ResourceLocation dimLoc){
+        return map.containsKey(dimLoc) ? map.get(dimLoc) : DimensionData.DEFAULT;
     }
 }
