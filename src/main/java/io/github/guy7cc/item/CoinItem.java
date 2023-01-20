@@ -1,7 +1,7 @@
 package io.github.guy7cc.item;
 
 import io.github.guy7cc.save.cap.PlayerMoney;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
+import io.github.guy7cc.sync.PlayerMoneyManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;

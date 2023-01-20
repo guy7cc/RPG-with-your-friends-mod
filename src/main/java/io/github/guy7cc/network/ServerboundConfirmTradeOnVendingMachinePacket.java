@@ -3,18 +3,13 @@ package io.github.guy7cc.network;
 import io.github.guy7cc.block.entity.VendingMachineBlockEntity;
 import io.github.guy7cc.resource.TraderData;
 import io.github.guy7cc.resource.TraderDataElement;
-import io.github.guy7cc.save.cap.PlayerMoney;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class ServerboundConfirmTradeOnVendingMachinePacket {

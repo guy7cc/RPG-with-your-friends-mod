@@ -9,7 +9,7 @@ import io.github.guy7cc.network.ServerboundConfirmTradeOnVendingMachinePacket;
 import io.github.guy7cc.resource.TraderDataElement;
 import io.github.guy7cc.resource.TraderData;
 import io.github.guy7cc.rpg.ITrader;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
+import io.github.guy7cc.sync.PlayerMoneyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -23,9 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 

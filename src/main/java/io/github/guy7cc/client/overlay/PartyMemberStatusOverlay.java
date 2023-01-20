@@ -3,7 +3,7 @@ package io.github.guy7cc.client.overlay;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.guy7cc.RpgwMod;
-import io.github.guy7cc.syncdata.PlayerMpManager;
+import io.github.guy7cc.sync.PlayerMpManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.multiplayer.ClientLevel;

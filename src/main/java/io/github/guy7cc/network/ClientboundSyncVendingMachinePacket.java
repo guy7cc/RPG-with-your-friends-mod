@@ -1,17 +1,11 @@
 package io.github.guy7cc.network;
 
-import io.github.guy7cc.block.VendingMachineBlock;
 import io.github.guy7cc.block.entity.VendingMachineBlockEntity;
-import io.github.guy7cc.client.screen.BorderBlockEditScreen;
 import io.github.guy7cc.client.screen.TraderScreen;
 import io.github.guy7cc.resource.TraderData;
-import io.github.guy7cc.syncdata.BorderManager;
-import io.github.guy7cc.syncdata.PlayerMpManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;

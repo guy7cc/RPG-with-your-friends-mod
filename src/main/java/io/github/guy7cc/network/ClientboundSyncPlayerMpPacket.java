@@ -1,6 +1,6 @@
 package io.github.guy7cc.network;
 
-import io.github.guy7cc.syncdata.PlayerMpManager;
+import io.github.guy7cc.sync.PlayerMpManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;

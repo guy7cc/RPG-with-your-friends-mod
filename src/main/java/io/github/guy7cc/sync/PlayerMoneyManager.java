@@ -1,4 +1,4 @@
-package io.github.guy7cc.syncdata;
+package io.github.guy7cc.sync;
 
 import io.github.guy7cc.client.overlay.RpgwIngameOverlay;
 import io.github.guy7cc.save.cap.PlayerMoney;

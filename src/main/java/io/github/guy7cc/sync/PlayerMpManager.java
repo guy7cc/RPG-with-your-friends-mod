@@ -1,8 +1,7 @@
-package io.github.guy7cc.syncdata;
+package io.github.guy7cc.sync;
 
 import io.github.guy7cc.save.cap.PlayerMp;
 import io.github.guy7cc.save.cap.PlayerMpProvider;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashMap;

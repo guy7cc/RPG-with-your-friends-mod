@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.item.CoinItem;
 import io.github.guy7cc.item.RpgwItems;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
+import io.github.guy7cc.sync.PlayerMoneyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
