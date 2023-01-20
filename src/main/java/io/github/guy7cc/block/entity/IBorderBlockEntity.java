@@ -1,14 +1,13 @@
 package io.github.guy7cc.block.entity;
 
 import io.github.guy7cc.rpg.Border;
-import io.github.guy7cc.syncdata.BorderManager;
+import io.github.guy7cc.sync.BorderManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface IBorderBlockEntity {

@@ -7,9 +7,8 @@ import io.github.guy7cc.command.RpgwDebugCommand;
 import io.github.guy7cc.resource.*;
 import io.github.guy7cc.rpg.PartyList;
 import io.github.guy7cc.save.cap.*;
-import io.github.guy7cc.syncdata.BorderManager;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
-import io.github.guy7cc.syncdata.PlayerMpManager;
+import io.github.guy7cc.sync.BorderManager;
+import io.github.guy7cc.sync.RpgPlayerPropertyManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,12 +30,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ForgeEvents {
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event){
-        if(event.getObject() instanceof ServerPlayer player){
-            if(!event.getObject().getCapability(PlayerMpProvider.PLAYER_MP_CAPABILITY).isPresent()){
-                event.addCapability(PlayerMpProvider.PLAYER_MP_LOCATION, new PlayerMpProvider(() -> new PlayerMp(player)));
-                event.addCapability(PlayerMoneyProvider.PLAYER_MONEY_LOCATION, new PlayerMoneyProvider(() -> new PlayerMoney(player)));
-                event.addCapability(PlayerMiscDataProvider.PLAYER_MISC_LOCATION, new PlayerMiscDataProvider(PlayerMiscData::new));
-            }
+        if(event.getObject() instanceof ServerPlayer){
+            event.addCapability(RpgPlayerPropertyProvider.RPG_PLAYER_PROPERTY_LOCATION, new RpgPlayerPropertyProvider(RpgPlayerProperty::new));
         }
     }
 
@@ -50,13 +45,13 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event){
         event.getOriginal().reviveCaps();
-        PlayerMoneyProvider.onPlayerCloned(event);
-        PlayerMiscDataProvider.onPlayerCloned(event);
+        RpgPlayerPropertyProvider.onPlayerCloned(event);
         event.getOriginal().invalidateCaps();
     }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event){
+        RpgPlayerPropertyManager.onPlayerTick(event);
         BorderManager.onPlayerTick(event);
     }
 
@@ -72,28 +67,20 @@ public class ForgeEvents {
         ServerLevel level = (ServerLevel) event.getPlayer().level;
         ServerPlayer player = (ServerPlayer) event.getPlayer();
 
+        RpgPlayerPropertyManager.onPlayerLoggedIn(event);
+
         //party list
         PartyList.init(((ServerLevel) level).getServer());
-
-        //mp
-        PlayerMpManager.syncToClient(player);
-
-        //money
-        PlayerMoneyManager.syncToClient(player);
-
-        //keepInventory
-        KeepInventoryManager.addOrModifyPlayer(player, true);
     }
 
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event){
         ServerPlayer player = (ServerPlayer) event.getPlayer();
 
+        RpgPlayerPropertyManager.onPlayerLoggedOut(event);
+
         //party list
         if(PartyList.initedOnce()) PartyList.getInstance().leaveParty(player.getUUID());
-
-        //keepInventory
-        KeepInventoryManager.removePlayerIfPresent(player);
 
         //border
         BorderManager.clearList(player);
@@ -118,23 +105,17 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onLivingDrops(LivingDropsEvent event){
-        if(event.getEntityLiving() instanceof ServerPlayer player){
-            event.setCanceled(KeepInventoryManager.keepInventory(player));
-        }
+        RpgPlayerPropertyManager.onLivingDrops(event);
     }
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event){
-        if(event.getEntityLiving() instanceof ServerPlayer player && KeepInventoryManager.keepInventory(player)){
-            KeepInventoryManager.collectItems(player);
-        }
+        RpgPlayerPropertyManager.onLivingDeath(event);
     }
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event){
-        if(event.getPlayer() instanceof ServerPlayer player){
-            KeepInventoryManager.restoreInventory(player);
-        }
+        RpgPlayerPropertyManager.onPlayerRespawn(event);
     }
 
     @SubscribeEvent

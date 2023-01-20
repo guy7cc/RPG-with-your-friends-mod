@@ -5,7 +5,10 @@ import io.github.guy7cc.block.RpgwBlocks;
 import io.github.guy7cc.block.entity.RpgwBlockEntities;
 import io.github.guy7cc.item.RpgwItems;
 import io.github.guy7cc.network.RpgwMessageManager;
+import io.github.guy7cc.save.cap.RpgPlayerPropertyProvider;
 import io.github.guy7cc.world.biome.RpgwBiomes;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -24,11 +27,11 @@ public class RpgwMod
     {
         RpgwMessageManager.registerMessages("main");
 
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        RpgwBlocks.BLOCKS.register(bus);
-        RpgwItems.ITEMS.register(bus);
-        RpgwBlockEntities.BLOCK_ENTITIES.register(bus);
-        RpgwBiomes.BIOMES.register(bus);
+        RpgwBlocks.BLOCKS.register(modEventBus);
+        RpgwItems.ITEMS.register(modEventBus);
+        RpgwBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        RpgwBiomes.BIOMES.register(modEventBus);
     }
 }

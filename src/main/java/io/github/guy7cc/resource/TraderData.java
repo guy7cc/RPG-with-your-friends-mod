@@ -3,16 +3,15 @@ package io.github.guy7cc.resource;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.guy7cc.save.cap.PlayerMoney;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
+import io.github.guy7cc.save.cap.PropertyType;
+import io.github.guy7cc.save.cap.RpgPlayerProperty;
+import io.github.guy7cc.sync.RpgPlayerPropertyManager;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -56,13 +55,14 @@ public class TraderData implements INBTSerializable<CompoundTag> {
 
     public void confirmTrade(ServerPlayer player, int type, int index, int count){
         List<? extends TraderDataElement> list = getList(type);
-        PlayerMoney pm = PlayerMoneyManager.getPlayerMoneyCap(player);
         if(index < 0 || list.size() <= index) return;
         switch(type){
             case 0:
                 TraderDataElement.Buy buy = buyList.get(index);
-                if(pm.getMoney() / buy.getPrice() < count) return;
-                pm.addMoney(-buy.getPrice() * count);
+                RpgPlayerProperty p1 = RpgPlayerPropertyManager.get(player);
+                if(p1 == null) return;
+                if(p1.getValue(PropertyType.MONEY) / buy.getPrice() < count) return;
+                p1.applyFunc(PropertyType.MONEY, m -> m - buy.getPrice() * count);
                 ItemStack is1 = buy.getItemStack().copy();
                 is1.setCount(is1.getCount() * count);
                 addItemStack(player, is1);
@@ -70,9 +70,11 @@ public class TraderData implements INBTSerializable<CompoundTag> {
                 break;
             case 1:
                 TraderDataElement.Sell sell = sellList.get(index);
+                RpgPlayerProperty p2 = RpgPlayerPropertyManager.get(player);
+                if(p2 == null) return;
                 int amount1 = getAmountInInventory(player, sell.getItemStack());
                 if(amount1 / sell.getItemStack().getCount() < count) return;
-                pm.addMoney(sell.getPrice() * count);
+                p2.applyFunc(PropertyType.MONEY, m -> m + sell.getPrice() * count);
                 ItemStack is2 = sell.getItemStack().copy();
                 is2.setCount(is2.getCount() * count);
                 removeItemStack(player, is2);

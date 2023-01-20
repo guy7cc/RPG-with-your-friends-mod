@@ -1,7 +1,7 @@
 package io.github.guy7cc.network;
 
 import io.github.guy7cc.rpg.Party;
-import io.github.guy7cc.syncdata.PartyManager;
+import io.github.guy7cc.sync.PartyManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;

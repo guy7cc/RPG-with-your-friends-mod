@@ -1,7 +1,8 @@
 package io.github.guy7cc.item;
 
-import io.github.guy7cc.save.cap.PlayerMoney;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
+import io.github.guy7cc.save.cap.PropertyType;
+import io.github.guy7cc.save.cap.RpgPlayerProperty;
+import io.github.guy7cc.sync.RpgPlayerPropertyManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -27,9 +28,11 @@ public class CoinItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
         if(!pLevel.isClientSide){
-            PlayerMoney playerMoney = PlayerMoneyManager.getPlayerMoneyCap((ServerPlayer) pPlayer);
-            playerMoney.addMoney(rank.value);
-            itemstack.shrink(1);
+            RpgPlayerProperty p = RpgPlayerPropertyManager.get((ServerPlayer) pPlayer);
+            if(p != null){
+                p.applyFunc(PropertyType.MONEY, m -> m + rank.value);
+                itemstack.shrink(1);
+            }
         }
         pPlayer.playSound(SoundEvents.ARMOR_EQUIP_NETHERITE, 1f,  3f);
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide);

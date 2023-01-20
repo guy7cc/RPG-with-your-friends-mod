@@ -2,10 +2,8 @@ package io.github.guy7cc.client.overlay;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.guy7cc.RpgwMod;
-import io.github.guy7cc.syncdata.PartyManager;
-import io.github.guy7cc.syncdata.PlayerMoneyManager;
+import io.github.guy7cc.sync.PartyManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;

@@ -1,4 +1,4 @@
-package io.github.guy7cc.syncdata;
+package io.github.guy7cc.sync;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
