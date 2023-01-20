@@ -5,11 +5,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.item.CoinItem;
 import io.github.guy7cc.item.RpgwItems;
-import io.github.guy7cc.sync.PlayerMoneyManager;
+import io.github.guy7cc.save.cap.PropertyType;
+import io.github.guy7cc.save.cap.RpgPlayerProperty;
+import io.github.guy7cc.sync.RpgPlayerPropertyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class PlayerMoneyOverlay {
@@ -36,8 +39,13 @@ public class PlayerMoneyOverlay {
     }
 
     public void tick(){
-        if(Math.abs(PlayerMoneyManager.getPlayerMoney() - displayMoney) < Math.abs(gradient)){
-            displayMoney = PlayerMoneyManager.getPlayerMoney();
+        Player player = Minecraft.getInstance().player;
+        if(player == null) return;
+        RpgPlayerProperty p = RpgPlayerPropertyManager.get(player.getUUID());
+        if(p == null) return;
+        long money = p.getValue(PropertyType.MONEY);
+        if(Math.abs(money - displayMoney) < Math.abs(gradient)){
+            displayMoney = money;
             gradient = 0;
         } else {
             displayMoney += gradient;
@@ -45,30 +53,34 @@ public class PlayerMoneyOverlay {
     }
 
     public void onChangeMoney(){
-        long m = PlayerMoneyManager.getPlayerMoney();
+        Player player = Minecraft.getInstance().player;
+        if(player == null) return;
+        RpgPlayerProperty p = RpgPlayerPropertyManager.get(player.getUUID());
+        if(p == null) return;
+        long money = p.getValue(PropertyType.MONEY);
         if(!initialized){
-            displayMoney = m;
+            displayMoney = money;
             initialized = true;
             return;
         }
-        if(displayMoney < m){
+        if(displayMoney < money){
             for(int i = GRADIENT.length - 1; i >= 0; i--){
-                if((m - displayMoney) / 12d > GRADIENT[i]){
+                if((money - displayMoney) / 12d > GRADIENT[i]){
                     gradient = GRADIENT[i];
                     break;
                 }
             }
             if(gradient == 0) gradient = 1;
-        } else if(displayMoney > m){
+        } else if(displayMoney > money){
             for(int i = GRADIENT.length - 1; i >= 0; i--){
-                if((displayMoney - m) / 12d > GRADIENT[i]){
+                if((displayMoney - money) / 12d > GRADIENT[i]){
                     gradient = -GRADIENT[i];
                     break;
                 }
             }
             if(gradient == 0) gradient = -1;
         } else{
-            displayMoney = m;
+            displayMoney = money;
             gradient = 0;
         }
     }

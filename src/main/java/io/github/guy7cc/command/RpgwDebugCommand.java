@@ -2,12 +2,13 @@ package io.github.guy7cc.command;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.guy7cc.RpgwMod;
-import io.github.guy7cc.save.cap.PlayerMp;
-import io.github.guy7cc.sync.PlayerMpManager;
+import io.github.guy7cc.save.cap.PropertyType;
+import io.github.guy7cc.save.cap.RpgPlayerProperty;
+import io.github.guy7cc.sync.RpgPlayerPropertyManager;
 import io.github.guy7cc.util.BlockStateJsonConverter;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -26,14 +27,28 @@ public class RpgwDebugCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("rpgwdebug")
                 .requires(source -> source.hasPermission(2))
-                .then(Commands.literal("mp")
-                        .then(Commands.argument("value", IntegerArgumentType.integer())
-                                .executes(ctx ->
-                                        mp(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "value")
-                                        )
-                                )
-                        )
-                )
+                .then(Commands.literal("setPlayerProperty")
+                        .then(Commands.literal("mp")
+                                .then(Commands.argument("value", FloatArgumentType.floatArg())
+                                        .executes(ctx -> setPlayerProperty(ctx.getSource(), PropertyType.MP, FloatArgumentType.getFloat(ctx, "value")))))
+                        .then(Commands.literal("maxMp")
+                                .then(Commands.argument("value", FloatArgumentType.floatArg())
+                                        .executes(ctx -> setPlayerProperty(ctx.getSource(), PropertyType.MAX_MP, FloatArgumentType.getFloat(ctx, "value")))))
+                        .then(Commands.literal("money")
+                                .then(Commands.argument("value", FloatArgumentType.floatArg())
+                                        .executes(ctx -> setPlayerProperty(ctx.getSource(), PropertyType.MONEY, LongArgumentType.getLong(ctx, "value")))))
+                        .then(Commands.literal("maxMoney")
+                                .then(Commands.argument("value", FloatArgumentType.floatArg())
+                                        .executes(ctx -> setPlayerProperty(ctx.getSource(), PropertyType.MAX_MONEY, LongArgumentType.getLong(ctx, "value")))))
+                        .then(Commands.literal("isInventoryKept")
+                                .then(Commands.argument("value", BoolArgumentType.bool())
+                                        .executes(ctx -> {
+                                            ServerPlayer player = ctx.getSource().getPlayerOrException();
+                                            RpgPlayerProperty property = RpgPlayerPropertyManager.get(player);
+                                            if(property == null) return 0;
+                                            property.isInventoryKept = BoolArgumentType.getBool(ctx, "value");
+                                            return 1;
+                                        }))))
                 .then(Commands.literal("saveBlockState")
                         .then(Commands.argument("blockpos", BlockPosArgument.blockPos())
                                 .then(Commands.argument("name", StringArgumentType.string())
@@ -57,12 +72,11 @@ public class RpgwDebugCommand {
         );
     }
 
-    private static int mp(CommandSourceStack source, int mp) throws CommandSyntaxException {
+    private static <T> int setPlayerProperty(CommandSourceStack source, PropertyType<T> type, T value) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
-        PlayerMp playerMp = PlayerMpManager.getPlayerMp(player);
-        if(playerMp != null){
-            playerMp.setMp(mp);
-        }
+        RpgPlayerProperty property = RpgPlayerPropertyManager.get(player);
+        if(property == null) return 0;
+        property.setValue(type, value);
         return 1;
     }
     

@@ -9,7 +9,9 @@ import io.github.guy7cc.network.ServerboundConfirmTradeOnVendingMachinePacket;
 import io.github.guy7cc.resource.TraderDataElement;
 import io.github.guy7cc.resource.TraderData;
 import io.github.guy7cc.rpg.ITrader;
-import io.github.guy7cc.sync.PlayerMoneyManager;
+import io.github.guy7cc.save.cap.PropertyType;
+import io.github.guy7cc.save.cap.RpgPlayerProperty;
+import io.github.guy7cc.sync.RpgPlayerPropertyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -300,8 +302,9 @@ public class TraderScreen extends Screen {
     }
 
     private int getMaxAmount(){
+        RpgPlayerProperty p = RpgPlayerPropertyManager.get(Minecraft.getInstance().player.getUUID());
         if(selected instanceof TraderDataElement.Buy buy){
-            return (int)Math.min(MAX_AMOUNT, Math.max(0, PlayerMoneyManager.getPlayerMoney() / buy.getPrice()));
+            return (int)Math.min(MAX_AMOUNT, Math.max(0, (p != null ? p.getValue(PropertyType.MONEY) : 0) / buy.getPrice()));
         } else if(selected instanceof TraderDataElement.Sell sell){
             return Math.min(MAX_AMOUNT, Math.max(0, Math.min(sell.getCount(), getAmountInInventory(sell.getItemStack()) / sell.getItemStack().getCount())));
         } else if(selected instanceof TraderDataElement.Barter barter){

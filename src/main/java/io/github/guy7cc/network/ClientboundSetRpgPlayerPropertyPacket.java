@@ -37,6 +37,7 @@ public class ClientboundSetRpgPlayerPropertyPacket {
         ctx.get().enqueueWork(() -> {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 RpgPlayerPropertyManager.update(playerUUID, property);
+                ctx.get().setPacketHandled(true);
             });
         });
     }

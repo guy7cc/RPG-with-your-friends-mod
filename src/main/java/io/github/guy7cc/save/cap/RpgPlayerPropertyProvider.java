@@ -9,8 +9,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -19,8 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = RpgwMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class RpgPlayerPropertyProvider  extends AbstractCapabilityProvider<RpgPlayerProperty> {
+public class RpgPlayerPropertyProvider extends AbstractCapabilityProvider<RpgPlayerProperty> {
     public static final ResourceLocation RPG_PLAYER_PROPERTY_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "rpg_player_property");
     public static final Capability<RpgPlayerProperty> RPG_PLAYER_PROPERTY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
@@ -37,10 +38,15 @@ public class RpgPlayerPropertyProvider  extends AbstractCapabilityProvider<RpgPl
         return LazyOptional.empty();
     }
 
-    @SubscribeEvent
-    public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event){
-        if(event.getObject() instanceof ServerPlayer player){
-            event.addCapability(RPG_PLAYER_PROPERTY_LOCATION, new RpgPlayerPropertyProvider(RpgPlayerProperty::new));
-        }
+    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event){
+        event.register(RpgPlayerProperty.class);
+    }
+
+    public static void onPlayerCloned(PlayerEvent.Clone event){
+        event.getOriginal().getCapability(RpgPlayerPropertyProvider.RPG_PLAYER_PROPERTY_CAPABILITY).ifPresent(oldCap -> {
+            event.getPlayer().getCapability(RpgPlayerPropertyProvider.RPG_PLAYER_PROPERTY_CAPABILITY).ifPresent(newCap -> {
+                newCap.copy(oldCap);
+            });
+        });
     }
 }
