@@ -4,11 +4,14 @@ import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.guy7cc.RpgwMod;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.client.event.ScreenOpenEvent;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -47,5 +50,12 @@ public class DimensionDataManager extends SimpleJsonResourceReloadListener {
 
     public DimensionData getOrDefault(ResourceLocation dimLoc){
         return map.containsKey(dimLoc) ? map.get(dimLoc) : DimensionData.DEFAULT;
+    }
+
+    public static void onScreenOpen(ScreenOpenEvent event){
+        Minecraft minecraft = Minecraft.getInstance();
+        if(minecraft.screen instanceof ReceivingLevelScreen && instance.containsKey(minecraft.level.dimension().location())){
+            instance.getOrDefault(minecraft.level.dimension().location()).show();
+        }
     }
 }

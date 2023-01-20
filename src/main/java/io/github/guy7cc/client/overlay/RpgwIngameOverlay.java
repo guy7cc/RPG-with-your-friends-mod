@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.IIngameOverlay;
 import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.event.TickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,14 +67,16 @@ public class RpgwIngameOverlay{
         });
     }
 
-    public static void tick(){
-        ++tickCount;
-        Minecraft minecraft = Minecraft.getInstance();
-        Player player = (Player)minecraft.getCameraEntity();
-        localStatus.setPlayer(player);
-        localStatus.tick(tickCount);
-        partyStatusList.forEach(renderer -> renderer.tick(tickCount));
-        money.tick();
+    public static void onClientTick(TickEvent.ClientTickEvent event){
+        if(event.phase == TickEvent.Phase.START){
+            ++tickCount;
+            Minecraft minecraft = Minecraft.getInstance();
+            Player player = (Player)minecraft.getCameraEntity();
+            localStatus.setPlayer(player);
+            localStatus.tick(tickCount);
+            partyStatusList.forEach(renderer -> renderer.tick(tickCount));
+            money.tick();
+        }
     }
 
     public static void refreshPartyStatus(){

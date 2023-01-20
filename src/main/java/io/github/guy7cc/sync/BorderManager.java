@@ -16,7 +16,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
@@ -188,6 +193,12 @@ public class BorderManager {
         }
     }
 
+    // events
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event){
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        BorderManager.clearList(player);
+    }
+
     public static void onPlayerTick(TickEvent.PlayerTickEvent event){
         if(event.phase != TickEvent.Phase.END) return;
         Player player = event.player;
@@ -230,5 +241,30 @@ public class BorderManager {
                 serverPlayer.teleportTo(x, serverPlayer.getY(), z);
             }
         }
+    }
+
+    public static void onEntityTravelToDimension(EntityTravelToDimensionEvent event){
+        if(event.getEntity() instanceof ServerPlayer player){
+            BorderManager.clearList(player);
+        }
+    }
+
+    public static void onEntityTeleport(EntityTeleportEvent.TeleportCommand event){
+        if(event.getEntity() instanceof ServerPlayer player){
+            BorderManager.removeIfOutside(player, event.getTarget());
+            BorderManager.onChange(player);
+        }
+    }
+
+    public static void onClientLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event){
+        clientBorder = null;
+    }
+
+    public static void onClientRespawn(ClientPlayerNetworkEvent.RespawnEvent event){
+        clientBorder = null;
+    }
+
+    public static void onRenderLevelLast(RenderLevelLastEvent event){
+        renderBorder(event.getPoseStack());
     }
 }
