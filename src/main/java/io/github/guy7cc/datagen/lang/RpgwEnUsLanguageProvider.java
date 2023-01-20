@@ -76,5 +76,7 @@ public class RpgwEnUsLanguageProvider extends RpgwAbstractLanguageProvider{
         addRpgScenarioTitle("default", "This is a title of the default scenario.");
 
         addRpgScenarioInfo("default", "This is a information text of the default scenario.");
+
+        add("rpgscenario.feature.noKeepInventory", "§c§lLose items §rafter death");
     }
 }

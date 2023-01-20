@@ -37,10 +37,10 @@ public class CodecUtil {
         else if(codecs.size() == 1) {
             return toParentCodec(codecs.get(0));
         } else if(codecs.size() == 2) {
-            return toParentCodec(codecs.get(0), codecs.get(1));
+            return toParentCodec(codecs.get(1), codecs.get(0));
         } else {
             List<WithType<? extends T>> remainingCodecs = codecs.subList(2, codecs.size());
-            WithType<T> partialParentCodec = new WithType<>(toParentCodec(codecs.get(0), codecs.get(1)), type);
+            WithType<T> partialParentCodec = new WithType<>(toParentCodec(codecs.get(1), codecs.get(0)), type);
             return appendChildrenCodec(partialParentCodec, remainingCodecs);
         }
     }
@@ -49,7 +49,7 @@ public class CodecUtil {
         if(codecs.size() == 0) return parentCodec.codec;
         else {
             List<WithType<? extends T>> remainingCodecs = codecs.subList(1, codecs.size());
-            WithType<T> partialParentCodec = new WithType<>(toParentCodec(parentCodec, codecs.get(0)), parentCodec.type);
+            WithType<T> partialParentCodec = new WithType<>(toParentCodec(codecs.get(0), parentCodec), parentCodec.type);
             return appendChildrenCodec(partialParentCodec, remainingCodecs);
         }
     }

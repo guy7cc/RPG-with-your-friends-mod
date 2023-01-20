@@ -24,7 +24,7 @@ public class RpgScenarioManager extends SimpleJsonResourceReloadListener {
     private Map<ResourceLocation, RpgScenario> map = new HashMap<>();
 
     public RpgScenarioManager() {
-        super(GSON, "rpgdata/level");
+        super(GSON, "rpgdata/scenario");
     }
 
     @Override

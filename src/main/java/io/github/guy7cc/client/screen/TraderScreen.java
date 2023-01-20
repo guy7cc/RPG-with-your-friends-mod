@@ -229,6 +229,14 @@ public class TraderScreen extends Screen {
     }
 
     @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers){
+        if(super.keyPressed(pKeyCode, pScanCode, pModifiers)){
+            return true;
+        }
+        return ScreenUtil.closeIfInventoryKeyPressed(minecraft, pKeyCode, pScanCode);
+    }
+
+    @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         boolean clickSound = false;
         //tabs

@@ -41,7 +41,20 @@ public class Party {
     }
 
     public List<UUID> getMemberList() {
-        return new ArrayList<>(memberList);
+        return Collections.unmodifiableList(memberList);
+    }
+
+    public List<ServerPlayer> getPlayers(){
+        if(!isClientSide()){
+            PlayerList playerList = server.getPlayerList();
+            List<ServerPlayer> players = new ArrayList<>(size());
+            for(UUID uuid : memberList){
+                ServerPlayer p = playerList.getPlayer(uuid);
+                if(p != null) players.add(p);
+            }
+            return players;
+        }
+        return null;
     }
 
     public int getId() {
@@ -54,6 +67,10 @@ public class Party {
 
     public boolean isClientSide(){
         return server == null;
+    }
+
+    public MinecraftServer getServer(){
+        return server;
     }
 
     public void addMember(UUID member) {

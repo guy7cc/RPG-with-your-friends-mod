@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.guy7cc.world.dimension.RpgwDimensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -32,8 +34,8 @@ public record RpgScenario(
     ).apply(instance, RpgScenario::new));
 
     public static final RpgScenario DEFAULT = new RpgScenario(
-            "rpgscenario.title.default",
-            "rpgscenario.info.default",
+            new TranslatableComponent("rpgscenario.title.default"),
+            new TranslatableComponent("rpgscenario.info.default"),
             new BlockPos(0, 100, 0),
             RpgwDimensions.RPGW_DEBUG_DIMENSION_KEY.location(),
             List.of(new RpgScenarioFeature.Adventure(true), new RpgScenarioFeature.KeepInventory(true)),
@@ -42,4 +44,16 @@ public record RpgScenario(
             List.of(),
             List.of()
     );
+
+    public RpgScenario(Component title,
+                       Component info,
+                       BlockPos spawnPoint,
+                       ResourceLocation dimension,
+                       List<RpgScenarioFeature> features,
+                       List<RpgScenarioCondition> conditions,
+                       List<RpgScenarioSetUp> setUp,
+                       List<RpgScenarioReward> initialReward,
+                       List<RpgScenarioReward> repeatReward){
+        this(Component.Serializer.toJson(title), Component.Serializer.toJson(info), spawnPoint, dimension, features, conditions, setUp, initialReward, repeatReward);
+    }
 }

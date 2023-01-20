@@ -77,5 +77,7 @@ public class RpgwJaJpLanguageProvider extends RpgwAbstractLanguageProvider {
         addRpgScenarioTitle("default", "これはシナリオタイトルのデフォルトです。");
 
         addRpgScenarioInfo("default", "これはシナリオ情報テキストのデフォルトです。");
+
+        add("rpgscenario.feature.noKeepInventory", "死亡時のインベントリの§c§l保持無し");
     }
 }

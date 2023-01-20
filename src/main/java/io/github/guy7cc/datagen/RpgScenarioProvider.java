@@ -7,6 +7,7 @@ import io.github.guy7cc.resource.*;
 import io.github.guy7cc.world.dimension.RpgwDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.network.chat.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -24,8 +25,14 @@ public class RpgScenarioProvider extends RpgwSimpleDataProvider<RpgScenario> {
     protected void register(Map<String, RpgScenario> map){
         map.put("test_scenario",
                 new RpgScenario(
-                        "Debug Level",
-                        "No Info",
+                        new TextComponent("Debug Scenario"),
+                        new TextComponent("\n\n\n\n\n\n")
+                                .append(new TextComponent("Github repository")
+                                        .withStyle(Style.EMPTY.withColor(0xff4444).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("Hover Event")))
+                                                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/guy7cc/RPG-with-your-friends-mod")
+                                                )
+                                        )
+                                ).append(new TextComponent("\n\n\n\n")),
                         new BlockPos(0, 100, 0),
                         RpgwDimensions.RPGW_DEBUG_DIMENSION_KEY.location(),
                         List.of(

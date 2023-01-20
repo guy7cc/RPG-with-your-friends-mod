@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.guy7cc.RpgwMod;
+import io.github.guy7cc.client.screen.ScreenUtil;
 import io.github.guy7cc.network.RpgwMessageManager;
 import io.github.guy7cc.network.ServerboundManagePartyPacket;
 import io.github.guy7cc.rpg.Party;
@@ -178,15 +179,10 @@ public class PartyMenuScreen extends Screen {
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers){
-        InputConstants.Key mouseKey = InputConstants.getKey(pKeyCode, pScanCode);
         if(super.keyPressed(pKeyCode, pScanCode, pModifiers)){
             return true;
-        } else if(this.minecraft.options.keyInventory.isActiveAndMatches(mouseKey)){
-            this.onClose();
-            return true;
-        } else {
-            return false;
         }
+        return ScreenUtil.closeIfInventoryKeyPressed(minecraft, pKeyCode, pScanCode);
     }
 
     @Override
