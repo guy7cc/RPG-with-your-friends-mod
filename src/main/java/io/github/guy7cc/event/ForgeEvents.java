@@ -29,17 +29,28 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = RpgwMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
     @SubscribeEvent
+    public static void onAddReloadListener(AddReloadListenerEvent event){
+        event.addListener(DimensionDataManager.instance);
+        event.addListener(RpgStageManager.instance);
+        event.addListener(RpgScenarioManager.instance);
+        event.addListener(TraderDataManager.instance);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event){
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        JoinRequestCommand.register(dispatcher);
+        RpgwDebugCommand.register(dispatcher);
+    }
+
+    @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event){
-        if(event.getObject() instanceof ServerPlayer){
-            event.addCapability(RpgPlayerPropertyProvider.RPG_PLAYER_PROPERTY_LOCATION, new RpgPlayerPropertyProvider(RpgPlayerProperty::new));
-        }
+        RpgPlayerPropertyProvider.onAttachCapabilities(event);
     }
 
     @SubscribeEvent
     public static void onEntityTravelToDimension(EntityTravelToDimensionEvent event){
-        if(event.getEntity() instanceof ServerPlayer player){
-            BorderManager.clearList(player);
-        }
+        BorderManager.onEntityTravelToDimension(event);
     }
 
     @SubscribeEvent
@@ -56,51 +67,21 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onWorldTick(TickEvent.WorldTickEvent event){
-        if(!event.world.isClientSide){
-            ServerLevel level = (ServerLevel) event.world;
-        }
-    }
-
-    @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
-        ServerLevel level = (ServerLevel) event.getPlayer().level;
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
-
         RpgPlayerPropertyManager.onPlayerLoggedIn(event);
-
-        //party list
-        PartyList.init(((ServerLevel) level).getServer());
+        PartyList.onPlayerLoggedIn(event);
     }
 
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event){
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
-
         RpgPlayerPropertyManager.onPlayerLoggedOut(event);
-
-        //party list
-        if(PartyList.initedOnce()) PartyList.getInstance().leaveParty(player.getUUID());
-
-        //border
-        BorderManager.clearList(player);
-    }
-
-    @SubscribeEvent
-    public static void onRegisterCommands(RegisterCommandsEvent event){
-        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        JoinRequestCommand.register(dispatcher);
-        RpgwDebugCommand.register(dispatcher);
+        PartyList.onPlayerLoggedOut(event);
+        BorderManager.onPlayerLoggedOut(event);
     }
 
     @SubscribeEvent
     public static void onEntityTeleport(EntityTeleportEvent.TeleportCommand event){
-        if(event.getEntity() instanceof Player){
-            ServerPlayer player = (ServerPlayer) event.getEntity();
-            BorderManager.removeIfOutside(player, event.getTarget());
-            BorderManager.onChange(player);
-        }
-
+        BorderManager.onEntityTeleport(event);
     }
 
     @SubscribeEvent
@@ -116,13 +97,5 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event){
         RpgPlayerPropertyManager.onPlayerRespawn(event);
-    }
-
-    @SubscribeEvent
-    public static void onAddReloadListener(AddReloadListenerEvent event){
-        event.addListener(DimensionDataManager.instance);
-        event.addListener(RpgStageManager.instance);
-        event.addListener(RpgScenarioManager.instance);
-        event.addListener(TraderDataManager.instance);
     }
 }

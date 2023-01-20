@@ -24,42 +24,33 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientForgeEvents {
     @SubscribeEvent
     public static void onClientLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event){
-        PartyManager.clientParty = null;
-        BorderManager.clientBorder = null;
-        RpgwIngameOverlay.money.reset();
+        PartyManager.onClientLoggedOut(event);
+        BorderManager.onClientLoggedOut(event);
+        RpgwIngameOverlay.money.onClientLoggedOut(event);
     }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event){
-        if(event.phase == TickEvent.Phase.START) RpgwIngameOverlay.tick();
+        RpgwIngameOverlay.onClientTick(event);
     }
 
     @SubscribeEvent
     public static void onClientRespawn(ClientPlayerNetworkEvent.RespawnEvent event){
-        BorderManager.clientBorder = null;
+        BorderManager.onClientRespawn(event);
     }
-
-    public static final ResourceLocation PARTY_MENU_BUTTON_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/party_menu_button.png");
 
     @SubscribeEvent
     public static void onScreenOpen(ScreenOpenEvent event){
-        Minecraft minecraft = Minecraft.getInstance();
-        if(minecraft.screen instanceof ReceivingLevelScreen && DimensionDataManager.instance.containsKey(minecraft.level.dimension().location())){
-            DimensionDataManager.instance.getOrDefault(minecraft.level.dimension().location()).show();
-        }
+        DimensionDataManager.onScreenOpen(event);
     }
 
     @SubscribeEvent
     public static void onInitScreenPre(ScreenEvent.InitScreenEvent.Post event){
-        if(event.getScreen() instanceof InventoryScreen screen){
-            event.addListener(new ImageButton(screen.getGuiLeft() + screen.getXSize() + 1, screen.getGuiTop() + screen.getYSize() - 20, 20, 20, 0, 0, 20, PARTY_MENU_BUTTON_LOCATION, 32, 64, button -> {
-                Minecraft.getInstance().setScreen(new PartyMenuScreen());
-            }));
-        }
+        PartyMenuScreen.onInitScreenPre(event);
     }
 
     @SubscribeEvent
     public static void onRenderLevelLast(RenderLevelLastEvent event){
-        BorderManager.renderBorder(event.getPoseStack());
+        BorderManager.onRenderLevelLast(event);
     }
 }

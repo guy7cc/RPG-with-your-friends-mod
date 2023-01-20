@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 
 public class PlayerMoneyOverlay {
     public static final ResourceLocation OVERLAY_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/money_overlays.png");
@@ -109,5 +110,9 @@ public class PlayerMoneyOverlay {
         initialized = false;
         displayMoney = 0;
         gradient = 0;
+    }
+
+    public void onClientLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event){
+        reset();
     }
 }

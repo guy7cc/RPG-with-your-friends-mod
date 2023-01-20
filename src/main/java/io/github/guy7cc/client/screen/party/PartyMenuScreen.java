@@ -24,11 +24,13 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.event.ScreenEvent;
 
 import java.util.UUID;
 
 
 public class PartyMenuScreen extends Screen {
+    public static final ResourceLocation PARTY_MENU_BUTTON_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/party_menu_button.png");
     public static final ResourceLocation PARTY_MENU_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/party_menu.png");
     public static final ResourceLocation REFRESH_BUTTON_LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/party_menu_refresh_button.png");
     private PartySelectionList partySelectionList;
@@ -192,4 +194,12 @@ public class PartyMenuScreen extends Screen {
     }
 
     public PartyList getPartyList() { return partyList; }
+
+    public static void onInitScreenPre(ScreenEvent.InitScreenEvent.Post event){
+        if(event.getScreen() instanceof InventoryScreen screen){
+            event.addListener(new ImageButton(screen.getGuiLeft() + screen.getXSize() + 1, screen.getGuiTop() + screen.getYSize() - 20, 20, 20, 0, 0, 20, PARTY_MENU_BUTTON_LOCATION, 32, 64, button -> {
+                Minecraft.getInstance().setScreen(new PartyMenuScreen());
+            }));
+        }
+    }
 }

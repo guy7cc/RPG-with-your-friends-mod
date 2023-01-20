@@ -2,7 +2,9 @@ package io.github.guy7cc.rpg;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -156,4 +158,13 @@ public class PartyList {
         return new PartyList(partyList);
     }
 
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
+        ServerLevel level = (ServerLevel) event.getPlayer().level;
+        PartyList.init((level).getServer());
+    }
+
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event){
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        if(PartyList.initedOnce()) PartyList.getInstance().leaveParty(player.getUUID());
+    }
 }

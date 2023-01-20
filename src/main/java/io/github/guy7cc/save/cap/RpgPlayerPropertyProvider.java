@@ -42,6 +42,12 @@ public class RpgPlayerPropertyProvider extends AbstractCapabilityProvider<RpgPla
         event.register(RpgPlayerProperty.class);
     }
 
+    public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event){
+        if(event.getObject() instanceof ServerPlayer){
+            event.addCapability(RPG_PLAYER_PROPERTY_LOCATION, new RpgPlayerPropertyProvider(RpgPlayerProperty::new));
+        }
+    }
+
     public static void onPlayerCloned(PlayerEvent.Clone event){
         event.getOriginal().getCapability(RpgPlayerPropertyProvider.RPG_PLAYER_PROPERTY_CAPABILITY).ifPresent(oldCap -> {
             event.getPlayer().getCapability(RpgPlayerPropertyProvider.RPG_PLAYER_PROPERTY_CAPABILITY).ifPresent(newCap -> {
