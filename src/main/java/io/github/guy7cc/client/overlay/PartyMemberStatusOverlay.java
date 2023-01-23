@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.save.cap.PropertyType;
 import io.github.guy7cc.save.cap.RpgPlayerProperty;
-import io.github.guy7cc.sync.RpgPlayerPropertyManager;
+import io.github.guy7cc.save.cap.RpgPlayerPropertyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -69,7 +69,7 @@ public class PartyMemberStatusOverlay {
                     }
                 }
 
-                RpgPlayerProperty property = RpgPlayerPropertyManager.get(player.getUUID());
+                RpgPlayerProperty property = RpgPlayerPropertyManager.get(uuid);
                 mp = property != null ? property.getValue(PropertyType.MP) : 0;
                 mpMax = property != null ? property.getValue(PropertyType.MAX_MP) : 20;
                 float mpRate = mp / mpMax;

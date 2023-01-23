@@ -4,11 +4,17 @@ import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import io.github.guy7cc.RpgwMod;
+import io.github.guy7cc.network.ClientboundSetRpgStagePacket;
+import io.github.guy7cc.network.RpgwMessageManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -21,7 +27,7 @@ public class RpgStageManager extends SimpleJsonResourceReloadListener {
 
     public static final RpgStageManager instance = new RpgStageManager();
 
-    private Map<ResourceLocation, RpgStage> map;
+    private Map<ResourceLocation, RpgStage> map = new HashMap<>();
 
     public RpgStageManager() {
         super(GSON, "rpgdata/stage");
@@ -29,7 +35,7 @@ public class RpgStageManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
-        map = new HashMap<>();
+        map.clear();
         map.put(new ResourceLocation(RpgwMod.MOD_ID, "default"), RpgStage.DEFAULT);
         for(Map.Entry<ResourceLocation, JsonElement> entry : pObject.entrySet()){
             ResourceLocation resourcelocation = entry.getKey();
@@ -48,6 +54,20 @@ public class RpgStageManager extends SimpleJsonResourceReloadListener {
     }
 
     public RpgStage getOrDefault(ResourceLocation location){
-        return map.containsKey(location) ? map.get(location) : RpgStage.DEFAULT;
+        return map.containsKey(location)
+                ? map.get(location)
+                : RpgStage.DEFAULT;
+    }
+
+    public void putToClient(ResourceLocation location, RpgStage stage){
+        map.put(location, stage);
+    }
+
+    public void syncToClient(ServerPlayer player, ResourceLocation location){
+        RpgStage stage = getOrDefault(location);
+        RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundSetRpgStagePacket(location, stage));
+        for(ResourceLocation scenarioLoc : stage.scenarios()){
+            RpgScenarioManager.instance.syncToClient(player, scenarioLoc);
+        }
     }
 }

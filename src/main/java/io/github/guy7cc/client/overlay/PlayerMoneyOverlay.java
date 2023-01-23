@@ -7,7 +7,7 @@ import io.github.guy7cc.item.CoinItem;
 import io.github.guy7cc.item.RpgwItems;
 import io.github.guy7cc.save.cap.PropertyType;
 import io.github.guy7cc.save.cap.RpgPlayerProperty;
-import io.github.guy7cc.sync.RpgPlayerPropertyManager;
+import io.github.guy7cc.save.cap.RpgPlayerPropertyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;

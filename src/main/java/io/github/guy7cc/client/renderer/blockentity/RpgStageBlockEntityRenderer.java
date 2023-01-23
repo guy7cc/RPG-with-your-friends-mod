@@ -1,18 +1,13 @@
-package io.github.guy7cc.block.entity.renderer;
+package io.github.guy7cc.client.renderer.blockentity;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix3f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import io.github.guy7cc.block.RpgStageBlock;
 import io.github.guy7cc.block.entity.RpgStageBlockEntity;
-import io.github.guy7cc.resource.RpgStage;
-import io.github.guy7cc.resource.RpgStageManager;
 import io.github.guy7cc.util.EasingFunc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -20,8 +15,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
 public class RpgStageBlockEntityRenderer implements BlockEntityRenderer<RpgStageBlockEntity> {
     private ItemRenderer itemRenderer;

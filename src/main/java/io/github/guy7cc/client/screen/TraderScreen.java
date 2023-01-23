@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.block.entity.VendingMachineBlockEntity;
+import io.github.guy7cc.client.renderer.TraderDataElementRenderer;
 import io.github.guy7cc.network.RpgwMessageManager;
 import io.github.guy7cc.network.ServerboundConfirmTradeOnVendingMachinePacket;
 import io.github.guy7cc.resource.TraderDataElement;
@@ -11,13 +12,14 @@ import io.github.guy7cc.resource.TraderData;
 import io.github.guy7cc.rpg.ITrader;
 import io.github.guy7cc.save.cap.PropertyType;
 import io.github.guy7cc.save.cap.RpgPlayerProperty;
-import io.github.guy7cc.sync.RpgPlayerPropertyManager;
+import io.github.guy7cc.save.cap.RpgPlayerPropertyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -35,6 +37,7 @@ public class TraderScreen extends Screen {
     public static final ResourceLocation LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/trader.png");
 
     private ITrader owner;
+    private BlockPos pos;
 
     private TraderDataElement selected;
     private List<? extends TraderDataElement>[] lists;
@@ -57,6 +60,9 @@ public class TraderScreen extends Screen {
     public TraderScreen(ITrader owner) {
         super(new TextComponent(""));
         this.owner = owner;
+        if(owner instanceof VendingMachineBlockEntity be){
+            pos = be.getBlockPos();
+        }
         TraderData data = owner.getTraderData();
         lists = new List[3];
         for(int i = 0; i < 3; i++){
@@ -155,7 +161,7 @@ public class TraderScreen extends Screen {
         blit(pPoseStack, mainX + 122, mainY + 15, 122, 0, 8, 168, 256, 256);
         blit(pPoseStack, mainX + activeTab * 43, mainY, activeTab * 43, 168, 44, 19, 256, 256);
         if(selected != null){
-            selected.render(itemRenderer, pPoseStack, mainX + 8, mainY + 153);
+            TraderDataElementRenderer.render(selected, itemRenderer, pPoseStack, mainX + 8, mainY + 153);
         }
         component = new TranslatableComponent(keys[activeTab]);
         font.draw(pPoseStack, component.getString(), mainX + activeTab * 43 + 22 - font.width(component) / 2, mainY + 5, lists[activeTab].isEmpty() ? 0xffffff : 0x404040);
@@ -167,39 +173,39 @@ public class TraderScreen extends Screen {
 
     private void renderElements(PoseStack poseStack, int mouseX, int mouseY){
         List<? extends TraderDataElement> list = lists[activeTab];
-        int i = scrollHeight / TraderDataElement.HEIGHT;
-        int y = -(scrollHeight % TraderDataElement.HEIGHT);
+        int i = scrollHeight / TraderDataElementRenderer.HEIGHT;
+        int y = -(scrollHeight % TraderDataElementRenderer.HEIGHT);
         for(; i < list.size() && y < NODE_BOX_HEIGHT; i++){
             TraderDataElement e = list.get(i);
-            e.render(itemRenderer, poseStack, elementX, elementY + y);
-            y += TraderDataElement.HEIGHT;
+            TraderDataElementRenderer.render(e, itemRenderer, poseStack, elementX, elementY + y);
+            y += TraderDataElementRenderer.HEIGHT;
         }
     }
 
     private void renderTooltipForElements(PoseStack poseStack, int mouseX, int mouseY){
         List<? extends TraderDataElement> list = lists[activeTab];
-        int i = scrollHeight / TraderDataElement.HEIGHT;
-        int y = -(scrollHeight % TraderDataElement.HEIGHT);
+        int i = scrollHeight / TraderDataElementRenderer.HEIGHT;
+        int y = -(scrollHeight % TraderDataElementRenderer.HEIGHT);
         for(; i < list.size() && y < NODE_BOX_HEIGHT; i++){
             TraderDataElement e = list.get(i);
             if(elementX + 3 <= mouseX && mouseX <= elementX + 19 && elementY + y + 3 <= mouseY && mouseY <= elementY + y + 19){
                 renderTooltip(poseStack, e.getItemStack(), mouseX, mouseY);
             }
-            y += TraderDataElement.HEIGHT;
+            y += TraderDataElementRenderer.HEIGHT;
         }
         if(selected != null && elementX + 3 <= mouseX && mouseX <= elementX + 19 && elementY + 133 <= mouseY && mouseY <= elementY + 149){
             renderTooltip(poseStack, selected.getItemStack(), mouseX, mouseY);
         }
         if(activeTab == 2){
-            i = scrollHeight / TraderDataElement.HEIGHT;
-            y = -(scrollHeight % TraderDataElement.HEIGHT);
+            i = scrollHeight / TraderDataElementRenderer.HEIGHT;
+            y = -(scrollHeight % TraderDataElementRenderer.HEIGHT);
             List<TraderDataElement.Barter> barterList = list.stream().map(e -> (TraderDataElement.Barter)e).collect(Collectors.toList());
             for(; i < list.size() && y < NODE_BOX_HEIGHT; i++){
                 TraderDataElement.Barter e = barterList.get(i);
                 if(elementX + 95 <= mouseX && mouseX <= elementX + 111 && elementY + y + 3 <= mouseY && mouseY <= elementY + y + 19){
                     renderTooltip(poseStack, e.getRequirement(), mouseX, mouseY);
                 }
-                y += TraderDataElement.HEIGHT;
+                y += TraderDataElementRenderer.HEIGHT;
             }
             if(selected != null && elementX + 95 <= mouseX && mouseX <= elementX + 111 && elementY + 133 <= mouseY && mouseY <= elementY + 149){
                 renderTooltip(poseStack, ((TraderDataElement.Barter)selected).getRequirement(), mouseX, mouseY);
@@ -219,6 +225,10 @@ public class TraderScreen extends Screen {
             }
         } catch(NumberFormatException exception){
             amountBox.setValue(String.valueOf(amount));
+        }
+
+        if(pos != null && minecraft.level.getBlockEntity(pos) != owner){
+            minecraft.setScreen(null);
         }
     }
 
@@ -257,7 +267,7 @@ public class TraderScreen extends Screen {
         //elements
         if(elementX < pMouseX && pMouseX < elementX + 114 && elementY < pMouseY && pMouseY < elementY + NODE_BOX_HEIGHT){
             int y = (int)pMouseY - elementY + scrollHeight;
-            y /= TraderDataElement.HEIGHT;
+            y /= TraderDataElementRenderer.HEIGHT;
             if(0 <= y && y < lists[activeTab].size()){
                 TraderDataElement e = lists[activeTab].get(y);
                 if(!(e instanceof TraderDataElement.Sell s) || System.currentTimeMillis() > s.getAvailableFrom()){
@@ -281,7 +291,7 @@ public class TraderScreen extends Screen {
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
         if(elementX < pMouseX && pMouseX < elementX + 114 && elementY < pMouseY && pMouseY < elementY + NODE_BOX_HEIGHT){
-            int maxScrollHeight = Math.max(lists[activeTab].size() * TraderDataElement.HEIGHT - NODE_BOX_HEIGHT, 0);
+            int maxScrollHeight = Math.max(lists[activeTab].size() * TraderDataElementRenderer.HEIGHT - NODE_BOX_HEIGHT, 0);
             scrollHeight -= pDelta * 3;
             if(scrollHeight < 0) scrollHeight = 0;
             else if(scrollHeight > maxScrollHeight) scrollHeight = maxScrollHeight;

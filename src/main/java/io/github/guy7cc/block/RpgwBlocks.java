@@ -17,6 +17,8 @@ import java.util.function.Supplier;
 public class RpgwBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RpgwMod.MOD_ID);
 
+    //TODO: specify block properties
+
     //block
 
     //block entity

@@ -1,10 +1,7 @@
 package io.github.guy7cc.network;
 
-import io.github.guy7cc.client.screen.BorderBlockEditScreen;
 import io.github.guy7cc.save.cap.RpgPlayerProperty;
-import io.github.guy7cc.sync.BorderManager;
-import io.github.guy7cc.sync.RpgPlayerPropertyManager;
-import net.minecraft.client.Minecraft;
+import io.github.guy7cc.save.cap.RpgPlayerPropertyManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;

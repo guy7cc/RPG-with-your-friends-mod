@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.guy7cc.save.cap.PropertyType;
 import io.github.guy7cc.save.cap.RpgPlayerProperty;
-import io.github.guy7cc.sync.RpgPlayerPropertyManager;
+import io.github.guy7cc.save.cap.RpgPlayerPropertyManager;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;

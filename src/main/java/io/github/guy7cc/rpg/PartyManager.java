@@ -1,4 +1,4 @@
-package io.github.guy7cc.sync;
+package io.github.guy7cc.rpg;
 
 import io.github.guy7cc.client.overlay.RpgwIngameOverlay;
 import io.github.guy7cc.rpg.Party;

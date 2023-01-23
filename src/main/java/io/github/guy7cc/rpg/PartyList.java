@@ -16,8 +16,6 @@ public class PartyList {
 
     private MinecraftServer server;
     private List<Party> partyList = new ArrayList<>();
-    private Map<UUID, Party> partyByPlayer = new HashMap<>();
-    private Map<Integer, Party> partyById = new HashMap();
 
     private static int id = 0;
 
@@ -63,7 +61,6 @@ public class PartyList {
         Party party = byId(id);
         if(party == null) return false;
         party.addMember(uuid);
-        partyByPlayer.put(uuid, party);
         return true;
     }
 
@@ -77,8 +74,6 @@ public class PartyList {
         if (leader != null) {
             Party party = new Party(name, leader, id());
             partyList.add(party);
-            partyByPlayer.put(leaderUUID, party);
-            partyById.put(party.getId(), party);
         }
         return true;
     }
@@ -91,10 +86,8 @@ public class PartyList {
         Party party = byPlayer(memberUUID);
         if(party == null) return false;
         party.removeMember(memberUUID);
-        partyByPlayer.remove(memberUUID);
         if(party.size() == 0) {
             partyList.remove(party);
-            partyById.remove(party.getId());
         }
         return true;
     }
@@ -112,19 +105,25 @@ public class PartyList {
     }
 
     public boolean inParty(@NotNull UUID memberUUID){
-        return partyByPlayer.get(memberUUID) != null;
+        return byPlayer(memberUUID) != null;
     }
 
     public Party byPlayer(@NotNull UUID memberUUID){
-        return partyByPlayer.get(memberUUID);
+        for(Party party : partyList){
+            if(party.isMember(memberUUID)) return party;
+        }
+        return null;
     }
 
     public Party byId(int id){
-        return partyById.get(id);
+        for(Party party : partyList){
+            if(party.getId() == id) return party;
+        }
+        return null;
     }
 
     public Party byLeader(@NotNull UUID leaderUUID){
-        Party party = partyByPlayer.get(leaderUUID);
+        Party party = byPlayer(leaderUUID);
         if(party != null){
             List<UUID> list = party.getMemberList();
             return list.size() > 0 && list.get(0).equals(leaderUUID) ? party : null;

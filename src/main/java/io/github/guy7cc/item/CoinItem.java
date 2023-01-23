@@ -2,7 +2,7 @@ package io.github.guy7cc.item;
 
 import io.github.guy7cc.save.cap.PropertyType;
 import io.github.guy7cc.save.cap.RpgPlayerProperty;
-import io.github.guy7cc.sync.RpgPlayerPropertyManager;
+import io.github.guy7cc.save.cap.RpgPlayerPropertyManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;

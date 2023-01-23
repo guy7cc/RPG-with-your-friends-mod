@@ -72,6 +72,12 @@ public class RpgPlayerProperty implements INBTSerializable<CompoundTag> {
         dirty = 0;
     }
 
+    public void setAllDirty(){
+        for(PropertyType<?> type : PropertyType.allTypes){
+            dirty |= type.bitMask;
+        }
+    }
+
     public <T> void writeToBuf(FriendlyByteBuf buf){
         buf.writeInt(dirty);
         for(PropertyType<?> type : PropertyType.allTypes){

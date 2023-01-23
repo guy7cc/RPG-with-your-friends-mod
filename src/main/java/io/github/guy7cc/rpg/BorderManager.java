@@ -1,11 +1,10 @@
-package io.github.guy7cc.sync;
+package io.github.guy7cc.rpg;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.guy7cc.network.ClientboundSyncBorderPacket;
 import io.github.guy7cc.network.RpgwMessageManager;
-import io.github.guy7cc.rpg.Border;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
