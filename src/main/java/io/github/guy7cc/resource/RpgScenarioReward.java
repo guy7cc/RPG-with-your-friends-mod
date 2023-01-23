@@ -22,8 +22,6 @@ public abstract class RpgScenarioReward {
 
     public abstract void give(ServerPlayer player);
 
-    public abstract void render();
-
     public static class Exp extends RpgScenarioReward {
         public static final Codec<Exp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("exp").forGetter(r -> r.exp)
@@ -37,11 +35,6 @@ public abstract class RpgScenarioReward {
 
         @Override
         public void give(ServerPlayer player){
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public void render(){
             throw new NotImplementedException();
         }
     }
@@ -61,11 +54,6 @@ public abstract class RpgScenarioReward {
         public void give(ServerPlayer player){
             throw new NotImplementedException();
         }
-
-        @Override
-        public void render(){
-            throw new NotImplementedException();
-        }
     }
 
     public static class Items extends RpgScenarioReward {
@@ -81,11 +69,6 @@ public abstract class RpgScenarioReward {
 
         @Override
         public void give(ServerPlayer player){
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public void render(){
             throw new NotImplementedException();
         }
     }

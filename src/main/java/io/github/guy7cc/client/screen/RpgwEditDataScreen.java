@@ -41,4 +41,9 @@ public class RpgwEditDataScreen extends Screen {
         renderBackground(pPoseStack);
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
+
+    @Override
+    public void tick() {
+        edit.tick();
+    }
 }

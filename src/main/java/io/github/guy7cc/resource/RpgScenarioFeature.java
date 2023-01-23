@@ -22,11 +22,7 @@ public abstract class RpgScenarioFeature {
             new CodecUtil.WithType<>(KeepInventory.CODEC, KeepInventory.class)
     );
 
-    protected ResourceLocation LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/rpg_scenario_feature_icon.png");
-
     public abstract void apply(Party party);
-
-    public abstract void render(PoseStack poseStack, int x, int y);
 
     public abstract Component getToolTip();
 
@@ -41,19 +37,16 @@ public abstract class RpgScenarioFeature {
             this.adventure = adventure;
         }
 
+        public boolean isAdventure(){
+            return adventure;
+        }
+
         @Override
         public void apply(Party party) {
             if(party.isClientSide()) return;
             for(ServerPlayer player : party.getPlayers()){
                 player.setGameMode(adventure ? GameType.ADVENTURE : GameType.SURVIVAL);
             }
-        }
-
-        @Override
-        public void render(PoseStack poseStack, int x, int y){
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, LOCATION);
-            GuiComponent.blit(poseStack, x, y, 10, 10, adventure ? 0 : 10, 0, 10, 10, 32, 32);
         }
 
         @Override
@@ -73,16 +66,13 @@ public abstract class RpgScenarioFeature {
             this.keepInventory = keepInventory;
         }
 
-        @Override
-        public void apply(Party party) {
-            throw new NotImplementedException();
+        public boolean isInventoryKept(){
+            return keepInventory;
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y){
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, LOCATION);
-            GuiComponent.blit(poseStack, x, y, 10, 10, keepInventory ? 0 : 10, 10, 10, 10, 32, 32);
+        public void apply(Party party) {
+            throw new NotImplementedException();
         }
 
         @Override

@@ -1,8 +1,7 @@
-package io.github.guy7cc.block.entity.renderer;
+package io.github.guy7cc.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.github.guy7cc.block.RpgwBlocks;
 import io.github.guy7cc.block.entity.RpgwSpawnerBlockEntity;
 import io.github.guy7cc.item.RpgwItems;
 import net.minecraft.client.Minecraft;
@@ -12,7 +11,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.StructureBlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

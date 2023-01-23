@@ -8,8 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public record RpgScenario(
         String title,
@@ -55,5 +56,15 @@ public record RpgScenario(
                        List<RpgScenarioReward> initialReward,
                        List<RpgScenarioReward> repeatReward){
         this(Component.Serializer.toJson(title), Component.Serializer.toJson(info), spawnPoint, dimension, features, conditions, setUp, initialReward, repeatReward);
+    }
+
+    public RpgScenario(RpgScenario clone){
+        this(clone.title, clone.info, new BlockPos(clone.spawnPoint), new ResourceLocation(clone.dimension.toString()), new ArrayList<>(clone.features), new ArrayList<>(clone.conditions), new ArrayList<>(clone.setUp), new ArrayList<>(clone.initialReward), new ArrayList<>(clone.repeatReward));
+    }
+
+    public RpgScenario reduceSetUp(){
+        RpgScenario clone = new RpgScenario(this);
+        clone.setUp.clear();
+        return clone;
     }
 }

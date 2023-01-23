@@ -1,23 +1,16 @@
 package io.github.guy7cc.resource;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.guy7cc.rpg.Party;
 import io.github.guy7cc.save.RpgSavedData;
 import io.github.guy7cc.save.RpgScenarioSavedData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.*;
 import java.util.List;
@@ -33,8 +26,6 @@ public abstract class RpgScenarioCondition {
     // Optional.empty() means passing the test
     public abstract Optional<Component> test(Party party);
 
-    public abstract void render(PoseStack poseStack, int x, int y, int width);
-
     public static class MaxPlayer extends RpgScenarioCondition{
         public static final Codec<MaxPlayer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("max").forGetter(i -> i.max)
@@ -46,22 +37,16 @@ public abstract class RpgScenarioCondition {
             this.max = max;
         }
 
-        @Override
-        public Optional<Component> test(Party party){
-            if(party.isClientSide()){
-                return Optional.empty();
-            } else {
-                if(party.size() <= max) return Optional.empty();
-                else return Optional.of(new TranslatableComponent("rpgscenario.condition.maxPlayer.failed"));
-            }
+        public int getMax() {
+            return max;
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int width) {
-            Font font = Minecraft.getInstance().font;
-            List<FormattedCharSequence> sequences = ComponentRenderUtils.wrapComponents(new TranslatableComponent("rpgscenario.condition.maxPlayer.require").append(Integer.toString(max)), width, Minecraft.getInstance().font);
-            for(FormattedCharSequence s : sequences){
-                font.drawShadow(poseStack, s, x, y, 0xffffff);
+        public Optional<Component> test(Party party){
+            if(party.isClientSide()) return RpgScenarioConditionExecutor.test(this);
+            else {
+                if(party.size() <= max) return Optional.empty();
+                else return Optional.of(new TranslatableComponent("rpgscenario.condition.maxPlayer.failed"));
             }
         }
     }
@@ -85,9 +70,13 @@ public abstract class RpgScenarioCondition {
             requirement = component;
         }
 
+        public Component getRequirement() {
+            return requirement;
+        }
+
         @Override
         public Optional<Component> test(Party party){
-            if(party.isClientSide()) return Optional.empty();
+            if(party.isClientSide()) return RpgScenarioConditionExecutor.test(this);
 
             MinecraftServer server = party.getServer();
             RpgSavedData savedData = RpgSavedData.get(server);
@@ -111,15 +100,6 @@ public abstract class RpgScenarioCondition {
             }
             return component == null ? Optional.empty() : Optional.of(component);
         }
-
-        @Override
-        public void render(PoseStack poseStack, int x, int y, int width){
-            Font font = Minecraft.getInstance().font;
-            List<FormattedCharSequence> sequences = ComponentRenderUtils.wrapComponents(requirement, width, Minecraft.getInstance().font);
-            for(FormattedCharSequence s : sequences){
-                font.drawShadow(poseStack, s, x, y, 0xffffff);
-            }
-        }
     }
 
     public static class AllowedItems extends RpgScenarioCondition{
@@ -133,48 +113,14 @@ public abstract class RpgScenarioCondition {
             this.list = ImmutableList.copyOf(list);
         }
 
+        public ImmutableList<ItemStack> getList() {
+            return list;
+        }
 
         @Override
         public Optional<Component> test(Party party){
             if(!party.isClientSide()) return Optional.empty();
-            MutableComponent component = null;
-            LocalPlayer player = Minecraft.getInstance().player;
-            List<ItemStack> copyList = list.stream().map(is -> is.copy()).toList();
-            for (ItemStack is : player.getInventory().items) {
-                boolean pass = false;
-                int i = 0;
-                for (; i < copyList.size(); i++) {
-                    ItemStack allowed = copyList.get(i);
-                    if (is.sameItem(allowed)) {
-                        if (is.getCount() <= allowed.getCount()) {
-                            allowed.shrink(is.getCount());
-                            pass = true;
-                        }
-                        break;
-                    }
-                }
-                if (!pass) {
-                    if (i == copyList.size()) {
-                        if (component == null)
-                            component = new TranslatableComponent("rpgscenario.condition.allowedItems.notAllowed", is.getItem().getName(is));
-                        else
-                            component.append("\n").append(new TranslatableComponent("rpgscenario.condition.allowedItems.notAllowed", is.getItem().getName(is)));
-                    } else {
-                        if (component == null)
-                            component = new TranslatableComponent("rpgscenario.condition.allowedItems.upTo", is.getItem().getName(is), list.get(i).getCount());
-                        else
-                            component.append("\n").append(new TranslatableComponent("rpgscenario.condition.allowedItems.upTo", is.getItem().getName(is), list.get(i).getCount()));
-                    }
-                }
-            }
-            return Optional.of(component);
-
-
-        }
-
-        @Override
-        public void render(PoseStack poseStack, int x, int y, int width){
-
+            return RpgScenarioConditionExecutor.test(this);
         }
     }
 
@@ -189,36 +135,14 @@ public abstract class RpgScenarioCondition {
             this.list = ImmutableList.copyOf(list);
         }
 
-        @Override
-        public Optional<Component> test(Party party){
-            if(!party.isClientSide()) return Optional.empty();
-            MutableComponent component = null;
-            LocalPlayer player = Minecraft.getInstance().player;
-            List<ItemStack> copyList = list.stream().map(is -> is.copy()).toList();
-            for(ItemStack is : player.getInventory().items){
-                boolean pass = true;
-                int i = 0;
-                for(; i < copyList.size(); i++){
-                    ItemStack banned = copyList.get(i);
-                    if(is.sameItem(banned)){
-                        if(is.getCount() < banned.getCount()) banned.shrink(is.getCount());
-                        else pass = false;
-                        break;
-                    }
-                }
-                if(!pass){
-                    if (component == null)
-                        component = new TranslatableComponent("rpgscenario.condition.bannedItems.banned", is.getItem().getName(is), list.get(i).getCount());
-                    else
-                        component.append("\n").append(new TranslatableComponent("rpgscenario.condition.bannedItems.banned", is.getItem().getName(is), list.get(i).getCount()));
-                }
-            }
-            return Optional.of(component);
+        public ImmutableList<ItemStack> getList() {
+            return list;
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int width){
-
+        public Optional<Component> test(Party party){
+            if(!party.isClientSide()) return Optional.empty();
+            return RpgScenarioConditionExecutor.test(this);
         }
     }
 }

@@ -1,10 +1,7 @@
 package io.github.guy7cc.block;
 
 import io.github.guy7cc.block.entity.VendingMachineBlockEntity;
-import io.github.guy7cc.client.screen.RpgwEditDataScreen;
-import io.github.guy7cc.client.screen.TraderScreen;
-import io.github.guy7cc.item.RpgwItems;
-import net.minecraft.client.Minecraft;
+import io.github.guy7cc.client.ClientExecutionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -21,10 +18,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
 public class VendingMachineBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -44,13 +42,8 @@ public class VendingMachineBlock extends HorizontalDirectionalBlock implements E
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         BlockPos bePos = pState.getValue(HALF) == DoubleBlockHalf.LOWER ? pPos.above() : pPos;
         BlockEntity be = pLevel.getBlockEntity(bePos);
-        if(pLevel.isClientSide && be instanceof VendingMachineBlockEntity vm){
-            if(pPlayer.getItemInHand(pHand).is(RpgwItems.DEBUG_WRENCH.get())){
-                Minecraft.getInstance().setScreen(new RpgwEditDataScreen(bePos, vm.getDefaultData().toString()));
-            } else {
-                vm.setTraderScreen();
-            }
-        }
+        if(pLevel.isClientSide && be instanceof VendingMachineBlockEntity vm)
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientExecutionUtil.openScreenForVendingMachineBlock(vm, bePos, pPlayer, pHand));
         return InteractionResult.sidedSuccess(pLevel.isClientSide);
     }
 

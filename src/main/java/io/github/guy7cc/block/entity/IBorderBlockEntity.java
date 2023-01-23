@@ -1,7 +1,7 @@
 package io.github.guy7cc.block.entity;
 
 import io.github.guy7cc.rpg.Border;
-import io.github.guy7cc.sync.BorderManager;
+import io.github.guy7cc.rpg.BorderManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;

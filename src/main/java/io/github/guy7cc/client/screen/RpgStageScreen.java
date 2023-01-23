@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.block.entity.RpgStageBlockEntity;
+import io.github.guy7cc.client.renderer.RpgScenarioFeatureRenderer;
+import io.github.guy7cc.network.ClientboundSetRpgStagePacket;
 import io.github.guy7cc.resource.*;
 import io.github.guy7cc.util.EasingFunc;
 import net.minecraft.client.Minecraft;
@@ -28,7 +30,9 @@ public class RpgStageScreen extends Screen {
     private static final float textSpeed = 0.25f;
     private static final TextComponent ERROR_TEXT = new TextComponent("An error has occurred.");
 
+    private ResourceLocation location;
     private RpgStage stage;
+    private boolean packetReceived = false;
 
     private int stageX;
     private int stageY;
@@ -53,8 +57,7 @@ public class RpgStageScreen extends Screen {
 
     public RpgStageScreen(RpgStageBlockEntity be) {
         super(TextComponent.EMPTY);
-        stage = RpgStageManager.instance.getOrDefault(be.getStage());
-        setActiveScenario(0);
+        location = be.getStage();
     }
 
     @Override
@@ -77,12 +80,14 @@ public class RpgStageScreen extends Screen {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, LOCATION);
 
-        if(stageActive){
-            renderScenario(pPoseStack, pMouseX, pMouseY, pPartialTick);
-            renderStage(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        } else {
-            renderStage(pPoseStack, pMouseX, pMouseY, pPartialTick);
-            renderScenario(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        if(packetReceived){
+            if(stageActive){
+                renderScenario(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                renderStage(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            } else {
+                renderStage(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                renderScenario(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            }
         }
     }
 
@@ -131,6 +136,8 @@ public class RpgStageScreen extends Screen {
         RenderSystem.setShaderColor(shaderColor, shaderColor, shaderColor, 1f);
         blit(poseStack, scenarioX, scenarioY, 0, 81, 176, 110, 256, 256);
 
+        if(!RpgScenarioManager.instance.containsKey(stage.scenarios().get(activeSlot))) return;
+
         if(activeScenario != null){
             if(font.width(scenarioTitle) > 160){
                 float T = (font.width(scenarioTitle) - 157f) / textSpeed + 80;
@@ -151,7 +158,7 @@ public class RpgStageScreen extends Screen {
             float x = scenarioX + 168 - activeScenario.features().size() * 11;
             RpgScenarioFeature forToolTip = null;
             for(RpgScenarioFeature feature : activeScenario.features()){
-                feature.render(poseStack, (int)x, scenarioY + 92);
+                RpgScenarioFeatureRenderer.render(feature, poseStack, (int)x, scenarioY + 92);
                 if(x <= mouseX && mouseX <= x + 10 && scenarioY + 92 <= mouseY && mouseY <= scenarioY + 102) forToolTip = feature;
                 x += 11f;
             }
@@ -184,6 +191,8 @@ public class RpgStageScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton){
+        if(!packetReceived) return false;
+
         boolean stageClicked = stageX <= pMouseX && pMouseX <= stageX + 176 && stageY <= pMouseY && pMouseY <= stageY + 81;
         boolean scenarioClicked = scenarioX <= pMouseX && pMouseX <= scenarioX + 176 && scenarioY <= pMouseY && pMouseY <= scenarioY + 110;
 
@@ -218,6 +227,8 @@ public class RpgStageScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+        if(!packetReceived) return false;
+
         boolean onScenarioInfo = scenarioX + 7 <= pMouseX && pMouseX <= scenarioX + 169 && scenarioY + 21 <= pMouseY && pMouseY <= scenarioY + 104;
         if(!stageActive && onScenarioInfo){
             int max = Math.max(0, scenarioInfo.size() * 10 - 78);
@@ -269,5 +280,13 @@ public class RpgStageScreen extends Screen {
                 return minecraft.font.getSplitter().componentStyleAtWidth(scenarioInfo.get(index), (int)(pMouseX - scenarioX - 9.5d));
         }
         return null;
+    }
+
+    public void handlePacket(ClientboundSetRpgStagePacket packet){
+        if(packet.getLocation().equals(location)){
+            packetReceived = true;
+            stage = RpgStageManager.instance.getOrDefault(location);
+            setActiveScenario(0);
+        }
     }
 }

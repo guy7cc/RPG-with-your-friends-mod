@@ -1,6 +1,5 @@
-package io.github.guy7cc.sync;
+package io.github.guy7cc.save.cap;
 
-import io.github.guy7cc.RpgwMod;
 import io.github.guy7cc.client.overlay.RpgwIngameOverlay;
 import io.github.guy7cc.network.ClientboundSetRpgPlayerPropertyPacket;
 import io.github.guy7cc.network.RpgwMessageManager;
@@ -15,11 +14,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,8 +32,21 @@ public class RpgPlayerPropertyManager {
     }
 
     public static void update(UUID uuid, RpgPlayerProperty property){
-        map.put(uuid, property);
+        if(map.containsKey(uuid)){
+            for(PropertyType<?> type : PropertyType.allTypes){
+                innerUpdate(map.get(uuid), property, type);
+            }
+        } else {
+            property.clearDirty();
+            map.put(uuid, property);
+        }
         RpgwIngameOverlay.money.onChangeMoney();
+    }
+
+    private static <T> void innerUpdate(RpgPlayerProperty original, RpgPlayerProperty updater, PropertyType<T> type){
+        if(updater.isChanged(type)){
+            original.setValue(type, updater.getValue(type));
+        }
     }
 
     public static void clear(){
@@ -57,7 +66,21 @@ public class RpgPlayerPropertyManager {
     public static void syncToParty(ServerPlayer player){
         RpgPlayerProperty property = get(player);
         Party party = PartyList.getInstance().byPlayer(player.getUUID());
-        if(property != null || party == null) return;
+        if(property == null || party == null) return;
+        MinecraftServer server = player.getServer();
+        for(UUID uuid : party.getMemberList()){
+            ServerPlayer member = server.getPlayerList().getPlayer(uuid);
+            if(member != null && !uuid.equals(player.getUUID())){
+                RpgwMessageManager.send(PacketDistributor.PLAYER.with(() -> member), new ClientboundSetRpgPlayerPropertyPacket(player, property));
+            }
+        }
+    }
+
+    public static void syncToPartyDirty(ServerPlayer player){
+        RpgPlayerProperty property = get(player);
+        Party party = PartyList.getInstance().byPlayer(player.getUUID());
+        if(property == null || party == null) return;
+        property.setAllDirty();
         MinecraftServer server = player.getServer();
         for(UUID uuid : party.getMemberList()){
             ServerPlayer member = server.getPlayerList().getPlayer(uuid);
@@ -70,7 +93,10 @@ public class RpgPlayerPropertyManager {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
         ServerPlayer player = (ServerPlayer) event.getPlayer();
         RpgPlayerProperty p = get(player);
-        if(p != null) syncToClient(player);
+        if(p != null) {
+            p.setAllDirty();
+            syncToClient(player);
+        }
     }
 
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event){

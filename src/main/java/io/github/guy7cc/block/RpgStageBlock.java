@@ -1,12 +1,16 @@
 package io.github.guy7cc.block;
 
 import io.github.guy7cc.block.entity.RpgStageBlockEntity;
+import io.github.guy7cc.client.ClientExecutionUtil;
 import io.github.guy7cc.client.screen.RpgStageScreen;
 import io.github.guy7cc.client.screen.RpgwEditDataScreen;
 import io.github.guy7cc.item.RpgwItems;
+import io.github.guy7cc.network.RpgwMessageManager;
+import io.github.guy7cc.resource.RpgStageManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +27,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class RpgStageBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -85,13 +92,12 @@ public class RpgStageBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if(pLevel.isClientSide && pLevel.getBlockEntity(pPos) instanceof RpgStageBlockEntity be){
-            if(pPlayer.getItemInHand(pHand).is(RpgwItems.DEBUG_WRENCH.get())){
-                Minecraft.getInstance().setScreen(new RpgwEditDataScreen(pPos, be.getStage().toString()));
-            } else {
-                Minecraft.getInstance().setScreen(new RpgStageScreen(be));
-            }
+        if(pLevel.getBlockEntity(pPos) instanceof RpgStageBlockEntity be){
+            if(pLevel.isClientSide)
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientExecutionUtil.openScreenForRpgStageBlock(be, pPos, pPlayer, pHand));
+            else RpgStageManager.instance.syncToClient((ServerPlayer) pPlayer, be.getStage());
         }
+
         return InteractionResult.sidedSuccess(pLevel.isClientSide);
     }
 

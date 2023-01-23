@@ -25,12 +25,16 @@ public class RpgwMessageManager {
 
         INSTANCE = net;
 
+        net.registerMessage(id(), ServerboundRequestDimensionDataPacket.class, ServerboundRequestDimensionDataPacket::toBytes, ServerboundRequestDimensionDataPacket::new, ServerboundRequestDimensionDataPacket::handle);
         net.registerMessage(id(), ServerboundManagePartyPacket.class, ServerboundManagePartyPacket::toBytes, ServerboundManagePartyPacket::new, ServerboundManagePartyPacket::handle);
         net.registerMessage(id(), ServerboundEditDataPacket.class, ServerboundEditDataPacket::toBytes, ServerboundEditDataPacket::new, ServerboundEditDataPacket::handle);
         net.registerMessage(id(), ServerboundEditBorderPacket.class, ServerboundEditBorderPacket::toBytes, ServerboundEditBorderPacket::new, ServerboundEditBorderPacket::handle);
         net.registerMessage(id(), ServerboundEditRpgwSpawnerBlockPacket.class, ServerboundEditRpgwSpawnerBlockPacket::toBytes, ServerboundEditRpgwSpawnerBlockPacket::new, ServerboundEditRpgwSpawnerBlockPacket::handle);
         net.registerMessage(id(), ServerboundConfirmTradeOnVendingMachinePacket.class, ServerboundConfirmTradeOnVendingMachinePacket::toBytes, ServerboundConfirmTradeOnVendingMachinePacket::new, ServerboundConfirmTradeOnVendingMachinePacket::handle);
         net.registerMessage(id(), ClientboundSetRpgPlayerPropertyPacket.class, ClientboundSetRpgPlayerPropertyPacket::toBytes, ClientboundSetRpgPlayerPropertyPacket::new, ClientboundSetRpgPlayerPropertyPacket::handle);
+        net.registerMessage(id(), ClientboundSetRpgStagePacket.class, ClientboundSetRpgStagePacket::toBytes, ClientboundSetRpgStagePacket::new, ClientboundSetRpgStagePacket::handle);
+        net.registerMessage(id(), ClientboundSetRpgScenarioPacket.class, ClientboundSetRpgScenarioPacket::toBytes, ClientboundSetRpgScenarioPacket::new, ClientboundSetRpgScenarioPacket::handle);
+        net.registerMessage(id(), ClientboundSetDimensionDataPacket.class, ClientboundSetDimensionDataPacket::toBytes, ClientboundSetDimensionDataPacket::new, ClientboundSetDimensionDataPacket::handle);
         net.registerMessage(id(), ClientboundSyncPartyListPacket.class, ClientboundSyncPartyListPacket::toBytes, ClientboundSyncPartyListPacket::new, ClientboundSyncPartyListPacket::handle);
         net.registerMessage(id(), ClientboundSyncPartyPacket.class, ClientboundSyncPartyPacket::toBytes, ClientboundSyncPartyPacket::new, ClientboundSyncPartyPacket::handle);
         net.registerMessage(id(), ClientboundSyncBorderPacket.class, ClientboundSyncBorderPacket::toBytes, ClientboundSyncBorderPacket::new, ClientboundSyncBorderPacket::handle);

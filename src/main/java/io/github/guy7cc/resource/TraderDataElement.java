@@ -27,20 +27,14 @@ import java.util.*;
 
 public abstract class TraderDataElement implements INBTSerializable<CompoundTag> {
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final int WIDTH = 114;
-    public static final int HEIGHT = 22;
-    public static final ResourceLocation LOCATION = new ResourceLocation(RpgwMod.MOD_ID, "textures/gui/trader.png");
 
-    protected Minecraft minecraft;
     protected ItemStack itemStack;
 
     public TraderDataElement(ItemStack itemStack) {
-        this.minecraft = Minecraft.getInstance();
         this.itemStack = itemStack;
     }
 
     public TraderDataElement(CompoundTag tag){
-        this.minecraft = Minecraft.getInstance();
         deserializeNBT(tag);
     }
 
@@ -48,14 +42,6 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
         return itemStack;
     }
 
-    public void render(ItemRenderer itemRenderer, PoseStack poseStack, int x, int y) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, LOCATION);
-        GuiComponent.blit(poseStack, x, y, 0, 206, WIDTH, HEIGHT, 256, 256);
-        itemRenderer.renderAndDecorateItem(itemStack, x + 3, y + 3);
-        itemRenderer.renderGuiItemDecorations(minecraft.font, itemStack, x + 3, y + 3, null);
-    }
 
     public abstract TraderDataElement copy();
 
@@ -101,13 +87,6 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
 
         public long getPrice() {
             return price;
-        }
-
-        @Override
-        public void render(ItemRenderer itemRenderer, PoseStack poseStack, int x, int y) {
-            super.render(itemRenderer, poseStack, x, y);
-            TextComponent component = new TextComponent(price + " " + RpgwMod.CURRENCY);
-            minecraft.font.draw(poseStack, component, x + WIDTH - 4 - minecraft.font.width(component), y + 7.5f, 0x404040);
         }
 
         public TraderDataElement copy(){
@@ -234,43 +213,6 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
             return delay;
         }
 
-        @Override
-        public void render(ItemRenderer itemRenderer, PoseStack poseStack, int x, int y) {
-            if(Instant.now().isAfter(availableFrom)){
-                super.render(itemRenderer, poseStack, x, y);
-                Component component = new TextComponent(price + " " + RpgwMod.CURRENCY);
-                minecraft.font.draw(poseStack, component, x + WIDTH - 4 - minecraft.font.width(component), y + 7.5f, 0x404040);
-                String cnt = String.valueOf(count);
-                if(count <= 3){
-                    cnt = "§4" + cnt + "§8";
-                }
-                component = new TranslatableComponent("gui.rpgwmod.trader.upto", cnt);
-                minecraft.font.draw(poseStack, component, x + 23, y + 7.5f, 0x555555);
-            } else {
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                RenderSystem.setShaderTexture(0, LOCATION);
-                GuiComponent.blit(poseStack, x, y, 114, 206, WIDTH, HEIGHT, 256, 256);
-                itemRenderer.renderAndDecorateItem(itemStack, x + 3, y + 3);
-                itemRenderer.renderGuiItemDecorations(minecraft.font, itemStack, x + 3, y + 3, null);
-
-                long now = Instant.now().toEpochMilli();
-                long s = (availableFrom.toEpochMilli() - now) / 1000;
-                long m = s / 60;
-                long h = m / 60;
-
-                Component component = new TextComponent(price + " " + RpgwMod.CURRENCY);
-                minecraft.font.draw(poseStack, component, x + WIDTH - 4 - minecraft.font.width(component), y + 7.5f, 0xbfbfbf);
-                String cnt = String.valueOf(count);
-                if(count <= 3){
-                    cnt = "§4" + cnt + "§8";
-                }
-                component = new TranslatableComponent("gui.rpgwmod.trader.available", h > 0 ? h + "h" : m > 0 ? m + "m" : s + "s");
-                minecraft.font.draw(poseStack, component, x + 23, y + 7.5f, 0xdddddd);
-            }
-
-        }
-
         public TraderDataElement copy(){
             List<ResourceLocation> list = next.orElse(null);
             if(list != null){
@@ -362,21 +304,6 @@ public abstract class TraderDataElement implements INBTSerializable<CompoundTag>
 
         public ItemStack getRequirement() {
             return requirement;
-        }
-
-        @Override
-        public void render(ItemRenderer itemRenderer, PoseStack poseStack, int x, int y) {
-            super.render(itemRenderer, poseStack, x, y);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, LOCATION);
-            poseStack.pushPose();
-            poseStack.translate(0, 0, -100);
-            GuiComponent.blit(poseStack, x + 94, y + 2, 2, 208, 18, 18, 256, 256);
-            poseStack.popPose();
-            GuiComponent.blit(poseStack, x + 45, y + 3, 0, 228, 24, 16, 256, 256);
-            itemRenderer.renderAndDecorateItem(requirement, x + 95, y + 3);
-            itemRenderer.renderGuiItemDecorations(minecraft.font, requirement, x + 95, y + 3, null);
         }
 
         public TraderDataElement copy(){
